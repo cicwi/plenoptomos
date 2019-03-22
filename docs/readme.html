@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>plenoptomos &mdash; plenoptomos  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="plenoptomos" href="modules.html" />
+    <link rel="prev" title="Welcome to the documentation of plenoptomos!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> plenoptomos
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">plenoptomos</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#readiness">Readiness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installing-with-conda">Installing with conda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-from-source">Installing from source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-examples">Running the examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#authors-and-contributors">Authors and contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-contribute">How to contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-format">Data format</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">plenoptomos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>plenoptomos</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/readme.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="plenoptomos">
+<h1>plenoptomos<a class="headerlink" href="#plenoptomos" title="Permalink to this headline">¶</a></h1>
+<p>Plenoptic imaging reconstruction tools, developed in the context of the VOXEL
+project, part of the European Union’s Horizon 2020 research and innovation
+programme (<a class="reference external" href="https://ec.europa.eu/programmes/horizon2020/en/news/3d-x-ray-imaging-very-low-dose">VOXEL H2020-FETOPEN-2014-2015-RIA  GA 665207</a>)</p>
+<p>It provides a Python package that allows to read and manipulate light-field images.
+The provided features are:</p>
+<ul class="simple">
+<li>support for a few types of datasets and formats (including the .vox format).</li>
+<li>support for refocusing using standard algorithms like the integration [3] and Fourier [4] methods.</li>
+<li>support for GPU accelerated tomography based refocusing, including the following algorithms:<ul>
+<li>unfiltered back-projection [1]</li>
+<li>SIRT [2]</li>
+<li>Chambolle-Pock (Least-square, TV) [2]</li>
+</ul>
+</li>
+<li>support for depth estimation [5]</li>
+</ul>
+<p>This work is based on the following articles:</p>
+<ul class="simple">
+<li>[1] N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,” Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.</li>
+<li>[2] N. Viganò, et al., “Advanced light-field refocusing through tomographic modeling of the photographed scene,” Opt. Express, vol. 27, no. 6, p. 7834, Mar. 2019.</li>
+</ul>
+<p>It also implements methods from, the following articles:</p>
+<ul class="simple">
+<li>[3] R. Ng, et al., “Light Field Photography with a Hand-held Plenoptic Camera,” Stanford Univ. Tech. Rep. CSTR 2005-02, 2005.</li>
+<li>[4] R. Ng, “Fourier slice photography,” ACM Trans. Graph., vol. 24, no. 3, p. 735, 2005.</li>
+<li>[5] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,” Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.</li>
+</ul>
+<p>Other useful information:</p>
+<ul class="simple">
+<li>Free software: GNU General Public License v3</li>
+<li>Documentation: [https://cicwi.github.io/plenoptomos]</li>
+</ul>
+<div class="section" id="readiness">
+<h2>Readiness<a class="headerlink" href="#readiness" title="Permalink to this headline">¶</a></h2>
+<p>The author of this package is in the process of setting up this
+package for optimal usability. The following has already been completed:</p>
+<ul>
+<li><p class="first">[ ] Documentation</p>
+<ul class="simple">
+<li>A package description has been written in the README</li>
+<li>Documentation has been generated using <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code>, committed,
+and pushed to GitHub.</li>
+<li>GitHub pages have been setup in the project settings
+with the “source” set to “master branch /docs folder”.</li>
+</ul>
+</li>
+<li><p class="first">[ ] An initial release</p>
+<ul class="simple">
+<li>In <code class="docutils literal notranslate"><span class="pre">CHANGELOG.md</span></code>, a release date has been added to v0.1.0 (change the YYYY-MM-DD).</li>
+<li>The release has been marked a release on GitHub.</li>
+<li>For more info, see the <a class="reference external" href="https://cicwi.github.io/software-guides/software-release-guide">Software Release Guide</a>.</li>
+</ul>
+</li>
+<li><p class="first">[x] A conda package</p>
+<ul>
+<li><p class="first">Required packages have been added to <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, for instance,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">requirements</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Add your project&#39;s requirements here, e.g.,</span>
+    <span class="c1"># &#39;astra-toolbox&#39;,</span>
+    <span class="c1"># &#39;sacred&gt;=0.7.2&#39;,</span>
+    <span class="c1"># &#39;tables==3.4.4&#39;,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>has been replaced by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">requirements</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;astra-toolbox&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sacred&gt;=0.7.2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;tables==3.4.4&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">All “conda channels” that are required for building and
+installing the package have been added to the
+<code class="docutils literal notranslate"><span class="pre">Makefile</span></code>. Specifically, replace</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda_package</span><span class="p">:</span>
+  <span class="n">conda</span> <span class="n">install</span> <span class="n">conda</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">y</span>
+  <span class="n">conda</span> <span class="n">build</span> <span class="n">conda</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda_package</span><span class="p">:</span>
+  <span class="n">conda</span> <span class="n">install</span> <span class="n">conda</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">y</span>
+  <span class="n">conda</span> <span class="n">build</span> <span class="n">conda</span><span class="o">/</span> <span class="o">-</span><span class="n">c</span> <span class="n">some</span><span class="o">-</span><span class="n">channel</span> <span class="o">-</span><span class="n">c</span> <span class="n">some</span><span class="o">-</span><span class="n">other</span><span class="o">-</span><span class="n">channel</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Conda packages have been built successfully with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">conda_package</span></code>.</p>
+</li>
+<li><p class="first">These conda packages have been uploaded to
+<a class="reference external" href="https://anaconda.org">Anaconda</a>. <a class="reference external" href="http://docs.anaconda.com/anaconda-cloud/user-guide/getting-started/#cloud-getting-started-build-upload">This</a>
+is a good getting started guide.</p>
+</li>
+<li><p class="first">The installation instructions (below) have been updated. Do not
+forget to add the required channels, e.g., <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">some-channel</span> <span class="pre">-c</span> <span class="pre">some-other-channel</span></code>, and your own channel, e.g., <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">cicwi</span></code>.</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>It takes a few steps to setup plenoptomos on your
+machine. We recommend installing
+<a class="reference external" href="https://www.anaconda.com/download/">Anaconda package manager</a> for
+Python 3.</p>
+<div class="section" id="installing-with-conda">
+<h3>Installing with conda<a class="headerlink" href="#installing-with-conda" title="Permalink to this headline">¶</a></h3>
+<p>Simply install with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">cicwi</span> <span class="n">plenoptomos</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-from-source">
+<h3>Installing from source<a class="headerlink" href="#installing-from-source" title="Permalink to this headline">¶</a></h3>
+<p>To install plenoptomos, simply clone this GitHub
+project. Go to the cloned directory and run PIP installer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">cicwi</span><span class="o">/</span><span class="n">plenoptomos</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">plenoptomos</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-the-examples">
+<h3>Running the examples<a class="headerlink" href="#running-the-examples" title="Permalink to this headline">¶</a></h3>
+<p>To learn more about the functionality of the package check out our
+examples folder.</p>
+</div>
+</div>
+<div class="section" id="authors-and-contributors">
+<h2>Authors and contributors<a class="headerlink" href="#authors-and-contributors" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Nicola Viganò</strong> - <em>Main developer</em></li>
+<li><strong>Francesco Brun</strong> - <em>Initial contributions</em></li>
+<li><strong>Pablo Martinez Gil</strong> - <em>Contributed to the creation and enabling of the .vox data format, and to the wavelet solver</em></li>
+<li><strong>Charlotte Herzog</strong> - *Contributed to the creation an</li>
+</ul>
+<p>See also the list of <a class="reference external" href="https://github.com/cicwi/plenoptomos/contributors">contributors</a> who participated in this project.</p>
+</div>
+<div class="section" id="how-to-contribute">
+<h2>How to contribute<a class="headerlink" href="#how-to-contribute" title="Permalink to this headline">¶</a></h2>
+<p>Contributions are always welcome. Please submit pull requests against the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch.</p>
+<p>If you have any issues, questions, or remarks, then please open an issue on GitHub.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>This project is licensed under the GNU General Public License v3 - see the <a class="reference external" href="LICENSE">LICENSE.md</a> file for details.</p>
+</div>
+<div class="section" id="data-format">
+<h2>Data format<a class="headerlink" href="#data-format" title="Permalink to this headline">¶</a></h2>
+<p>This package comes with a suggested data format for the light-fields.
+The datata format is described in the data_format.py module, and it addresses
+the following points:</p>
+<p>Rationale behind version 0:</p>
+<ul class="simple">
+<li>single image</li>
+<li>initial standardization containing all the necessary metadata</li>
+<li>first structure, vaguely inspired by DataExchange</li>
+</ul>
+<p>Structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>root
+ +--&lt;attribute&gt; = description : string -&gt; &quot;VoxelDataFormat&quot;
+ +--&lt;attribute&gt; = version : string -&gt; &quot;v0&quot;
+ |
+ +--&lt;group&gt; = data
+ |     |
+ |     +--&lt;dataset&gt; = image : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
+ |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
+ |     |      +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
+ |     |      +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
+ |     |
+ |     +--&lt;dataset&gt; = white : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
+ |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
+ |     |      +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
+ |     |      +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
+ |     |
+ |     +--&lt;dataset&gt; = dark : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
+ |            +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
+ |            +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
+ |            +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
+ |
+ +--&lt;group&gt; = instrument
+ |     |
+ |     +--&lt;group&gt; = source ?
+ |     |
+ |     +--&lt;group&gt; = camera
+ |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
+ |     |     +--&lt;attribute&gt; = model : string [optional]
+ |     |     |
+ |     |     +--&lt;group&gt; = micro_lenses_array
+ |     |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
+ |     |     |     +--&lt;attribute&gt; = model : string [optional]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = size : integer &lt;- number of micro-lenses
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = position : float &lt;- position of the center of the MLA with respect with the center of the main lens
+ |     |     |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = tilts ?
+ |     |     |
+ |     |     +--&lt;group&gt; = micro_lens
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = size : integer &lt;- size of each microlens in detector pixels after regularization
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;pixels&quot;
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = physical_size : float &lt;- physical size of each micro-lens
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;t:s&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = micro_image_size : float &lt;- footprint of each microlens over detector pixels
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;pixels&quot;
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = f2 : float &lt;- focal length of each lenslet
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = aperture : float &lt;- f-number
+ |     |     |
+ |     |     +--&lt;group&gt; = main_lens
+ |     |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
+ |     |     |     +--&lt;attribute&gt; = model : string [optional]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = pixel_size : float &lt;- angular resolution of the main-lens
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;v:u&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = f1 : float &lt;- focal length of each lenslet
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = aperture : float &lt;- f-number
+ |     |     |
+ |     |     +--&lt;group&gt; = sensor
+ |     |           +--&lt;attribute&gt; = manufacturer : string [optional]
+ |     |           +--&lt;attribute&gt; = model : string [optional]
+ |     |           |
+ |     |           +--&lt;dataset&gt; = size : integer &lt;- number of pixels
+ |     |           |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |           |
+ |     |           +--&lt;dataset&gt; = pixel_size : float &lt;- physical size of each pixel
+ |     |           |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |           |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |           |
+ |     |           +--&lt;dataset&gt; = position : float &lt;- position of the center of the sensor with respect with the center of the main lens
+ |     |           |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
+ |     |           |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |           |
+ |     |           +--&lt;dataset&gt; = tilts ?
+ |     |           |
+ |     |           +--&lt;dataset&gt; = detection parameters ? (i.e. material, thickness, quantum efficiency)
+ |     |
+ |     +--&lt;group&gt; = monochromator ? (could be used for RGB images -&gt; split into three-channels)
+ |     |
+ |     +--&lt;group&gt; = scintillator ? (might be related/redundant to/with detection parameters in detector)
+ |
+ +--&lt;group&gt; = sample [optional]
+ |     |
+ |     +--&lt;dataset&gt; = position : float &lt;- position of the center of the sample with respect with the center of the main lens
+ |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
+ |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |
+ |     +--&lt;dataset&gt; = size : float &lt;- size of the sample
+ |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
+ |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |
+ |     +--&lt;dataset&gt; name : string
+ |     |
+ |     +--&lt;dataset&gt; description : string [optional]
+ |
+ +--&lt;group&gt; = acquisition
+       |
+       +--&lt;dataset&gt; = type : string -&gt; [ &quot;reflection&quot; | &quot;transmission&quot; ]
+       |
+       +--&lt;dataset&gt; = exposure_time : float
+              +-&lt;attribute&gt; = units : string -&gt; [ {&quot;s&quot;} | &quot;ms&quot; | &quot;us&quot; ]
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules.html" class="btn btn-neutral float-right" title="plenoptomos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to the documentation of plenoptomos!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

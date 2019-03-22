@@ -1,0 +1,648 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>plenoptomos.psf &mdash; plenoptomos  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> plenoptomos
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">plenoptomos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>plenoptomos.psf</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for plenoptomos.psf</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Tue Oct 10 18:31:14 2017</span>
+
+<span class="sd">@author: vigano</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">scipy.fftpack</span> <span class="k">as</span> <span class="nn">fft</span>
+    <span class="n">has_fftpack</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy.fft</span> <span class="k">as</span> <span class="nn">fft</span>
+    <span class="n">has_fftpack</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span> <span class="k">as</span> <span class="nn">spimg</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">spspecial</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="nn">spsig</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="c1"># Do not remove the following import: it is used somehow by the plotting</span>
+<span class="c1"># functionality in the PSF creation</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="k">import</span> <span class="n">Axes3D</span> <span class="c1"># noqa: F401 unused import</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">solvers</span>
+
+<span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">tm</span>
+
+<div class="viewcode-block" id="PSF"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSF">[docs]</a><span class="k">class</span> <span class="nc">PSF</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">conf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_format</span> <span class="o">=</span> <span class="n">data_format</span>
+
+<div class="viewcode-block" id="PSF.create_theo_psf"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSF.create_theo_psf">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_theo_psf</span><span class="p">(</span><span class="n">camera</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">wavelength_steps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> \
+                        <span class="n">wavelength_intensity</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">airy_rings</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> \
+                        <span class="n">refocus_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">up_sampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> \
+                        <span class="n">beam_coherence</span><span class="o">=</span><span class="s1">&#39;incoherent&#39;</span><span class="p">,</span> \
+                        <span class="n">over_sampling</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># We think in mm</span>
+        <span class="k">if</span> <span class="n">camera</span><span class="o">.</span><span class="n">wavelength_unit</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;mm&#39;</span><span class="p">:</span>
+            <span class="n">ls_unit</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">camera</span><span class="o">.</span><span class="n">wavelength_unit</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;um&#39;</span><span class="p">:</span>
+            <span class="n">ls_unit</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="k">elif</span> <span class="n">camera</span><span class="o">.</span><span class="n">wavelength_unit</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;nm&#39;</span><span class="p">:</span>
+            <span class="n">ls_unit</span> <span class="o">=</span> <span class="mf">1e-6</span>
+        <span class="k">elif</span> <span class="n">camera</span><span class="o">.</span><span class="n">wavelength_unit</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;pm&#39;</span><span class="p">:</span>
+            <span class="n">ls_unit</span> <span class="o">=</span> <span class="mf">1e-9</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown wavelength unit: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">camera</span><span class="o">.</span><span class="n">wavelength_unit</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">camera</span><span class="o">.</span><span class="n">wavelength_range</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">ls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">camera</span><span class="o">.</span><span class="n">wavelength_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">camera</span><span class="o">.</span><span class="n">wavelength_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">wavelength_steps</span><span class="p">)</span> <span class="o">*</span> <span class="n">ls_unit</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ls</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">wavelength_range</span> <span class="o">*</span> <span class="n">ls_unit</span>
+
+        <span class="n">z0</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">get_focused_distance</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;st&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">refocus_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">blur_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">refocus_distance</span> <span class="o">-</span> <span class="n">z0</span><span class="p">)</span> <span class="o">/</span> <span class="n">z0</span> <span class="o">*</span> <span class="n">camera</span><span class="o">.</span><span class="n">pixel_size_vu</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">z0</span> <span class="o">/</span> <span class="n">camera</span><span class="o">.</span><span class="n">z1</span>
+            <span class="n">defocus_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">blur_size</span> <span class="o">/</span> <span class="p">(</span><span class="n">camera</span><span class="o">.</span><span class="n">pixel_size_ts</span> <span class="o">*</span> <span class="n">M</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="c1">#        elif coordinates.lower() in (&#39;uv&#39;, &#39;vu&#39;) and camera.is_focused():</span>
+<span class="c1">#            blur_size = np.abs(camera.b) / camera.f2</span>
+<span class="c1">#            defocus_size = np.mean(blur_size) / 2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">defocus_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">Conf</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Conf&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;airy_rings&#39;</span><span class="p">,</span> <span class="s1">&#39;over_sampling&#39;</span><span class="p">,</span> \
+                                   <span class="s1">&#39;beam_coherence&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;wavelength_intensity&#39;</span><span class="p">,</span> <span class="s1">&#39;pixels_defocus&#39;</span><span class="p">,</span> \
+                                   <span class="s1">&#39;guarantee_pixel_multiple&#39;</span><span class="p">,</span> <span class="s1">&#39;data_type&#39;</span><span class="p">))</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="n">Conf</span><span class="p">(</span><span class="n">airy_rings</span><span class="p">,</span> <span class="n">over_sampling</span><span class="p">,</span> <span class="n">beam_coherence</span><span class="p">,</span> \
+                    <span class="n">wavelength_intensity</span><span class="p">,</span> <span class="n">defocus_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Creating Theoretical PSFs for (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">) coordinates (defocus size: </span><span class="si">%g</span><span class="s2">)..&quot;</span> \
+              <span class="o">%</span> <span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">defocus_size</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">c_in</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;uv&#39;</span><span class="p">,</span> <span class="s1">&#39;vu&#39;</span><span class="p">):</span>
+            <span class="c1"># Micro lenses PSF</span>
+            <span class="n">d2</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">f2</span> <span class="o">/</span> <span class="n">camera</span><span class="o">.</span><span class="n">aperture_f2</span>
+            <span class="k">if</span> <span class="n">camera</span><span class="o">.</span><span class="n">is_focused</span><span class="p">():</span>
+                <span class="n">psf_data</span> <span class="o">=</span> <span class="n">PSF</span><span class="o">.</span><span class="n">compute_fraunhofer_psf</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">camera</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">camera</span><span class="o">.</span><span class="n">pixel_size_yx</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">psf_data</span> <span class="o">=</span> <span class="n">PSF</span><span class="o">.</span><span class="n">compute_fraunhofer_psf</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">camera</span><span class="o">.</span><span class="n">f2</span><span class="p">,</span> <span class="n">camera</span><span class="o">.</span><span class="n">pixel_size_yx</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span>
+            <span class="n">data_format</span> <span class="o">=</span> <span class="s1">&#39;raw&#39;</span>
+        <span class="k">elif</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;st&#39;</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">):</span>
+            <span class="c1"># Main lens PSF</span>
+            <span class="n">d1</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">f1</span> <span class="o">/</span> <span class="n">camera</span><span class="o">.</span><span class="n">aperture_f1</span>
+            <span class="k">if</span> <span class="n">up_sampling</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">data_format</span> <span class="o">=</span> <span class="s1">&#39;subpixel&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data_format</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">camera</span><span class="o">.</span><span class="n">is_focused</span><span class="p">():</span>
+                <span class="n">psf_data</span> <span class="o">=</span> <span class="n">PSF</span><span class="o">.</span><span class="n">compute_fraunhofer_psf</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">camera</span><span class="o">.</span><span class="n">z1</span> <span class="o">+</span> <span class="n">camera</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">camera</span><span class="o">.</span><span class="n">pixel_size_ts</span> <span class="o">/</span> <span class="n">up_sampling</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">psf_data</span> <span class="o">=</span> <span class="n">PSF</span><span class="o">.</span><span class="n">compute_fraunhofer_psf</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">camera</span><span class="o">.</span><span class="n">z1</span><span class="p">,</span> <span class="n">camera</span><span class="o">.</span><span class="n">pixel_size_ts</span> <span class="o">/</span> <span class="n">up_sampling</span><span class="p">,</span> <span class="n">ls</span><span class="p">)</span>
+
+        <span class="n">c_out</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b\b</span><span class="s2">: Done in </span><span class="si">%g</span><span class="s2"> seconds.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c_out</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">))</span>
+
+        <span class="n">psf</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">psf_data</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
+            <span class="n">pixels_distance</span> <span class="o">=</span> <span class="p">(</span><span class="n">psf_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">grid_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">pixels_distance</span><span class="p">,</span> <span class="n">pixels_distance</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pixels_distance</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">grid_p1</span><span class="p">,</span> <span class="n">grid_p2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">grid_p</span><span class="p">,</span> <span class="n">grid_p</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+
+            <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">grid_p1</span><span class="p">,</span> <span class="n">grid_p2</span><span class="p">,</span> <span class="n">psf_data</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.5</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">psf</span></div>
+
+<div class="viewcode-block" id="PSF.compute_fraunhofer_psf"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSF.compute_fraunhofer_psf">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_fraunhofer_psf</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">pixel_size</span><span class="p">,</span> <span class="n">ls</span><span class="p">):</span>
+        <span class="c1">#computing real pixel_distance of first zero</span>
+        <span class="n">disk_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="mf">1.22</span> <span class="o">*</span> <span class="n">ls</span> <span class="o">/</span> <span class="n">d</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pixel_size</span><span class="p">)</span>
+        <span class="n">pixels_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">disk_d</span> <span class="o">*</span> <span class="n">conf</span><span class="o">.</span><span class="n">airy_rings</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="n">base_block_size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pixels_distance</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">sampled_pixels</span> <span class="o">=</span> <span class="n">base_block_size</span> <span class="o">*</span> <span class="n">conf</span><span class="o">.</span><span class="n">over_sampling</span>
+
+        <span class="n">samp_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">pixels_distance</span><span class="p">,</span> <span class="n">pixels_distance</span><span class="p">,</span> <span class="n">sampled_pixels</span><span class="p">)</span>
+        <span class="n">samp_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">pixels_distance</span><span class="p">,</span> <span class="n">pixels_distance</span><span class="p">,</span> <span class="n">sampled_pixels</span><span class="p">)</span>
+
+        <span class="n">samp_1</span> <span class="o">=</span> <span class="n">samp_1</span> <span class="o">*</span> <span class="n">pixel_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">samp_2</span> <span class="o">=</span> <span class="n">samp_2</span> <span class="o">*</span> <span class="n">pixel_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="p">[</span><span class="n">grid_1</span><span class="p">,</span> <span class="n">grid_2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">samp_1</span><span class="p">,</span> <span class="n">samp_2</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+
+        <span class="n">data_center</span> <span class="o">=</span> <span class="n">pixels_distance</span> <span class="o">*</span> <span class="n">conf</span><span class="o">.</span><span class="n">over_sampling</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">over_sampling</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">data_center</span> <span class="o">=</span> <span class="n">data_center</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="c1"># Airy function</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">grid_1</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">grid_2</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="mi">1</span><span class="p">,</span> <span class="p">),</span> <span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
+        <span class="n">ls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="n">ls</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">J10</span> <span class="o">=</span> <span class="n">spspecial</span><span class="o">.</span><span class="n">jv</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+        <span class="n">h</span><span class="p">[:,</span> <span class="n">data_center</span><span class="p">,</span> <span class="n">data_center</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># avoid warning abou NaN</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">J10</span> <span class="o">/</span> <span class="n">h</span>
+        <span class="c1"># Setting central pixel to 1 (otherwise it would be NaN or 0)</span>
+        <span class="n">h</span><span class="p">[:,</span> <span class="n">data_center</span><span class="p">,</span> <span class="n">data_center</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">beam_coherence</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;coherent&#39;</span><span class="p">:</span>
+            <span class="n">int_exp</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">int_exp</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="c1"># The abs is not really needed, since the Airy function is a real</span>
+        <span class="c1"># valued function</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">h</span> <span class="o">**</span> <span class="n">int_exp</span>
+
+        <span class="c1"># Summing the contribution from all the wavelengths, and renormalizing</span>
+        <span class="n">h</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">wavelength_intensity</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">pixels_defocus</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">hd</span> <span class="o">=</span> <span class="n">PSF</span><span class="o">.</span><span class="n">compute_defocus_psf</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">keep_oversampling</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">spsig</span><span class="o">.</span><span class="n">convolve2d</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">hd</span><span class="p">,</span> <span class="s1">&#39;same&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Producing the final impulse response h, at the given resolution</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">(</span><span class="n">base_block_size</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">over_sampling</span><span class="p">,</span> <span class="n">base_block_size</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">over_sampling</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">h</span></div>
+
+<div class="viewcode-block" id="PSF.compute_defocus_psf"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSF.compute_defocus_psf">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_defocus_psf</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">keep_oversampling</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">sampling_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">pixels_defocus</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+        <span class="n">h_size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sampling_distance</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">pixel_target</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">guarantee_pixel_multiple</span>
+        <span class="n">h_size</span> <span class="o">=</span> <span class="n">h_size</span> <span class="o">+</span> <span class="p">(</span><span class="n">pixel_target</span> <span class="o">-</span> <span class="p">(</span><span class="n">h_size</span> <span class="o">%</span> <span class="n">pixel_target</span><span class="p">))</span> <span class="o">%</span> <span class="n">pixel_target</span>
+        <span class="n">h_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_size</span> <span class="o">+</span> <span class="n">pixel_target</span> <span class="o">*</span> <span class="p">((</span><span class="n">h_size</span> <span class="o">/</span> <span class="n">pixel_target</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+
+        <span class="n">sampling_distance</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">sampled_pixels</span> <span class="o">=</span> <span class="n">h_size</span> <span class="o">*</span> <span class="n">conf</span><span class="o">.</span><span class="n">over_sampling</span>
+
+        <span class="n">samp_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">sampling_distance</span><span class="p">,</span> <span class="n">sampling_distance</span><span class="p">,</span> <span class="n">sampled_pixels</span><span class="p">)</span>
+        <span class="n">samp_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">sampling_distance</span><span class="p">,</span> <span class="n">sampling_distance</span><span class="p">,</span> <span class="n">sampled_pixels</span><span class="p">)</span>
+
+        <span class="p">[</span><span class="n">grid_1</span><span class="p">,</span> <span class="n">grid_2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">samp_1</span><span class="p">,</span> <span class="n">samp_2</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">norm</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">norm</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">norm</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">grid_1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">grid_2</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">conf</span><span class="o">.</span><span class="n">pixels_defocus</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="p">((</span><span class="n">grid_1</span> <span class="o">**</span> <span class="n">norm</span> <span class="o">+</span> <span class="n">grid_2</span> <span class="o">**</span> <span class="n">norm</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">pixels_defocus</span> <span class="o">**</span> <span class="n">norm</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+
+        <span class="c1"># Summing the contribution from all the wavelengths, and renormalizing</span>
+        <span class="n">h</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">keep_oversampling</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># Producing the final impulse response h, at the given resolution</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">(</span><span class="n">h_size</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">over_sampling</span><span class="p">,</span> <span class="n">h_size</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">over_sampling</span><span class="p">))</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">h</span></div></div>
+
+<div class="viewcode-block" id="PSFApply"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply">[docs]</a><span class="k">class</span> <span class="nc">PSFApply</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class PSFApply handles all PSF/OTF applications</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_otf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_fftconv</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Initializing PSF application class..&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">c_in</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_format</span> <span class="o">=</span> <span class="n">data_format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_otf</span> <span class="o">=</span> <span class="n">use_otf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_fftconv</span> <span class="o">=</span> <span class="n">use_fftconv</span>
+
+        <span class="k">if</span> <span class="n">psf_d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_psf_direct</span><span class="p">(</span><span class="n">psf_d</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">)</span>
+
+        <span class="n">c_out</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\b\b</span><span class="s2">: Done in </span><span class="si">%g</span><span class="s2"> seconds.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c_out</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">psf_direct</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">psf_adjoint</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">otf_direct</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">otf_adjoint</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_projection_invariant</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_otf</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_fftconv</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">psf_edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_format</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PSFApply.set_psf_direct"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply.set_psf_direct">[docs]</a>    <span class="k">def</span> <span class="nf">set_psf_direct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_d</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_direct</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
+
+        <span class="c1"># let&#39;s be sure that it will be in ASTRA&#39;s projection convention</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_incoming_psf</span><span class="p">(</span><span class="n">psf_d</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_projection_invariant</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+
+        <span class="c1"># let&#39;s renormalize the PSFs</span>
+        <span class="n">psf_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psf_d</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_projection_invariant</span><span class="p">:</span>
+            <span class="n">psf_d</span> <span class="o">=</span> <span class="n">psf_d</span> <span class="o">/</span> <span class="n">psf_norms</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">repl_ones</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+            <span class="n">psf_d</span> <span class="o">=</span> <span class="n">psf_d</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">psf_norms</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">),</span> <span class="n">repl_ones</span><span class="p">)))</span>
+
+        <span class="n">psf_edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">):])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">psf_edge</span> <span class="o">=</span> <span class="n">psf_edge</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">psf_direct</span> <span class="o">=</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+
+        <span class="c1"># Let&#39;s find out whether they are symmetric or not</span>
+        <span class="n">psf_t</span> <span class="o">=</span> <span class="n">psf_d</span>
+        <span class="k">for</span> <span class="n">otf_axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">:</span>
+            <span class="n">psf_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">psf_t</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">otf_axis</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">-</span> <span class="n">psf_t</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">psf_adjoint</span> <span class="o">=</span> <span class="n">psf_t</span>
+
+        <span class="k">if</span> <span class="n">img_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_paddings</span><span class="p">()</span>
+        <span class="c1"># if we know the images sizes, we can already compute the OTF</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_otf</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_otfs</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PSFApply.set_paddings"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply.set_paddings">[docs]</a>    <span class="k">def</span> <span class="nf">set_paddings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">round_to_multiple</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="n">total_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_edge</span>
+        <span class="n">base_multiple</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">total_size</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">final_size</span> <span class="o">=</span> <span class="n">round_to_multiple</span><span class="p">(</span><span class="n">total_size</span><span class="p">,</span> <span class="n">base_multiple</span><span class="p">)</span>
+
+        <span class="n">lower_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">final_size</span> <span class="o">-</span> <span class="n">total_size</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">upper_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">final_size</span> <span class="o">-</span> <span class="n">total_size</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">lower_pad</span><span class="p">,</span> <span class="n">upper_pad</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PSFApply.apply_psf_direct"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply.apply_psf_direct">[docs]</a>    <span class="k">def</span> <span class="nf">apply_psf_direct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_incoming_images</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_otf</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_otf</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_psf</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PSFApply.apply_psf_adjoint"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply.apply_psf_adjoint">[docs]</a>    <span class="k">def</span> <span class="nf">apply_psf_adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_incoming_images</span><span class="p">(</span><span class="n">imgs</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_otf</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_otf</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_psf</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PSFApply.deconvolve"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply.deconvolve">[docs]</a>    <span class="k">def</span> <span class="nf">deconvolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgs</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lambda_wl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sol</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_wl</span><span class="p">(</span><span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="n">lambda_wl</span><span class="p">,</span> <span class="n">wl_type</span><span class="o">=</span><span class="s1">&#39;db1&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sol</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">Sirt</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_psf_direct</span><span class="p">,</span> <span class="n">imgs</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">apply_psf_adjoint</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="n">lower_limit</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="n">upper_limit</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_otfs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">otf_direct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_single_otf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">psf_direct</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">otf_adjoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_single_otf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">psf_adjoint</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_single_otf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf</span><span class="p">):</span>
+        <span class="n">psf_size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_edge</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">total_extra_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_pad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">lower_psf_padding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">+</span> <span class="n">total_extra_pad</span> <span class="o">-</span> <span class="n">psf_size</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_edge</span>
+        <span class="n">upper_psf_padding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">+</span> <span class="n">total_extra_pad</span> <span class="o">-</span> <span class="n">psf_size</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_edge</span>
+        <span class="n">psf_padding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">lower_psf_padding</span><span class="p">,</span> <span class="n">upper_psf_padding</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="n">otf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">pad_width</span><span class="o">=</span><span class="n">psf_padding</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+
+        <span class="n">otf</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">ifftshift</span><span class="p">(</span><span class="n">otf</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">has_fftpack</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">:</span>
+                <span class="n">otf</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">otf</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">otf</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fftn</span><span class="p">(</span><span class="n">otf</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">otf</span>
+
+    <span class="k">def</span> <span class="nf">_check_incoming_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_d</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_check_incoming_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="n">img_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">img_size</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">):</span>
+            <span class="n">img_size</span> <span class="o">=</span> <span class="n">img_size</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">):]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">otf_direct</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">otf_adjoint</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="n">img_size</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">==</span> <span class="n">img_size</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: OTFs computed for the wrong image size ([</span><span class="si">%s</span><span class="s2">] instead of [</span><span class="si">%s</span><span class="s2">]). Recomputing them...&quot;</span> \
+                  <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span><span class="p">)),</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">img_size</span><span class="p">))))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">otf_direct</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">otf_adjoint</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="n">img_size</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_otf</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">otf_direct</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_paddings</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_otfs</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_apply_otf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgs</span><span class="p">,</span> <span class="n">is_direct</span><span class="p">):</span>
+        <span class="n">pre_pos</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">imgs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+        <span class="n">pre_zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">pre_pos</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+        <span class="n">pad_scheme</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">pre_zeros</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_edge</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_pad</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pad_scheme</span> <span class="o">=</span> <span class="n">pad_scheme</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+        <span class="n">imgs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">pad_scheme</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+
+        <span class="n">imgs</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">has_fftpack</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">:</span>
+                <span class="n">imgs</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">imgs</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">fftn</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_direct</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">:</span>
+            <span class="n">imgs</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">otf_direct</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">imgs</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">otf_adjoint</span>
+
+        <span class="k">if</span> <span class="n">has_fftpack</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">:</span>
+                <span class="n">imgs</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">imgs</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">ifftn</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+
+        <span class="n">imgs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span>
+
+        <span class="n">imgs</span> <span class="o">=</span> <span class="n">fft</span><span class="o">.</span><span class="n">ifftshift</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span><span class="p">)</span>
+
+        <span class="c1"># slicing images to remove padding used during convolution</span>
+        <span class="n">slicing_op</span> <span class="o">=</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">pre_pos</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pad_scheme</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">pre_pos</span><span class="p">):</span>
+            <span class="n">slicing_op</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">pad_scheme</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="n">pre_pos</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">pad_scheme</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="n">pre_pos</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">imgs</span><span class="p">[</span><span class="n">slicing_op</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_apply_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgs</span><span class="p">,</span> <span class="n">is_direct</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_direct</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_symmetric</span><span class="p">:</span>
+            <span class="n">psf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_direct</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">psf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_adjoint</span>
+
+        <span class="n">psf_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">num_dims_imgs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">imgs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="n">psf_dims</span>
+
+        <span class="n">pre_ones</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">)</span> <span class="o">*</span> <span class="n">num_dims_imgs</span>
+        <span class="n">psf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">pre_ones</span><span class="p">,</span> <span class="n">psf</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_fftconv</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">spsig</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">psf</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">spimg</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">psf</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PSFApply2D"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply2D">[docs]</a><span class="k">class</span> <span class="nc">PSFApply2D</span><span class="p">(</span><span class="n">PSFApply</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class PSFApply2D handles all PSF applications and</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_otf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_fftconv</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">psf_d</span><span class="p">,</span> <span class="n">PSF</span><span class="p">):</span>
+            <span class="n">psf</span> <span class="o">=</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">psf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">psf_d</span><span class="p">)</span>
+        <span class="n">PSFApply</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">,</span> <span class="n">use_otf</span><span class="o">=</span><span class="n">use_otf</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">use_fftconv</span><span class="o">=</span><span class="n">use_fftconv</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_incoming_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_d</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf_d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSFs should be in the form of 2D images  with dimensions [0] == [1], with odd edges&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSFs should be in the form of 2D images  with _dimensions [0] == [1]_, with odd edges&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSFs should be in the form of 2D images  with dimensions [0] == [1], with _odd edges_&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PSFApply4D"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply4D">[docs]</a><span class="k">class</span> <span class="nc">PSFApply4D</span><span class="p">(</span><span class="n">PSFApply</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class PSFApply4D handles all PSF applications and</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_otf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_fftconv</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">otf_axes</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">psf_d</span><span class="p">,</span> <span class="n">PSF</span><span class="p">):</span>
+            <span class="n">psf</span> <span class="o">=</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">psf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">psf_d</span><span class="p">)</span>
+        <span class="n">PSFApply</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">,</span> <span class="n">use_otf</span><span class="o">=</span><span class="n">use_otf</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">use_fftconv</span><span class="o">=</span><span class="n">use_fftconv</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_incoming_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_d</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf_d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSFs should be in the form of 4D images  with dimensions [0] == [1] and [2] == [3], with odd edges&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSFs should be in the form of 4D images  with _dimensions [0] == [1] and [2] == [3]_, with odd edges&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">psf_d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PSFs should be in the form of 4D images  with dimensions [0] == [1] and [2] == [3], with _odd edges_&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -29,8 +29,6 @@ def lytro_create_warps(file_path):
     """Utility function to create warp images using Lytro's powertools and the
     corresponding json file
 
-    Arguments
-    --------
     :param file_path: The path to the .lfp file (string)
     """
     lytro_uv = lambda i: np.round((i % 14.0 + 0.5) / 14.0 - 0.5, 3)
@@ -93,8 +91,6 @@ def _compute_shape_multiple(shape_in, power_of_2=3, binning=1):
 def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mode='luma', binning=1, data_type=np.float32):
     """Imports either the ESLF or warp image light-fields acquired with Lytro cameras.
 
-    Arguments
-    --------
     :param data_path: Either the path of the ESLF file or the directory of the warp images (string)
     :param fname_json: Path of the metadata public json file (string)
     :param source: Format of the lytro data. Options: {'warp'}, 'eslf' (string)
@@ -209,8 +205,6 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
 def from_stanford_archive(dataset_path, mode='grayscale', rgb2gs_mode='luma', binning=1, data_type=np.float32):
     """Imports light-fields from the Stanford archive.
 
-    Arguments
-    --------
     :param dataset_path: Directory of the sub-aperture images (containing a json metadata file) (string)
     :param mode: Switch between grayscale and RGB. Options: {'grayscale'}, 'rgb' (string)
     :param rgb2gs_mode: RGB -> grayscale conversion method. Options: {'luma'}, 'flat' (string)
@@ -401,8 +395,6 @@ def flexray_parse_source_det_positions(script_path):
 def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     """Imports light-fields from FleXray scanner data.
 
-    Arguments
-    --------
     :param dset_path: Directory of the sub-aperture images (containing a .ini file) (string)
     :param crop_fixed_det: Crops the images, in case of fixed detector acquisitions (Boolean, default: True)
     :param data_type: Datatype of the output light-field data (np.dtype)

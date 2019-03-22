@@ -1,0 +1,1357 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>plenoptomos package &mdash; plenoptomos  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="plenoptomos" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> plenoptomos
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">plenoptomos</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">plenoptomos</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">plenoptomos package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.colors">plenoptomos.colors module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.data_format">plenoptomos.data_format module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.depth">plenoptomos.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.import_lf">plenoptomos.import_lf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.lightfield">plenoptomos.lightfield module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.psf">plenoptomos.psf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.refocus">plenoptomos.refocus module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.solvers">plenoptomos.solvers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.tomo">plenoptomos.tomo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos.utils_io">plenoptomos.utils_io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-plenoptomos">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">plenoptomos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">plenoptomos</a> &raquo;</li>
+        
+      <li>plenoptomos package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/plenoptomos.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="plenoptomos-package">
+<h1>plenoptomos package<a class="headerlink" href="#plenoptomos-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-plenoptomos.colors">
+<span id="plenoptomos-colors-module"></span><h2>plenoptomos.colors module<a class="headerlink" href="#module-plenoptomos.colors" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Apr  4 16:01:41 2017</p>
+<p>&#64;author: vigano</p>
+<dl class="function">
+<dt id="plenoptomos.colors.convert_energy_to_wavelength">
+<code class="descclassname">plenoptomos.colors.</code><code class="descname">convert_energy_to_wavelength</code><span class="sig-paren">(</span><em>energy</em>, <em>unit_energy='eV'</em>, <em>unit_lambda='um'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#convert_energy_to_wavelength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.convert_energy_to_wavelength" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.colors.deal_with_channels">
+<code class="descclassname">plenoptomos.colors.</code><code class="descname">deal_with_channels</code><span class="sig-paren">(</span><em>img</em>, <em>mode='grayscale'</em>, <em>rgb2gs_mode='luma'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#deal_with_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.deal_with_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.colors.detect_color">
+<code class="descclassname">plenoptomos.colors.</code><code class="descname">detect_color</code><span class="sig-paren">(</span><em>camera</em>, <em>tol=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#detect_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.detect_color" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.colors.from_rgb_to_grayscale">
+<code class="descclassname">plenoptomos.colors.</code><code class="descname">from_rgb_to_grayscale</code><span class="sig-paren">(</span><em>img</em>, <em>mode='luma'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#from_rgb_to_grayscale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.from_rgb_to_grayscale" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.colors.get_rgb_wavelengths">
+<code class="descclassname">plenoptomos.colors.</code><code class="descname">get_rgb_wavelengths</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#get_rgb_wavelengths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.get_rgb_wavelengths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.colors.merge_rgb_images">
+<code class="descclassname">plenoptomos.colors.</code><code class="descname">merge_rgb_images</code><span class="sig-paren">(</span><em>imgs_r</em>, <em>imgs_g</em>, <em>imgs_b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#merge_rgb_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.merge_rgb_images" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.colors.merge_rgb_lightfields">
+<code class="descclassname">plenoptomos.colors.</code><code class="descname">merge_rgb_lightfields</code><span class="sig-paren">(</span><em>lf_r</em>, <em>lf_g</em>, <em>lf_b</em>, <em>mode='luma'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#merge_rgb_lightfields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.merge_rgb_lightfields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.data_format">
+<span id="plenoptomos-data-format-module"></span><h2>plenoptomos.data_format module<a class="headerlink" href="#module-plenoptomos.data_format" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Nov 21 23:50:47 2017</p>
+<p>&#64;author: Nicola Vigano, Charlotte Herzog, Pablo Martinez</p>
+<p>Here we define the versions of the Voxel data format.</p>
+<p>Convetions:
+- arrays are understood in the C convention</p>
+<p>Rationale behind version 0:
+- single image
+- initial standardization containing all the necessary metadata
+- first structure, vaguely inspired by DataExchange</p>
+<p>The updated structure can be found at: <a class="reference external" href="https://cicwi.github.io/plenoptomos">https://cicwi.github.io/plenoptomos</a></p>
+<dl class="function">
+<dt id="plenoptomos.data_format.assign_optional_attr">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">assign_optional_attr</code><span class="sig-paren">(</span><em>obj</em>, <em>conf</em>, <em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#assign_optional_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.assign_optional_attr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.calibrate_raw_image">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">calibrate_raw_image</code><span class="sig-paren">(</span><em>vox_file_in</em>, <em>vox_file_out=None</em>, <em>pitch=None</em>, <em>offset=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#calibrate_raw_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.calibrate_raw_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.create_vox_from_raw">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">create_vox_from_raw</code><span class="sig-paren">(</span><em>raw_det_file</em>, <em>conf_file</em>, <em>out_file=None</em>, <em>raw_det_white=None</em>, <em>raw_det_dark=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#create_vox_from_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.create_vox_from_raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.find_offsets_and_pitch">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">find_offsets_and_pitch</code><span class="sig-paren">(</span><em>w_im</em>, <em>peak_rm_front=(None</em>, <em>None)</em>, <em>peak_rm_back=(None</em>, <em>None)</em>, <em>peak_skip_front=(None</em>, <em>None)</em>, <em>peak_skip_back=(None</em>, <em>None)</em>, <em>verbose=False</em>, <em>interactive=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#find_offsets_and_pitch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.find_offsets_and_pitch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.has_fields_for_raw_to_microimage">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">has_fields_for_raw_to_microimage</code><span class="sig-paren">(</span><em>vox_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#has_fields_for_raw_to_microimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.has_fields_for_raw_to_microimage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.load">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">load</code><span class="sig-paren">(</span><em>vox_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a .vox light-field file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vox_file</strong> – the light-field file path (string)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the loaded light-field</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">light-field.Lightfield</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.load_raw_image">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">load_raw_image</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#load_raw_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.load_raw_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.load_raw_sensor_image">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">load_raw_sensor_image</code><span class="sig-paren">(</span><em>raw_file</em>, <em>file_ext</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#load_raw_sensor_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.load_raw_sensor_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.raw_to_microimage_exact">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">raw_to_microimage_exact</code><span class="sig-paren">(</span><em>data</em>, <em>offsets</em>, <em>pitch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#raw_to_microimage_exact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.raw_to_microimage_exact" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.raw_to_microimage_interp">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">raw_to_microimage_interp</code><span class="sig-paren">(</span><em>data</em>, <em>offsets</em>, <em>pitch_in</em>, <em>pitch_out</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#raw_to_microimage_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.raw_to_microimage_interp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.data_format.transform_2D_to_4D">
+<code class="descclassname">plenoptomos.data_format.</code><code class="descname">transform_2D_to_4D</code><span class="sig-paren">(</span><em>data</em>, <em>out_shape_tsvu</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#transform_2D_to_4D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.transform_2D_to_4D" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.depth">
+<span id="plenoptomos-depth-module"></span><h2>plenoptomos.depth module<a class="headerlink" href="#module-plenoptomos.depth" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Mar 29 12:34:36 2017</p>
+<p>&#64;author: vigano</p>
+<dl class="function">
+<dt id="plenoptomos.depth.compute_depth_cues">
+<code class="descclassname">plenoptomos.depth.</code><code class="descname">compute_depth_cues</code><span class="sig-paren">(</span><em>lf: plenoptomos.lightfield.Lightfield</em>, <em>zs</em>, <em>beam_geometry='parallel'</em>, <em>domain='object'</em>, <em>compute_defocus=True</em>, <em>compute_correspondence=True</em>, <em>compute_emergence=None</em>, <em>subtract_profile_blur=None</em>, <em>window_size=(9</em>, <em>9)</em>, <em>window_shape='gauss'</em>, <em>up_sampling=1</em>, <em>super_sampling=1</em>, <em>algorithm='bpj'</em>, <em>iterations=5</em>, <em>psf=None</em>, <em>corresp_method='bpj'</em>, <em>iterations_corresp=5</em>, <em>confidence_method='integral'</em>, <em>peak_range=3</em>, <em>plot_filter=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#compute_depth_cues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.compute_depth_cues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes depth cues, needed to create a depth map.</p>
+<p>These depth cues are created following the procedure from:
+[1] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,”
+in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lf</strong> – The light-field object (lightfield.Lightfield)</li>
+<li><strong>zs</strong> – Refocusing distances (numpy.array_like)</li>
+<li><strong>compute_defocus</strong> – Switch for defocus cues (Boolean, default: True)</li>
+<li><strong>compute_correspondence</strong> – Switch for corresponence cues (Boolean, default: True)</li>
+<li><strong>window_size</strong> – Filtering window size (tuple, default: (9, 9))</li>
+<li><strong>window_shape</strong> – Filtering window shape. Options: ‘tri’ | ‘circ’ | ‘gauss’ | ‘rect’ (string, default: ‘circ’)</li>
+<li><strong>up_sampling</strong> – Integer greater than 1 for up-sampling of the final images (int, default: 1)</li>
+<li><strong>border</strong> – Number of pixels to extend the border and reduce darkening of edges (int, default: 4)</li>
+<li><strong>border_padding</strong> – Border padding method (string, default: ‘edge’)</li>
+<li><strong>beam_geometry</strong> – Beam geometry. Possible options: ‘parallel’ | ‘cone’ (string, default: ‘parallel’)</li>
+<li><strong>domain</strong> – Refocusing domain. Possible options: ‘object’ | ‘image’ (string, default: ‘object’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Depth cues and their confidences.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.depth.compute_depth_map">
+<code class="descclassname">plenoptomos.depth.</code><code class="descname">compute_depth_map</code><span class="sig-paren">(</span><em>depth_cues</em>, <em>iterations=500</em>, <em>lambda_tv=2.0</em>, <em>lambda_smooth=0.05</em>, <em>lambda_wl=None</em>, <em>use_defocus=1.0</em>, <em>use_correspondence=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#compute_depth_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.compute_depth_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a depth map from the given depth cues.</p>
+<p>This depth map is created following the procedure from:
+[1] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,”
+in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>depth_cues</strong> – The depth cues (dict)</li>
+<li><strong>iterations</strong> – Number of iterations (int)</li>
+<li><strong>lambda_tv</strong> – Lambda value of the TV term (float, default: 2.0)</li>
+<li><strong>lambda_smooth</strong> – Lambda value of the smoothing term (float, default: 0.05)</li>
+<li><strong>use_defocus</strong> – Weight for defocus cues (float, default: 1.0)</li>
+<li><strong>use_correspondence</strong> – Weight for corresponence cues (float, default: 1.0)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The depth map</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.depth.divergence2">
+<code class="descclassname">plenoptomos.depth.</code><code class="descname">divergence2</code><span class="sig-paren">(</span><em>x0</em>, <em>x1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#divergence2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.divergence2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.depth.get_central_subaperture">
+<code class="descclassname">plenoptomos.depth.</code><code class="descname">get_central_subaperture</code><span class="sig-paren">(</span><em>lf_sa</em>, <em>origin_vu=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#get_central_subaperture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.get_central_subaperture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.depth.get_distances">
+<code class="descclassname">plenoptomos.depth.</code><code class="descname">get_distances</code><span class="sig-paren">(</span><em>dm</em>, <em>zs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#get_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.get_distances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.depth.gradient2">
+<code class="descclassname">plenoptomos.depth.</code><code class="descname">gradient2</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#gradient2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.gradient2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.depth.laplacian2">
+<code class="descclassname">plenoptomos.depth.</code><code class="descname">laplacian2</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#laplacian2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.laplacian2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.import_lf">
+<span id="plenoptomos-import-lf-module"></span><h2>plenoptomos.import_lf module<a class="headerlink" href="#module-plenoptomos.import_lf" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mon Feb 18 16:08:43 2019</p>
+<p>&#64;author: vigano</p>
+<dl class="function">
+<dt id="plenoptomos.import_lf.flexray_parse_source_det_positions">
+<code class="descclassname">plenoptomos.import_lf.</code><code class="descname">flexray_parse_source_det_positions</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#flexray_parse_source_det_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.flexray_parse_source_det_positions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.import_lf.from_flexray">
+<code class="descclassname">plenoptomos.import_lf.</code><code class="descname">from_flexray</code><span class="sig-paren">(</span><em>dset_path</em>, <em>crop_fixed_det=True</em>, <em>data_type=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#from_flexray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.from_flexray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports light-fields from FleXray scanner data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dset_path</strong> – Directory of the sub-aperture images (containing a .ini file) (string)</li>
+<li><strong>crop_fixed_det</strong> – Crops the images, in case of fixed detector acquisitions (Boolean, default: True)</li>
+<li><strong>data_type</strong> – Datatype of the output light-field data (np.dtype)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The imported light-field datastructure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.import_lf.from_lytro">
+<code class="descclassname">plenoptomos.import_lf.</code><code class="descname">from_lytro</code><span class="sig-paren">(</span><em>data_path</em>, <em>fname_json</em>, <em>source='warp'</em>, <em>mode='grayscale'</em>, <em>rgb2gs_mode='luma'</em>, <em>binning=1</em>, <em>data_type=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#from_lytro"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.from_lytro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports either the ESLF or warp image light-fields acquired with Lytro cameras.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_path</strong> – Either the path of the ESLF file or the directory of the warp images (string)</li>
+<li><strong>fname_json</strong> – Path of the metadata public json file (string)</li>
+<li><strong>source</strong> – Format of the lytro data. Options: {‘warp’}, ‘eslf’ (string)</li>
+<li><strong>mode</strong> – Switch between grayscale and RGB. Options: {‘grayscale’}, ‘rgb’ (string)</li>
+<li><strong>rgb2gs_mode</strong> – RGB -&gt; grayscale conversion method. Options: {‘luma’}, ‘flat’ (string)</li>
+<li><strong>binning</strong> – Binning of the input images, used to reduce their size and resolution (int, default: 1)</li>
+<li><strong>data_type</strong> – Datatype of the output light-field data (np.dtype)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The imported light-field datastructure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.import_lf.from_stanford_archive">
+<code class="descclassname">plenoptomos.import_lf.</code><code class="descname">from_stanford_archive</code><span class="sig-paren">(</span><em>dataset_path</em>, <em>mode='grayscale'</em>, <em>rgb2gs_mode='luma'</em>, <em>binning=1</em>, <em>data_type=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#from_stanford_archive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.from_stanford_archive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports light-fields from the Stanford archive.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dataset_path</strong> – Directory of the sub-aperture images (containing a json metadata file) (string)</li>
+<li><strong>mode</strong> – Switch between grayscale and RGB. Options: {‘grayscale’}, ‘rgb’ (string)</li>
+<li><strong>rgb2gs_mode</strong> – RGB -&gt; grayscale conversion method. Options: {‘luma’}, ‘flat’ (string)</li>
+<li><strong>binning</strong> – Binning of the input images, used to reduce their size and resolution (int, default: 1)</li>
+<li><strong>data_type</strong> – Datatype of the output light-field data (np.dtype)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The imported light-field datastructure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a>)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.import_lf.lytro_create_warps">
+<code class="descclassname">plenoptomos.import_lf.</code><code class="descname">lytro_create_warps</code><span class="sig-paren">(</span><em>file_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#lytro_create_warps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.lytro_create_warps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to create warp images using Lytro’s powertools and the
+corresponding json file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_path</strong> – The path to the .lfp file (string)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.import_lf.lytro_read_metadata">
+<code class="descclassname">plenoptomos.import_lf.</code><code class="descname">lytro_read_metadata</code><span class="sig-paren">(</span><em>fname_json</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#lytro_read_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.lytro_read_metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.lightfield">
+<span id="plenoptomos-lightfield-module"></span><h2>plenoptomos.lightfield module<a class="headerlink" href="#module-plenoptomos.lightfield" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Mar  1 16:08:17 2017</p>
+<p>&#64;author: vigano</p>
+<dl class="class">
+<dt id="plenoptomos.lightfield.Camera">
+<em class="property">class </em><code class="descclassname">plenoptomos.lightfield.</code><code class="descname">Camera</code><span class="sig-paren">(</span><em>model='unknown'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that holds the metadata needed to interpret light-field data</p>
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.clone">
+<code class="descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.clone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.crop">
+<code class="descname">crop</code><span class="sig-paren">(</span><em>crop_size_ts=None</em>, <em>crop_size_vu=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.crop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_alphas">
+<code class="descname">get_alphas</code><span class="sig-paren">(</span><em>alphas</em>, <em>beam_geometry_in='cone'</em>, <em>beam_geometry_out='parallel'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_alphas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the refocusing alphas between beam geometries</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>alphas</strong> – Sequence of alpha values as numpy array (numpy.array_like)</li>
+<li><strong>beam_geometry_in</strong> – Beam shape of the input alphas. Options: ‘parallel’ | ‘cone’ (string)</li>
+<li><strong>beam_geometry_out</strong> – Beam shape of the output alphas. Options: ‘parallel’ | ‘cone’ (string)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The converted alphas</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(numpy.array_like)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_distance_domain">
+<code class="descname">get_distance_domain</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_distance_domain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_distance_domain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_f1">
+<code class="descname">get_f1</code><span class="sig-paren">(</span><em>z0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_f1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_f1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_filter">
+<code class="descname">get_filter</code><span class="sig-paren">(</span><em>alpha</em>, <em>bandwidth=0.04</em>, <em>beam_geometry='parallel'</em>, <em>domain='object'</em>, <em>oversampling=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_filter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_focused_distance">
+<code class="descname">get_focused_distance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_focused_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_focused_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_focused_patch_size">
+<code class="descname">get_focused_patch_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_focused_patch_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_focused_patch_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_grid_points">
+<code class="descname">get_grid_points</code><span class="sig-paren">(</span><em>space='direct'</em>, <em>domain='object'</em>, <em>oversampling=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_grid_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_grid_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_number_of_subaperture_images">
+<code class="descname">get_number_of_subaperture_images</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_number_of_subaperture_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_number_of_subaperture_images" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_raw_detector_size">
+<code class="descname">get_raw_detector_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_raw_detector_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_raw_detector_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_sampling_renorm_factor">
+<code class="descname">get_sampling_renorm_factor</code><span class="sig-paren">(</span><em>alpha</em>, <em>space='direct'</em>, <em>beam_geometry='parallel'</em>, <em>domain='object'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_sampling_renorm_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_sampling_renorm_factor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_scales">
+<code class="descname">get_scales</code><span class="sig-paren">(</span><em>space='direct'</em>, <em>domain='object'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_scales"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_scales" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_sheared_coords">
+<code class="descname">get_sheared_coords</code><span class="sig-paren">(</span><em>alpha</em>, <em>space='direct'</em>, <em>beam_geometry='parallel'</em>, <em>domain='object'</em>, <em>transformation='shear'</em>, <em>oversampling=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_sheared_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_sheared_coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_sigmatau_grid_points">
+<code class="descname">get_sigmatau_grid_points</code><span class="sig-paren">(</span><em>space='direct'</em>, <em>domain='object'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_sigmatau_grid_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_sigmatau_grid_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_sigmatau_scales">
+<code class="descname">get_sigmatau_scales</code><span class="sig-paren">(</span><em>space='direct'</em>, <em>domain='object'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_sigmatau_scales"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_sigmatau_scales" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.get_theo_flatfield_raw">
+<code class="descname">get_theo_flatfield_raw</code><span class="sig-paren">(</span><em>data_type=&lt;class 'numpy.float32'&gt;</em>, <em>over_sampling=5</em>, <em>mode='micro-image'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.get_theo_flatfield_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.get_theo_flatfield_raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.is_focused">
+<code class="descname">is_focused</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.is_focused"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.is_focused" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.plot_phase_space_diagram">
+<code class="descname">plot_phase_space_diagram</code><span class="sig-paren">(</span><em>coordinates='su'</em>, <em>show_central_images=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.plot_phase_space_diagram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.plot_phase_space_diagram" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.print">
+<code class="descname">print</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Camera.regrid">
+<code class="descname">regrid</code><span class="sig-paren">(</span><em>regrid_size</em>, <em>regrid_mode='interleave'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera.regrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera.regrid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.lightfield.Lightfield">
+<em class="property">class </em><code class="descclassname">plenoptomos.lightfield.</code><code class="descname">Lightfield</code><span class="sig-paren">(</span><em>camera_type: plenoptomos.lightfield.Camera</em>, <em>data=None</em>, <em>flat=None</em>, <em>mode='micro-image'</em>, <em>dtype=&lt;class 'numpy.float32'&gt;</em>, <em>shifts_vu=(None</em>, <em>None)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container class for the light-fields</p>
+<dl class="attribute">
+<dt id="plenoptomos.lightfield.Lightfield.available_modes">
+<code class="descname">available_modes</code><em class="property"> = ('micro-image', 'sub-aperture', 'epipolar_s', 'epipolar_t')</em><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.available_modes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.clone">
+<code class="descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.clone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.crop">
+<code class="descname">crop</code><span class="sig-paren">(</span><em>crop_size_ts=None</em>, <em>crop_size_vu=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crop a light-field</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>crop_size_ts</strong> – Either new size in the (t, s) coordinates or a ROI (&lt;2x1&gt; or &lt;4x1&gt; numpy.array_like)</li>
+<li><strong>crop_size_vu</strong> – Either new size in the (v, u) coordinates or a ROI (&lt;2x1&gt; or &lt;4x1&gt; numpy.array_like)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.get_photograph">
+<code class="descname">get_photograph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.get_photograph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.get_photograph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the refocused photograph at z0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The refocused photograph at z0</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.get_raw_detector_picture">
+<code class="descname">get_raw_detector_picture</code><span class="sig-paren">(</span><em>image='data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.get_raw_detector_picture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.get_raw_detector_picture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the detector data, or the flat image in the raw detector format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – Selects whether we want the detector data, or the flat image (string)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The requested image</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.get_sub_aperture_image">
+<code class="descname">get_sub_aperture_image</code><span class="sig-paren">(</span><em>v</em>, <em>u</em>, <em>image='data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.get_sub_aperture_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.get_sub_aperture_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a chosen sub-aperture image from either detector data, or
+the flat field</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>u</strong> – U coordinate of the image (int)</li>
+<li><strong>v</strong> – V coordinate of the image (int)</li>
+<li><strong>image</strong> – Selects whether we want the detector data, or the flat image (string)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The requested image</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.get_sub_aperture_images">
+<code class="descname">get_sub_aperture_images</code><span class="sig-paren">(</span><em>image='data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.get_sub_aperture_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.get_sub_aperture_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the sub-aperture images from either detector data, or
+the flat field</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – Selects whether we want the detector data, or the flat image (string)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The requested image</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.get_sub_lightfield">
+<code class="descname">get_sub_lightfield</code><span class="sig-paren">(</span><em>center_u=None</em>, <em>center_v=None</em>, <em>sub_aperture_size=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.get_sub_lightfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.get_sub_lightfield" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.get_sub_lightfields">
+<code class="descname">get_sub_lightfields</code><span class="sig-paren">(</span><em>sub_aperture_size=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.get_sub_lightfields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.get_sub_lightfields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.pad">
+<code class="descname">pad</code><span class="sig-paren">(</span><em>paddings</em>, <em>method='constant'</em>, <em>pad_value=(0</em>, <em>)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad a light-field</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>paddings</strong> – Padding to add (&lt;4x1&gt; numpy.array_like)</li>
+<li><strong>method</strong> – Padding method. Possible values: ‘constant’ | ‘edge’ | ‘linear_ramp’
+| ‘maximum’ | ‘mean’ | ‘median’ | ‘minimum’ | ‘reflect’ | ‘symmetric’ | ‘wrap’ (string)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.regrid">
+<code class="descname">regrid</code><span class="sig-paren">(</span><em>regrid_size</em>, <em>regrid_mode='interleave'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.regrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.regrid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.set_mode">
+<code class="descname">set_mode</code><span class="sig-paren">(</span><em>new_mode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.set_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.set_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the required view for the given light-field object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_mode</strong> – One of the following: {‘micro-image’, ‘sub-aperture’, ‘epipolar_s’, ‘epipolar_t’} (string)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.set_mode_epipolar_s">
+<code class="descname">set_mode_epipolar_s</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.set_mode_epipolar_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.set_mode_epipolar_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the ‘epipolar_s’ mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.set_mode_epipolar_t">
+<code class="descname">set_mode_epipolar_t</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.set_mode_epipolar_t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.set_mode_epipolar_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the ‘epipolar_t’ mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.set_mode_microimage">
+<code class="descname">set_mode_microimage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.set_mode_microimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.set_mode_microimage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the ‘micro-image’ mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.set_mode_subaperture">
+<code class="descname">set_mode_subaperture</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.set_mode_subaperture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.set_mode_subaperture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the ‘sub-aperture’ image mode</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.lightfield.Lightfield.set_raw_detector_picture">
+<code class="descname">set_raw_detector_picture</code><span class="sig-paren">(</span><em>data_raw</em>, <em>image='data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.set_raw_detector_picture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.set_raw_detector_picture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the detector data, or the flat image from an image in raw
+detector format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data_raw</strong> – The new detector image (numpy.array_like)</li>
+<li><strong>image</strong> – Selects whether we want the detector data, or the flat image (string)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.lightfield.get_camera">
+<code class="descclassname">plenoptomos.lightfield.</code><code class="descname">get_camera</code><span class="sig-paren">(</span><em>model_name</em>, <em>down_sampling_st=1</em>, <em>down_sampling_uv=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#get_camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.get_camera" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.psf">
+<span id="plenoptomos-psf-module"></span><h2>plenoptomos.psf module<a class="headerlink" href="#module-plenoptomos.psf" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Oct 10 18:31:14 2017</p>
+<p>&#64;author: vigano</p>
+<dl class="class">
+<dt id="plenoptomos.psf.PSF">
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSF</code><span class="sig-paren">(</span><em>coordinates</em>, <em>data=None</em>, <em>conf=None</em>, <em>data_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="staticmethod">
+<dt id="plenoptomos.psf.PSF.compute_defocus_psf">
+<em class="property">static </em><code class="descname">compute_defocus_psf</code><span class="sig-paren">(</span><em>conf</em>, <em>norm=2</em>, <em>keep_oversampling=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF.compute_defocus_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF.compute_defocus_psf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="plenoptomos.psf.PSF.compute_fraunhofer_psf">
+<em class="property">static </em><code class="descname">compute_fraunhofer_psf</code><span class="sig-paren">(</span><em>conf</em>, <em>d</em>, <em>z</em>, <em>pixel_size</em>, <em>ls</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF.compute_fraunhofer_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF.compute_fraunhofer_psf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="plenoptomos.psf.PSF.create_theo_psf">
+<em class="property">static </em><code class="descname">create_theo_psf</code><span class="sig-paren">(</span><em>camera</em>, <em>coordinates</em>, <em>wavelength_steps=10</em>, <em>wavelength_intensity=1</em>, <em>airy_rings=2</em>, <em>refocus_distance=None</em>, <em>up_sampling=1</em>, <em>beam_coherence='incoherent'</em>, <em>over_sampling=25</em>, <em>data_type=&lt;class 'numpy.float32'&gt;</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF.create_theo_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF.create_theo_psf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.psf.PSFApply">
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class PSFApply handles all PSF/OTF applications</p>
+<dl class="method">
+<dt id="plenoptomos.psf.PSFApply.apply_psf_adjoint">
+<code class="descname">apply_psf_adjoint</code><span class="sig-paren">(</span><em>imgs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply.apply_psf_adjoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply.apply_psf_adjoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.psf.PSFApply.apply_psf_direct">
+<code class="descname">apply_psf_direct</code><span class="sig-paren">(</span><em>imgs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply.apply_psf_direct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply.apply_psf_direct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.psf.PSFApply.deconvolve">
+<code class="descname">deconvolve</code><span class="sig-paren">(</span><em>imgs</em>, <em>iterations=100</em>, <em>data_term='l2'</em>, <em>lambda_wl=None</em>, <em>lower_limit=None</em>, <em>upper_limit=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply.deconvolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply.deconvolve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.psf.PSFApply.set_paddings">
+<code class="descname">set_paddings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply.set_paddings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply.set_paddings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.psf.PSFApply.set_psf_direct">
+<code class="descname">set_psf_direct</code><span class="sig-paren">(</span><em>psf_d</em>, <em>img_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply.set_psf_direct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply.set_psf_direct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.psf.PSFApply2D">
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply2D</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.psf.PSFApply" title="plenoptomos.psf.PSFApply"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.psf.PSFApply</span></code></a></p>
+<p>Class PSFApply2D handles all PSF applications and</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.psf.PSFApply4D">
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply4D</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply4D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply4D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.psf.PSFApply" title="plenoptomos.psf.PSFApply"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.psf.PSFApply</span></code></a></p>
+<p>Class PSFApply4D handles all PSF applications and</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.refocus">
+<span id="plenoptomos-refocus-module"></span><h2>plenoptomos.refocus module<a class="headerlink" href="#module-plenoptomos.refocus" title="Permalink to this headline">¶</a></h2>
+<p>Created on Thu Mar  2 18:48:28 2017</p>
+<p>&#64;author: vigano</p>
+<dl class="function">
+<dt id="plenoptomos.refocus.compute_refocus_fourier">
+<code class="descclassname">plenoptomos.refocus.</code><code class="descname">compute_refocus_fourier</code><span class="sig-paren">(</span><em>lf: plenoptomos.lightfield.Lightfield</em>, <em>zs</em>, <em>method='slice'</em>, <em>beam_geometry='parallel'</em>, <em>domain='object'</em>, <em>up_sampling=1</em>, <em>border=4</em>, <em>border_padding='edge'</em>, <em>padding_factor=1.1</em>, <em>oversampling=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/refocus.html#compute_refocus_fourier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.refocus.compute_refocus_fourier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the refocusing of the input light field image using Fourier slice theorem method.</p>
+<p>This method was presented in:
+[1] R. Ng, “Fourier slice photography,” ACM Trans. Graph., vol. 24, no. 3, p. 735, 2005.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lf</strong> – The light-field object (lightfield.Lightfield)</li>
+<li><strong>zs</strong> – Refocusing distances (numpy.array_like)</li>
+<li><strong>up_sampling</strong> – Integer greater than 1 for up-sampling of the final images (int, default: 1)</li>
+<li><strong>border</strong> – Number of pixels to extend the border and reduce darkening of edges (int, default: 4)</li>
+<li><strong>border_padding</strong> – Border padding method (string, default: ‘edge’)</li>
+<li><strong>beam_geometry</strong> – Beam geometry. Possible options: ‘parallel’ | ‘cone’ (string, default: ‘parallel’)</li>
+<li><strong>domain</strong> – Refocusing domain. Possible options: ‘object’ | ‘image’ (string, default: ‘object’)</li>
+<li><strong>method</strong> – Fourier space operation method. Options: ‘slice’ | ‘full’, ‘hyper_cone’ (string, default: ‘slice’)</li>
+<li><strong>padding</strong> – Real-space padding factor (float, default: 1.1)</li>
+<li><strong>oversampling</strong> – Fourier space oversampling factor (float, default: 2)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Stack of 2D refocused images.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.refocus.compute_refocus_integration">
+<code class="descclassname">plenoptomos.refocus.</code><code class="descname">compute_refocus_integration</code><span class="sig-paren">(</span><em>lf: plenoptomos.lightfield.Lightfield</em>, <em>zs</em>, <em>beam_geometry='parallel'</em>, <em>domain='object'</em>, <em>up_sampling=1</em>, <em>border=4</em>, <em>border_padding='edge'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/refocus.html#compute_refocus_integration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.refocus.compute_refocus_integration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the refocusing of the input light field image using the integration method.</p>
+<p>This method was presented in:
+[1] R. Ng, et al., “Light Field Photography with a Hand-held Plenoptic Camera,”
+Stanford Univ. Tech. Rep. CSTR 2005-02, 2005.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lf</strong> – The light-field object (lightfield.Lightfield)</li>
+<li><strong>zs</strong> – Refocusing distances (numpy.array_like)</li>
+<li><strong>up_sampling</strong> – Integer greater than 1 for up-sampling of the final images (int, default: 1)</li>
+<li><strong>border</strong> – Number of pixels to extend the border and reduce darkening of edges (int, default: 4)</li>
+<li><strong>border_padding</strong> – Border padding method (string, default: ‘edge’)</li>
+<li><strong>beam_geometry</strong> – Beam geometry. Possible options: ‘parallel’ | ‘cone’ (string, default: ‘parallel’)</li>
+<li><strong>domain</strong> – Refocusing domain. Possible options: ‘object’ | ‘image’ (string, default: ‘object’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Stack of 2D refocused images.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.solvers">
+<span id="plenoptomos-solvers-module"></span><h2>plenoptomos.solvers module<a class="headerlink" href="#module-plenoptomos.solvers" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Mar  8 11:27:12 2017</p>
+<p>&#64;author: vigano</p>
+<dl class="class">
+<dt id="plenoptomos.solvers.BPJ">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">BPJ</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>weight_det=None</em>, <em>dump_file=None</em>, <em>tol=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#BPJ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.BPJ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.solvers.Solver" title="plenoptomos.solvers.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Solver</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.solvers.CP_smooth">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">CP_smooth</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>weight_det=None</em>, <em>dump_file=None</em>, <em>tol=1e-05</em>, <em>data_term='l2'</em>, <em>lambda_smooth=0.01</em>, <em>axes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#CP_smooth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.CP_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.solvers.Solver" title="plenoptomos.solvers.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Solver</span></code></a>, <a class="reference internal" href="#plenoptomos.solvers.Operations" title="plenoptomos.solvers.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Operations</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.solvers.CP_tv">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">CP_tv</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>weight_det=None</em>, <em>dump_file=None</em>, <em>tol=1e-05</em>, <em>data_term='l2'</em>, <em>lambda_tv=0.01</em>, <em>axes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#CP_tv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.CP_tv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.solvers.Solver" title="plenoptomos.solvers.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Solver</span></code></a>, <a class="reference internal" href="#plenoptomos.solvers.Operations" title="plenoptomos.solvers.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Operations</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.solvers.CP_uc">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">CP_uc</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>weight_det=None</em>, <em>dump_file=None</em>, <em>tol=1e-05</em>, <em>data_term='l2'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#CP_uc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.CP_uc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.solvers.Solver" title="plenoptomos.solvers.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Solver</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.solvers.CP_wl">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">CP_wl</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>weight_det=None</em>, <em>dump_file=None</em>, <em>tol=1e-05</em>, <em>data_term='l2'</em>, <em>lambda_wl=0.01</em>, <em>axes=None</em>, <em>wl_type='db4'</em>, <em>use_decimated=False</em>, <em>decomp_lvl=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#CP_wl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.CP_wl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.solvers.Solver" title="plenoptomos.solvers.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Solver</span></code></a></p>
+<dl class="method">
+<dt id="plenoptomos.solvers.CP_wl.initialize_wl_operators">
+<code class="descname">initialize_wl_operators</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#CP_wl.initialize_wl_operators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.CP_wl.initialize_wl_operators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.solvers.Operations">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">Operations</code><span class="sig-paren">(</span><em>axes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Operations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Operations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="plenoptomos.solvers.Operations.divergence">
+<code class="descname">divergence</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Operations.divergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Operations.divergence" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.solvers.Operations.gradient">
+<code class="descname">gradient</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Operations.gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Operations.gradient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.solvers.Operations.laplacian">
+<code class="descname">laplacian</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Operations.laplacian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Operations.laplacian" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.solvers.Segment">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">Segment</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>lambda_tv=0.01</em>, <em>lambda_smooth=0.01</em>, <em>axes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Segment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.solvers.Solver" title="plenoptomos.solvers.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Solver</span></code></a>, <a class="reference internal" href="#plenoptomos.solvers.Operations" title="plenoptomos.solvers.Operations"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Operations</span></code></a></p>
+<dl class="method">
+<dt id="plenoptomos.solvers.Segment.levelset">
+<code class="descname">levelset</code><span class="sig-paren">(</span><em>im</em>, <em>mus</em>, <em>iterations=50</em>, <em>w_norm_p=2</em>, <em>data_term='l1'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Segment.levelset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Segment.levelset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.solvers.Segment.simple">
+<code class="descname">simple</code><span class="sig-paren">(</span><em>vol</em>, <em>rhos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Segment.simple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Segment.simple" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.solvers.Sirt">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">Sirt</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>weight_det=None</em>, <em>dump_file=None</em>, <em>tol=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Sirt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Sirt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#plenoptomos.solvers.Solver" title="plenoptomos.solvers.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.solvers.Solver</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.solvers.Solver">
+<em class="property">class </em><code class="descclassname">plenoptomos.solvers.</code><code class="descname">Solver</code><span class="sig-paren">(</span><em>verbose=False</em>, <em>dump_file=None</em>, <em>tol=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="plenoptomos.solvers.Solver.initialize_data_operators">
+<code class="descname">initialize_data_operators</code><span class="sig-paren">(</span><em>A</em>, <em>At</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Solver.initialize_data_operators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Solver.initialize_data_operators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.solvers.Solver.lower">
+<code class="descname">lower</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Solver.lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Solver.lower" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.solvers.Solver.mult_matrix">
+<code class="descname">mult_matrix</code><span class="sig-paren">(</span><em>M</em>, <em>x</em>, <em>data_shape=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Solver.mult_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Solver.mult_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiplies a matrix M by and array x.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.solvers.Solver.upper">
+<code class="descname">upper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/solvers.html#Solver.upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.solvers.Solver.upper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.tomo">
+<span id="plenoptomos-tomo-module"></span><h2>plenoptomos.tomo module<a class="headerlink" href="#module-plenoptomos.tomo" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Mar  8 11:30:00 2017</p>
+<p>&#64;author: vigano</p>
+<dl class="class">
+<dt id="plenoptomos.tomo.Projector">
+<em class="property">class </em><code class="descclassname">plenoptomos.tomo.</code><code class="descname">Projector</code><span class="sig-paren">(</span><em>camera: plenoptomos.lightfield.Camera</em>, <em>zs</em>, <em>flat=None</em>, <em>shifts_vu=(None</em>, <em>None)</em>, <em>beam_geometry='cone'</em>, <em>domain='object'</em>, <em>psf_d=None</em>, <em>use_otf=True</em>, <em>mode='independent'</em>, <em>up_sampling=1</em>, <em>vu_origin=None</em>, <em>super_sampling=1</em>, <em>gpu_index=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#Projector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.Projector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Projector class: it allows to forward-project and back-project light-fields.</p>
+<p>This class should not be used directly, but rather through the functions
+provided in the containing module.</p>
+<dl class="method">
+<dt id="plenoptomos.tomo.Projector.BP">
+<code class="descname">BP</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#Projector.BP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.Projector.BP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Back-projection function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – Light-field to back-project (numpy.array_like)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The back-projected volume</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.tomo.Projector.FP">
+<code class="descname">FP</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#Projector.FP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.Projector.FP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward-projection function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – The volume to project (numpy.array_like)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The projected light-field</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.tomo.Projector.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#Projector.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.Projector.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.tomo.compute_forwardprojection">
+<code class="descclassname">plenoptomos.tomo.</code><code class="descname">compute_forwardprojection</code><span class="sig-paren">(</span><em>camera: plenoptomos.lightfield.Camera</em>, <em>zs</em>, <em>vols</em>, <em>masks</em>, <em>up_sampling=1</em>, <em>border_padding='edge'</em>, <em>super_sampling=1</em>, <em>border=5</em>, <em>gpu_index=-1</em>, <em>reflective_geom=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#compute_forwardprojection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.compute_forwardprojection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.tomo.compute_refocus_backprojection">
+<code class="descclassname">plenoptomos.tomo.</code><code class="descname">compute_refocus_backprojection</code><span class="sig-paren">(</span><em>lf: plenoptomos.lightfield.Lightfield</em>, <em>zs</em>, <em>up_sampling=1</em>, <em>border_padding='edge'</em>, <em>super_sampling=1</em>, <em>border=4</em>, <em>beam_geometry='cone'</em>, <em>domain='object'</em>, <em>gpu_index=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#compute_refocus_backprojection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.compute_refocus_backprojection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute refocusing of the input lightfield image at the input distances by
+applying the backprojection method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lf</strong> – The light-field object (lightfield.Lightfield)</li>
+<li><strong>zs</strong> – Refocusing distances (numpy.array_like)</li>
+<li><strong>up_sampling</strong> – Integer greater than 1 for up-sampling of the final images (int, default: 1)</li>
+<li><strong>super_sampling</strong> – Super-sampling of the back-projection operator
+(it will not increase refocused image size/resolution) (int, default: 1)</li>
+<li><strong>border</strong> – Number of pixels to extend the border and reduce darkening of edges (int, default: 4)</li>
+<li><strong>border_padding</strong> – Border padding method (string, default: ‘edge’)</li>
+<li><strong>beam_geometry</strong> – Beam geometry. Possible options: ‘parallel’ | ‘cone’ (string, default: ‘parallel’)</li>
+<li><strong>domain</strong> – Refocusing domain. Possible options: ‘object’ | ‘image’ (string, default: ‘object’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Stack of 2D refocused images.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.tomo.compute_refocus_iterative">
+<code class="descclassname">plenoptomos.tomo.</code><code class="descname">compute_refocus_iterative</code><span class="sig-paren">(</span><em>lf: plenoptomos.lightfield.Lightfield</em>, <em>zs</em>, <em>iterations=10</em>, <em>algorithm='sirt'</em>, <em>up_sampling=1</em>, <em>border_padding='edge'</em>, <em>super_sampling=1</em>, <em>gpu_index=-1</em>, <em>beam_geometry='cone'</em>, <em>domain='object'</em>, <em>psf=None</em>, <em>vu_origin=None</em>, <em>use_otf=False</em>, <em>border=4</em>, <em>verbose=False</em>, <em>chunks_zs=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#compute_refocus_iterative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.compute_refocus_iterative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute refocusing of the input lightfield image at the input distances by
+applying iterative methods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lf</strong> – The light-field object (lightfield.Lightfield)</li>
+<li><strong>zs</strong> – Refocusing distances (numpy.array_like)</li>
+<li><strong>algorithm</strong> – Algorithm to use (string, default: ‘sirt’)</li>
+<li><strong>iterations</strong> – Number of iterations (int, default: 10)</li>
+<li><strong>psf</strong> – Detector PSF (psf.PSFApply, default: None)</li>
+<li><strong>up_sampling</strong> – Integer greater than 1 for up-sampling of the final images (int, default: 1)</li>
+<li><strong>super_sampling</strong> – Super-sampling of the back-projection operator
+(it will not increase refocused image size/resolution) (int, default: 1)</li>
+<li><strong>border</strong> – Number of pixels to extend the border and reduce darkening of edges (int, default: 4)</li>
+<li><strong>border_padding</strong> – Border padding method (string, default: ‘edge’)</li>
+<li><strong>beam_geometry</strong> – Beam geometry. Possible options: ‘parallel’ | ‘cone’ (string, default: ‘parallel’)</li>
+<li><strong>domain</strong> – Refocusing domain. Possible options: ‘object’ | ‘image’ (string, default: ‘object’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Stack of 2D refocused images.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.tomo.compute_refocus_iterative_multiple">
+<code class="descclassname">plenoptomos.tomo.</code><code class="descname">compute_refocus_iterative_multiple</code><span class="sig-paren">(</span><em>lf: plenoptomos.lightfield.Lightfield</em>, <em>zs</em>, <em>iterations=10</em>, <em>algorithm='sirt'</em>, <em>up_sampling=1</em>, <em>border_padding='edge'</em>, <em>super_sampling=1</em>, <em>gpu_index=-1</em>, <em>beam_geometry='cone'</em>, <em>domain='object'</em>, <em>psf=None</em>, <em>vu_origin=None</em>, <em>use_otf=True</em>, <em>border=4</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#compute_refocus_iterative_multiple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.compute_refocus_iterative_multiple" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute refocusing of the input lightfield image simultaneously at the input
+distances by applying iterative methods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lf</strong> – The light-field object (lightfield.Lightfield)</li>
+<li><strong>zs</strong> – Refocusing distances (numpy.array_like)</li>
+<li><strong>algorithm</strong> – Algorithm to use (string, default: ‘sirt’)</li>
+<li><strong>iterations</strong> – Number of iterations (int, default: 10)</li>
+<li><strong>psf</strong> – Detector PSF (psf.PSFApply, default: None)</li>
+<li><strong>up_sampling</strong> – Integer greater than 1 for up-sampling of the final images (int, default: 1)</li>
+<li><strong>super_sampling</strong> – Super-sampling of the back-projection operator
+(it will not increase refocused image size/resolution) (int, default: 1)</li>
+<li><strong>border</strong> – Number of pixels to extend the border and reduce darkening of edges (int, default: 4)</li>
+<li><strong>border_padding</strong> – Border padding method (string, default: ‘edge’)</li>
+<li><strong>beam_geometry</strong> – Beam geometry. Possible options: ‘parallel’ | ‘cone’ (string, default: ‘parallel’)</li>
+<li><strong>domain</strong> – Refocusing domain. Possible options: ‘object’ | ‘image’ (string, default: ‘object’)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Stack of 2D refocused images.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.utils_io">
+<span id="plenoptomos-utils-io-module"></span><h2>plenoptomos.utils_io module<a class="headerlink" href="#module-plenoptomos.utils_io" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Mar  1 16:09:53 2017</p>
+<p>&#64;author: vigano</p>
+<dl class="function">
+<dt id="plenoptomos.utils_io.load_field_fromh5">
+<code class="descclassname">plenoptomos.utils_io.</code><code class="descname">load_field_fromh5</code><span class="sig-paren">(</span><em>filename</em>, <em>dset</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_io.html#load_field_fromh5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_io.load_field_fromh5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.utils_io.load_lightfield">
+<code class="descclassname">plenoptomos.utils_io.</code><code class="descname">load_lightfield</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_io.html#load_lightfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_io.load_lightfield" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.utils_io.save_field_toh5">
+<code class="descclassname">plenoptomos.utils_io.</code><code class="descname">save_field_toh5</code><span class="sig-paren">(</span><em>filename</em>, <em>dset_name</em>, <em>data</em>, <em>verbose=False</em>, <em>append=False</em>, <em>compression_lvl=7</em>, <em>to_uint8=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_io.html#save_field_toh5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_io.save_field_toh5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.utils_io.save_lightfield">
+<code class="descclassname">plenoptomos.utils_io.</code><code class="descname">save_lightfield</code><span class="sig-paren">(</span><em>filename</em>, <em>lf: plenoptomos.lightfield.Lightfield</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_io.html#save_lightfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_io.save_lightfield" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.utils_io.save_refocused_image">
+<code class="descclassname">plenoptomos.utils_io.</code><code class="descname">save_refocused_image</code><span class="sig-paren">(</span><em>img2d</em>, <em>filename</em>, <em>ind=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_io.html#save_refocused_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_io.save_refocused_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.utils_io.save_refocused_stack">
+<code class="descclassname">plenoptomos.utils_io.</code><code class="descname">save_refocused_stack</code><span class="sig-paren">(</span><em>refocus_stack</em>, <em>filename</em>, <em>verbose=False</em>, <em>zs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_io.html#save_refocused_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_io.save_refocused_stack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-plenoptomos" title="Permalink to this headline">¶</a></h2>
+<p>Created on Thu Mar  2 17:44:15 2017</p>
+<p>&#64;author: vigano</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="plenoptomos" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

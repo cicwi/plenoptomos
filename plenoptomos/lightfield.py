@@ -84,8 +84,6 @@ class Camera(object):
     def get_alphas(self, alphas, beam_geometry_in='cone', beam_geometry_out='parallel'):
         """Converts the refocusing alphas between beam geometries
 
-        Parameters
-        ----------
         :param alphas: Sequence of alpha values as numpy array (numpy.array_like)
         :param beam_geometry_in: Beam shape of the input alphas. Options: 'parallel' | 'cone' (string)
         :param beam_geometry_out: Beam shape of the output alphas. Options: 'parallel' | 'cone' (string)
@@ -445,8 +443,6 @@ class Lightfield(object):
                  mode='micro-image', dtype=np.float32, shifts_vu=(None, None)):
         """Initializes the Lightfield class
 
-        Arguments
-        --------
         :param camera_type: The Camera class that stores the metadata about the light-field (Camera)
         :param data: The actual light-field data in 4D format (numpy.array_like, default: None)
         :param flat: The flat field (numpy.array_like, default: None)
@@ -483,8 +479,6 @@ class Lightfield(object):
     def set_mode(self, new_mode):
         """Set the required view for the given light-field object.
 
-        Arguments
-        --------
         :param new_mode: One of the following: {'micro-image', 'sub-aperture', 'epipolar_s', 'epipolar_t'} (string)
         """
         if new_mode.lower() == 'micro-image':
@@ -569,8 +563,6 @@ class Lightfield(object):
     def get_raw_detector_picture(self, image='data'):
         """Returns the detector data, or the flat image in the raw detector format
 
-        Arguments
-        --------
         :param image: Selects whether we want the detector data, or the flat image (string)
         :returns: The requested image
         :rtype: numpy.array_like
@@ -594,8 +586,6 @@ class Lightfield(object):
         """Sets the detector data, or the flat image from an image in raw
         detector format
 
-        Arguments
-        --------
         :param data_raw: The new detector image (numpy.array_like)
         :param image: Selects whether we want the detector data, or the flat image (string)
         """
@@ -621,8 +611,6 @@ class Lightfield(object):
         """Returns a chosen sub-aperture image from either detector data, or
         the flat field
 
-        Arguments
-        --------
         :param u: U coordinate of the image (int)
         :param v: V coordinate of the image (int)
         :param image: Selects whether we want the detector data, or the flat image (string)
@@ -652,8 +640,6 @@ class Lightfield(object):
         """Returns all the sub-aperture images from either detector data, or
         the flat field
 
-        Arguments
-        --------
         :param image: Selects whether we want the detector data, or the flat image (string)
         :returns: The requested image
         :rtype: numpy.array_like
@@ -694,8 +680,6 @@ class Lightfield(object):
     def pad(self, paddings, method='constant', pad_value=(0,)):
         """Pad a light-field
 
-        Arguments
-        --------
         :param paddings: Padding to add (<4x1> numpy.array_like)
         :param method: Padding method. Possible values: 'constant' | ‘edge’ | ‘linear_ramp’
             | ‘maximum’ | ‘mean’ | ‘median’ | ‘minimum’ | ‘reflect’ | ‘symmetric’ | ‘wrap’ (string)
@@ -798,8 +782,6 @@ class Lightfield(object):
     def crop(self, crop_size_ts=None, crop_size_vu=None):
         """Crop a light-field
 
-        Arguments
-        --------
         :param crop_size_ts: Either new size in the (t, s) coordinates or a ROI (<2x1> or <4x1> numpy.array_like)
         :param crop_size_vu: Either new size in the (v, u) coordinates or a ROI (<2x1> or <4x1> numpy.array_like)
         """

@@ -50,8 +50,6 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
     [1] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,”
     in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.
 
-    Arguments
-    --------
     :param lf: The light-field object (lightfield.Lightfield)
     :param zs: Refocusing distances (numpy.array_like)
     :param compute_defocus: Switch for defocus cues (Boolean, default: True)
@@ -374,8 +372,6 @@ def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_smooth=0
     [1] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,”
     in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.
 
-    Arguments
-    --------
     :param depth_cues: The depth cues (dict)
     :param iterations: Number of iterations (int)
     :param lambda_tv: Lambda value of the TV term (float, default: 2.0)

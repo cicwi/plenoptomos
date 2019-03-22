@@ -23,8 +23,6 @@ def compute_refocus_integration(lf : lightfield.Lightfield, zs, \
     [1] R. Ng, et al., “Light Field Photography with a Hand-held Plenoptic Camera,”
     Stanford Univ. Tech. Rep. CSTR 2005-02, 2005.
 
-    Arguments
-    --------
     :param lf: The light-field object (lightfield.Lightfield)
     :param zs: Refocusing distances (numpy.array_like)
     :param up_sampling: Integer greater than 1 for up-sampling of the final images (int, default: 1)
@@ -105,8 +103,6 @@ def compute_refocus_fourier(lf : lightfield.Lightfield, zs, method='slice', \
     This method was presented in:
     [1] R. Ng, “Fourier slice photography,” ACM Trans. Graph., vol. 24, no. 3, p. 735, 2005.
 
-    Arguments
-    --------
     :param lf: The light-field object (lightfield.Lightfield)
     :param zs: Refocusing distances (numpy.array_like)
     :param up_sampling: Integer greater than 1 for up-sampling of the final images (int, default: 1)

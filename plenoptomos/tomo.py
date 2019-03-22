@@ -196,8 +196,6 @@ class Projector(object):
     def FP(self, x):
         """Forward-projection function
 
-        Arguments
-        --------
         :param x: The volume to project (numpy.array_like)
 
         :returns: The projected light-field
@@ -254,8 +252,6 @@ class Projector(object):
     def BP(self, y):
         """Back-projection function
 
-        Arguments
-        --------
         :param x: Light-field to back-project (numpy.array_like)
 
         :returns: The back-projected volume
@@ -356,8 +352,6 @@ def compute_refocus_backprojection(lf : lightfield.Lightfield, zs, \
     """Compute refocusing of the input lightfield image at the input distances by
     applying the backprojection method.
 
-    Arguments
-    --------
     :param lf: The light-field object (lightfield.Lightfield)
     :param zs: Refocusing distances (numpy.array_like)
     :param up_sampling: Integer greater than 1 for up-sampling of the final images (int, default: 1)
@@ -408,8 +402,6 @@ def compute_refocus_iterative(lf : lightfield.Lightfield, zs, iterations=10, \
     """Compute refocusing of the input lightfield image at the input distances by
     applying iterative methods.
 
-    Arguments
-    --------
     :param lf: The light-field object (lightfield.Lightfield)
     :param zs: Refocusing distances (numpy.array_like)
     :param algorithm: Algorithm to use (string, default: 'sirt')
@@ -491,8 +483,6 @@ def compute_refocus_iterative_multiple(lf : lightfield.Lightfield, zs, iteration
     """Compute refocusing of the input lightfield image simultaneously at the input
     distances by applying iterative methods.
 
-    Arguments
-    --------
     :param lf: The light-field object (lightfield.Lightfield)
     :param zs: Refocusing distances (numpy.array_like)
     :param algorithm: Algorithm to use (string, default: 'sirt')
