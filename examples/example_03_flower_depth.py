@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Mar 19 12:29:02 2019
+
+@author: vigano
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+import os
+
+import plenoptomos as pleno
+
+dpath = 'examples/flowers_plants_30_eslf.png'
+jpath = 'examples/flowers_plants_30.json'
+
+if not os.path.exists(dpath):
+    print('Example files: "%s" and "%s" do not exist.' % (dpath, jpath))
+    dpath_url = 'http://lightfields.stanford.edu/images/flowers_plants/raw/flowers_plants_30_eslf.png'
+    jpath_url = 'http://lightfields.stanford.edu/images/flowers_plants/metadata/flowers_plants_30.json'
+    try:
+        import urllib.request as ur
+
+        print('They will be now downloaded..')
+        ur.urlretrieve(dpath_url, dpath)
+        ur.urlretrieve(jpath_url, jpath)
+    except ImportError:
+        print('Please download them from the Stanford light-field archive and put them in examples/')
+        print('For instance:')
+        print(' - %s' % dpath_url)
+        print(' - %s' % jpath_url)
+
+lf = pleno.import_lf.from_lytro(dpath, jpath, source='eslf')
+
+z0 = lf.camera.get_focused_distance()
+
+alphas_con = np.linspace(0.5, 3.0, 46)
+alphas_par = lf.camera.get_alphas(alphas_con, beam_geometry_in='cone', beam_geometry_out='parallel')
+z0s = z0 * alphas_par
+
+dists = [6, 10, 21]
+refocused_imgs = pleno.tomo.compute_refocus_iterative(lf, z0s[np.r_[dists]], beam_geometry='parallel', iterations=3)
+
+dc = pleno.depth.compute_depth_cues(lf, z0s)
+
+dm = pleno.depth.compute_depth_map(dc, lambda_tv=1.0, lambda_smooth=None)
+
+(f, axs) = plt.subplots(3, 3, sharex=True, sharey=True)
+axs[0, 0].imshow(dc['depth_defocus'], vmin=0, vmax=len(z0s)-1)
+axs[0, 0].set_title('Depth from defocus')
+axs[1, 0].imshow(dc['confidence_defocus'])
+axs[1, 0].set_title('Confidence of defocus')
+axs[0, 1].imshow(dc['depth_correspondence'], vmin=0, vmax=len(z0s)-1)
+axs[0, 1].set_title('Depth from correspondence')
+axs[1, 1].imshow(dc['confidence_correspondence'])
+axs[1, 1].set_title('Confidence of correspondence')
+axs[0, 2].imshow(dm, vmin=0, vmax=len(z0s)-1)
+axs[0, 2].set_title('Depth map')
+axs[1, 2].imshow(lf.get_photograph())
+axs[1, 2].set_title('Acquisition focus')
+
+for ii, d in enumerate(dists):
+    axs[2, ii].imshow(refocused_imgs[ii, ...])
+    axs[2, ii].set_title('Image %d' % d)
+
+plt.show()
+
