@@ -23,8 +23,9 @@ if not os.path.exists(dpath):
     try:
         import urllib.request as ur
 
-        print('They will be now downloaded..')
+        print('They will be now downloaded:\n - %s' % dpath_url)
         ur.urlretrieve(dpath_url, dpath)
+        print(' - %s' % jpath_url)
         ur.urlretrieve(jpath_url, jpath)
     except ImportError:
         print('Please download them from the Stanford light-field archive and put them in examples/')
@@ -32,6 +33,7 @@ if not os.path.exists(dpath):
         print(' - %s' % dpath_url)
         print(' - %s' % jpath_url)
 
+print('Importing the light-field from the Lytro eslf format..')
 (lf_r ,lf_g, lf_b) = pleno.import_lf.from_lytro(dpath, jpath, source='eslf', mode='rgb')
 
 print('Creating the theoretical PSFs for the different color channels..')
@@ -44,16 +46,18 @@ psf_ml_g = pleno.psf.PSFApply2D(psf_d=psf_ml_g, use_otf=False, data_format='raw'
 psf_ml_b = pleno.psf.PSF.create_theo_psf(lf_b.camera, coordinates='vu', airy_rings=2)
 psf_ml_b = pleno.psf.PSFApply2D(psf_d=psf_ml_b, use_otf=False, data_format='raw', use_fftconv=True)
 
-print('Identifying refocusing distances..')
+print('Computing refocusing distances..')
 z0 = lf_r.camera.get_focused_distance()
 alphas_con = np.linspace(0.5, 3.0, 46)
 alphas_par = lf_r.camera.get_alphas(alphas_con, beam_geometry_in='cone', beam_geometry_out='parallel')
 z0s = z0 * alphas_par
 
+# we choose only the 3 most interesting ones
 dists = [6, 10, 21]
 z0s_sel = z0s[np.r_[dists]]
 
-def refocus_rgb(refocus_func, renorm=False): # Convenience function for hangling RGB images
+# Convenience function for hangling RGB images
+def refocus_rgb(refocus_func, renorm=False):
     imgs_r = refocus_func(lf_r, psf_ml_r)
     imgs_g = refocus_func(lf_g, psf_ml_g)
     imgs_b = refocus_func(lf_b, psf_ml_b)
@@ -68,7 +72,7 @@ def refocus_rgb(refocus_func, renorm=False): # Convenience function for hangling
 
 print('Refocusing with Integration...')
 refocus_int = lambda x, _ : pleno.refocus.compute_refocus_integration(x, z0s_sel, beam_geometry='parallel')
-imgs_int = refocus_rgb(refocus_int, renorm=True) # Integration images' intensity is not scaled correctly automatically
+imgs_int = refocus_rgb(refocus_int)
 
 print('Refocusing with Back-projection...')
 refocus_bpj = lambda x, _ : pleno.tomo.compute_refocus_iterative(x, z0s_sel, beam_geometry='parallel', algorithm='bpj')
@@ -83,8 +87,7 @@ algo = pleno.solvers.CP_tv(data_term='l2', lambda_tv=1e-1, axes=(-2, -1))
 refocus_cplstv_p = lambda x, p : pleno.tomo.compute_refocus_iterative(x, z0s_sel, beam_geometry='parallel', iterations=50, algorithm=algo, psf=p)
 imgs_cplstv_p = refocus_rgb(refocus_cplstv_p)
 
-(f, axs) = plt.subplots(3, 4, sharex=True, sharey=True)
-
+(f, axs) = plt.subplots(len(dists), 4, sharex=True, sharey=True, squeeze=False)
 axs[0, 0].set_title('Integration')
 axs[0, 1].set_title('Back-projection')
 axs[0, 2].set_title('SIRT w/o PSF')
@@ -95,4 +98,5 @@ for ii, d in enumerate(dists):
     axs[ii, 2].imshow(imgs_sirt[ii, ...])
     axs[ii, 3].imshow(imgs_cplstv_p[ii, ...])
 
+plt.tight_layout()
 plt.show()

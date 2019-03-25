@@ -23,8 +23,9 @@ if not os.path.exists(dpath):
     try:
         import urllib.request as ur
 
-        print('They will be now downloaded..')
+        print('They will be now downloaded:\n - %s' % dpath_url)
         ur.urlretrieve(dpath_url, dpath)
+        print(' - %s' % jpath_url)
         ur.urlretrieve(jpath_url, jpath)
     except ImportError:
         print('Please download them from the Stanford light-field archive and put them in examples/')
@@ -32,19 +33,24 @@ if not os.path.exists(dpath):
         print(' - %s' % dpath_url)
         print(' - %s' % jpath_url)
 
+print('Importing the light-field from the Lytro eslf format..')
 lf = pleno.import_lf.from_lytro(dpath, jpath, source='eslf')
 
 z0 = lf.camera.get_focused_distance()
 
+print('Computing refocusing distances..')
 alphas_con = np.linspace(0.5, 3.0, 46)
 alphas_par = lf.camera.get_alphas(alphas_con, beam_geometry_in='cone', beam_geometry_out='parallel')
 z0s = z0 * alphas_par
 
+# we choose the 3 most interesting ones, to display what they look like
 dists = [6, 10, 21]
 refocused_imgs = pleno.tomo.compute_refocus_iterative(lf, z0s[np.r_[dists]], beam_geometry='parallel', iterations=3)
 
+print('Computing depth cues..')
 dc = pleno.depth.compute_depth_cues(lf, z0s)
 
+print('Using depth cues to generate a depth-map..')
 dm = pleno.depth.compute_depth_map(dc, lambda_tv=1.0, lambda_smooth=None)
 
 (f, axs) = plt.subplots(3, 3, sharex=True, sharey=True)
@@ -65,5 +71,6 @@ for ii, d in enumerate(dists):
     axs[2, ii].imshow(refocused_imgs[ii, ...])
     axs[2, ii].set_title('Image %d' % d)
 
+plt.tight_layout()
 plt.show()
 
