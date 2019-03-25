@@ -662,9 +662,10 @@ class Lightfield(object):
                 np.array(self.camera.data_size_vu[1]) * np.array(self.camera.data_size_ts[1]) ])
         return np.reshape(data_raw, photo_size_2D)
 
-    def get_photograph(self):
+    def get_photograph(self, image='data'):
         """Computes the refocused photograph at z0
 
+        :param image: Selects whether we want the detector data, or the flat image (string)
         :returns: The refocused photograph at z0
         :rtype: numpy.array_like
         """
@@ -675,7 +676,11 @@ class Lightfield(object):
         else:
             lf_sa = self
 
-        return np.sum(lf_sa.data, axis=(0, 1)) / np.prod(self.camera.data_size_vu)
+        if image.lower() == 'data':
+            photo = np.sum(lf_sa.data, axis=(0, 1))
+        else:
+            photo = np.sum(lf_sa.flat, axis=(0, 1))
+        return photo / np.prod(self.camera.data_size_vu)
 
     def pad(self, paddings, method='constant', pad_value=(0,)):
         """Pad a light-field

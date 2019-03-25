@@ -53,22 +53,26 @@ def compute_refocus_integration(lf : lightfield.Lightfield, zs, \
          % (num_alphas, domain, beam_geometry, m), end='', flush=True)
 
     # Refocusing operate on sub-aperture images:
-    number_of_sa_images = np.prod(lf.camera.data_size_vu)
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
+
+    if lf.flat is None:
+        renorm_sa_images = np.prod(lf.camera.data_size_vu)
+    else:
+        lf_sa.data *= lf_sa.flat
+        renorm_sa_images = lf.get_photograph(image='flat') * np.prod(lf.camera.data_size_vu)
 
     camera_sheared = lf_sa.camera.clone()
     if up_sampling > 1:
         camera_sheared.regrid(regrid_size=(1, 1, up_sampling, up_sampling))
 
     imgs_size = (num_alphas, camera_sheared.data_size_ts[0], camera_sheared.data_size_ts[1])
-    data_type = lf_sa.data.dtype
 
     # Pad image:
     lf_sa.pad((0, 0, border*up_sampling, border*up_sampling), method=border_padding)
     lf_sa.pad(1)
 
-    imgs = np.empty(imgs_size, data_type)
+    imgs = np.empty(imgs_size, lf_sa.data.dtype)
 
     (samp_v, samp_u, samp_t, samp_s) = lf_sa.camera.get_grid_points(space='direct', domain=domain)
     interp_lf4D = sp.interpolate.RegularGridInterpolator((samp_v, samp_u, samp_t, samp_s), lf_sa.data, bounds_error=False, fill_value=0)
@@ -82,12 +86,12 @@ def compute_refocus_integration(lf : lightfield.Lightfield, zs, \
         sheared_lf_data = interp_lf4D(sheared_coords)
 
         # Integrate:
-        imgs[ii, :, :] = np.sum(sheared_lf_data, axis=(0, 1))
+        imgs[ii, ...] = np.sum(sheared_lf_data, axis=(0, 1))
 
         print(('\b') * len(prnt_str), end='', flush=True)
 
     # Renormalizing:
-    imgs /= number_of_sa_images
+    imgs /= renorm_sa_images
 
     c_out = tm.time()
     print("Done in %g seconds." % (c_out - c_in))
@@ -137,6 +141,12 @@ def compute_refocus_fourier(lf : lightfield.Lightfield, zs, method='slice', \
 
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
+
+    if lf.flat is None:
+        renorm_sa_images = np.prod(lf.camera.data_size_vu)
+    else:
+        lf_sa.data *= lf_sa.flat
+        renorm_sa_images = lf.get_photograph(image='flat') * np.prod(lf.camera.data_size_vu)
 
     paddings_ts = (np.ceil(np.array(lf_sa.camera.data_size_ts) * (padding_factor - 1) / 4) * 2).astype(np.int32)
     paddings_vu = np.ceil(np.array(lf_sa.camera.data_size_vu) / 2).astype(np.int32)
@@ -232,7 +242,7 @@ def compute_refocus_fourier(lf : lightfield.Lightfield, zs, method='slice', \
     imgs = imgs[:, tot_paddings_ts[0]:-tot_paddings_ts[0], tot_paddings_ts[1]:-tot_paddings_ts[1]]
     # Renormalizing:
     if method.lower() in ('slice', 'full'):
-        imgs *= up_sampling ** 2 / np.prod(lf.camera.data_size_vu)
+        imgs *= up_sampling ** 2 / renorm_sa_images
 
     c_out = tm.time()
     print("\b\b: Done in %g seconds.\nDone in %g seconds." % (c_out - c_int, c_out - c_in))
