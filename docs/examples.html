@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Examples analysis &mdash; plenoptomos  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Changelog" href="changelog.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> plenoptomos
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fileformat.html">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-01-logos-py">example_01_logos.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-02-flower-refocusing-py">example_02_flower_refocusing.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-03-flower-depth-py">example_03_flower_depth.py</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">plenoptomos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Examples analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/examples.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="examples-analysis">
+<h1>Examples analysis<a class="headerlink" href="#examples-analysis" title="Permalink to this headline">¶</a></h1>
+<p>Here we analyse the code and results of the example files
+Examples 02 and 03 use data from the <a class="reference external" href="http://lightfields.stanford.edu/">Stanford light-field archive</a>.</p>
+<div class="section" id="example-01-logos-py">
+<h2>example_01_logos.py<a class="headerlink" href="#example-01-logos-py" title="Permalink to this headline">¶</a></h2>
+<p>This is a preliminary eaxample that serves only to demonstrate the concepts discussed in:</p>
+<blockquote>
+<div>N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,” Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.</div></blockquote>
+<p>In particular it displays the scaling differents in refocusing alpha parameter, and the size of the refocused objects in the scene.</p>
+</div>
+<div class="section" id="example-02-flower-refocusing-py">
+<h2>example_02_flower_refocusing.py<a class="headerlink" href="#example-02-flower-refocusing-py" title="Permalink to this headline">¶</a></h2>
+<p>This example shows a selection of all the possible refocusing options and tools available in plenoptomos.
+It uses the <a class="reference external" href="http://lightfields.stanford.edu/flowers_plants.html">flowers &amp; plants</a> example number 30, and so it requires importing.</p>
+<p>First we import the ESLF image of choice:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">lf_r</span> <span class="p">,</span><span class="n">lf_g</span><span class="p">,</span> <span class="n">lf_b</span><span class="p">)</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">import_lf</span><span class="o">.</span><span class="n">from_lytro</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">jpath</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;eslf&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rgb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By choosing the <code class="docutils literal notranslate"><span class="pre">mode='rgb'</span></code> we obtain three light-fields (one per RGB channel).</p>
+<p>We then create a (v, u) PSF for each color channel, using the following two lines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psf_ml_r</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">psf</span><span class="o">.</span><span class="n">PSF</span><span class="o">.</span><span class="n">create_theo_psf</span><span class="p">(</span><span class="n">lf_r</span><span class="o">.</span><span class="n">camera</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">=</span><span class="s1">&#39;vu&#39;</span><span class="p">,</span> <span class="n">airy_rings</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">psf_ml_r</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">psf</span><span class="o">.</span><span class="n">PSFApply2D</span><span class="p">(</span><span class="n">psf_d</span><span class="o">=</span><span class="n">psf_ml_r</span><span class="p">,</span> <span class="n">use_otf</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which first create the theoretical PSF for an incoherent light source (for the wavelengths indicated in <code class="docutils literal notranslate"><span class="pre">lf_r.camera</span></code>), including only the first two orders of the Airy function.
+The second line creates an object able to manipulate the light-field data, and apply the computed PSF.</p>
+<p>The following line computes the acquisition focal plane in the object space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z0</span> <span class="o">=</span> <span class="n">lf_r</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">get_focused_distance</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We then define the alpha parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alphas_con</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mi">46</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We then convert the true distances in parallel beam distances because we will produce that type of refocused images:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alphas_par</span> <span class="o">=</span> <span class="n">lf_r</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="n">get_alphas</span><span class="p">(</span><span class="n">alphas_con</span><span class="p">,</span> <span class="n">beam_geometry_in</span><span class="o">=</span><span class="s1">&#39;cone&#39;</span><span class="p">,</span> <span class="n">beam_geometry_out</span><span class="o">=</span><span class="s1">&#39;parallel&#39;</span><span class="p">)</span>
+<span class="n">z0s</span> <span class="o">=</span> <span class="n">z0</span> <span class="o">*</span> <span class="n">alphas_par</span>
+</pre></div>
+</div>
+<p>For convenience we create a function that handles the RGB channels:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">refocus_rgb</span><span class="p">(</span><span class="n">refocus_func</span><span class="p">,</span> <span class="n">renorm</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">imgs_r</span> <span class="o">=</span> <span class="n">refocus_func</span><span class="p">(</span><span class="n">lf_r</span><span class="p">,</span> <span class="n">psf_ml_r</span><span class="p">)</span>
+    <span class="n">imgs_g</span> <span class="o">=</span> <span class="n">refocus_func</span><span class="p">(</span><span class="n">lf_g</span><span class="p">,</span> <span class="n">psf_ml_g</span><span class="p">)</span>
+    <span class="n">imgs_b</span> <span class="o">=</span> <span class="n">refocus_func</span><span class="p">(</span><span class="n">lf_b</span><span class="p">,</span> <span class="n">psf_ml_b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">renorm</span><span class="p">:</span>
+        <span class="n">lf_ones</span> <span class="o">=</span> <span class="n">lf_r</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="n">lf_ones</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">lf_ones</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">imgs_ones</span> <span class="o">=</span> <span class="n">refocus_func</span><span class="p">(</span><span class="n">lf_ones</span><span class="p">,</span> <span class="n">psf_ml_r</span><span class="p">)</span>
+        <span class="n">imgs_r</span> <span class="o">/=</span> <span class="n">imgs_ones</span>
+        <span class="n">imgs_g</span> <span class="o">/=</span> <span class="n">imgs_ones</span>
+        <span class="n">imgs_b</span> <span class="o">/=</span> <span class="n">imgs_ones</span>
+    <span class="k">return</span> <span class="n">pleno</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">merge_rgb_images</span><span class="p">(</span><span class="n">imgs_r</span><span class="p">,</span> <span class="n">imgs_g</span><span class="p">,</span> <span class="n">imgs_b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and lambda functions that handle the refocusing for each method.
+The Integration, Back-projection and SIRT functions are straight-forward:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">refocus_int</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="p">:</span> <span class="n">pleno</span><span class="o">.</span><span class="n">refocus</span><span class="o">.</span><span class="n">compute_refocus_integration</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z0s_sel</span><span class="p">,</span> <span class="n">beam_geometry</span><span class="o">=</span><span class="s1">&#39;parallel&#39;</span><span class="p">)</span>
+<span class="n">refocus_bpj</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="p">:</span> <span class="n">pleno</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">compute_refocus_iterative</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z0s_sel</span><span class="p">,</span> <span class="n">beam_geometry</span><span class="o">=</span><span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;bpj&#39;</span><span class="p">)</span>
+<span class="n">refocus_sirt</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="p">:</span> <span class="n">pleno</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">compute_refocus_iterative</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z0s_sel</span><span class="p">,</span> <span class="n">beam_geometry</span><span class="o">=</span><span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sirt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>while the CP-LS-TV version needs a Solver object defined with custom parameters chosen by the user:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">algo</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">CP_tv</span><span class="p">(</span><span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">refocus_cplstv_p</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">p</span> <span class="p">:</span> <span class="n">pleno</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">compute_refocus_iterative</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z0s_sel</span><span class="p">,</span> <span class="n">beam_geometry</span><span class="o">=</span><span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">algo</span><span class="p">,</span> <span class="n">psf</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This syntax allows the users to create their own refocusing algorithms, and pass them to the function <code class="docutils literal notranslate"><span class="pre">pleno.tomo.compute_refocus_iterative</span></code>.</p>
+<p>The expected refocusing for one distance will be:
+<img alt="results_rose" src="_images/example_02_dist10.png" /></p>
+<p>Which zoomed on the rose will be:
+<img alt="results_rose_zoom" src="_images/example_02_zoom_rose_dist10.png" /></p>
+</div>
+<div class="section" id="example-03-flower-depth-py">
+<h2>example_03_flower_depth.py<a class="headerlink" href="#example-03-flower-depth-py" title="Permalink to this headline">¶</a></h2>
+<p>This example displays the use of the depth-estimation routines available in plenoptomos.</p>
+<p>In this case the light-field is loaded in grayscale mode:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lf</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">import_lf</span><span class="o">.</span><span class="n">from_lytro</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">jpath</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;eslf&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The depth cues described in Tao’s paper are computed with the following function call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dc</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">compute_depth_cues</span><span class="p">(</span><span class="n">lf</span><span class="p">,</span> <span class="n">z0s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The computed depth cues are then assembled in a depth-map with the following optimization routine:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dm</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">compute_depth_map</span><span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">lambda_smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The expected output is:
+<img alt="results_rose_depth" src="_images/example_03_results.png" /></p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">compute_depth_cues</span></code> is highly tunable and allows the user to use advanced refocusing methods in the computation of the said depth cues.
+For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dc</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">compute_depth_cues</span><span class="p">(</span><span class="n">lf</span><span class="p">,</span> <span class="n">z0s</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sirt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will use the sirt algorithm to compute the the focal stack.
+Moreover, it allows more advanced filtering options than what was initially proposed in Tao’s article.
+Aside from the proposed rectangular filter (<code class="docutils literal notranslate"><span class="pre">window_shape='rect'</span></code>), it also accepts triangular (<code class="docutils literal notranslate"><span class="pre">'tri'</span></code>), circular (<code class="docutils literal notranslate"><span class="pre">'circ'</span></code>), gaussian (<code class="docutils literal notranslate"><span class="pre">'gauss'</span></code>) filters.
+The size of the filters is adjusted using the option <code class="docutils literal notranslate"><span class="pre">window_size</span></code> (default: <code class="docutils literal notranslate"><span class="pre">window_size=(9,</span> <span class="pre">9)</span></code>).</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="changelog.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

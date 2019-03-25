@@ -82,6 +82,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fileformat.html">File format</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">plenoptomos</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">plenoptomos package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -101,6 +102,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples analysis</a></li>
 </ul>
 
             
@@ -220,9 +222,9 @@
 <p>Convetions:
 - arrays are understood in the C convention</p>
 <p>Rationale behind version 0:
-- single image
-- initial standardization containing all the necessary metadata
-- first structure, vaguely inspired by DataExchange</p>
+- Single light-field per file
+- Contains all the necessary metadata for interpretation of the light-field
+- Based on [HDF5](<a class="reference external" href="https://www.hdfgroup.org/solutions/hdf5/">https://www.hdfgroup.org/solutions/hdf5/</a>) and vaguely inspired by [DataExchange](<a class="reference external" href="https://github.com/data-exchange/dxchange">https://github.com/data-exchange/dxchange</a>)</p>
 <p>The updated structure can be found at: <a class="reference external" href="https://cicwi.github.io/plenoptomos">https://cicwi.github.io/plenoptomos</a></p>
 <dl class="function">
 <dt id="plenoptomos.data_format.assign_optional_attr">
@@ -672,15 +674,17 @@ corresponding json file</p>
 
 <dl class="method">
 <dt id="plenoptomos.lightfield.Lightfield.get_photograph">
-<code class="descname">get_photograph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.get_photograph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.get_photograph" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_photograph</code><span class="sig-paren">(</span><em>image='data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Lightfield.get_photograph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Lightfield.get_photograph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the refocused photograph at z0</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The refocused photograph at z0</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – Selects whether we want the detector data, or the flat image (string)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The refocused photograph at z0</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
 </tr>
 </tbody>
 </table>
@@ -875,7 +879,7 @@ detector format</p>
 
 <dl class="class">
 <dt id="plenoptomos.psf.PSFApply">
-<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class PSFApply handles all PSF/OTF applications</p>
 <dl class="method">
@@ -914,7 +918,7 @@ detector format</p>
 
 <dl class="class">
 <dt id="plenoptomos.psf.PSFApply4D">
-<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply4D</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply4D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply4D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply4D</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply4D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply4D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#plenoptomos.psf.PSFApply" title="plenoptomos.psf.PSFApply"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.psf.PSFApply</span></code></a></p>
 <p>Class PSFApply4D handles all PSF applications and</p>
 </dd></dl>

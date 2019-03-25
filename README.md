@@ -74,3 +74,8 @@ If you have any issues, questions, or remarks, then please open an issue on GitH
 ## License
 
 This project is licensed under the GNU General Public License v3 - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Data format
+
+This package comes with a suggested data format for the light-fields.
+We refer to the [File format](https://cicwi.github.io/plenoptomos) section of the documentation for more information.

@@ -11,9 +11,9 @@ Convetions:
 - arrays are understood in the C convention
 
 Rationale behind version 0:
-- single image
-- initial standardization containing all the necessary metadata
-- first structure, vaguely inspired by DataExchange
+- Single light-field per file
+- Contains all the necessary metadata for interpretation of the light-field
+- Based on [HDF5](https://www.hdfgroup.org/solutions/hdf5/) and vaguely inspired by [DataExchange](https://github.com/data-exchange/dxchange)
 
 The updated structure can be found at: https://cicwi.github.io/plenoptomos
 """

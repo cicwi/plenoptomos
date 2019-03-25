@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>File format &mdash; plenoptomos  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="plenoptomos" href="modules.html" />
+    <link rel="prev" title="plenoptomos" href="readme.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> plenoptomos
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">plenoptomos</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples analysis</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">plenoptomos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>File format</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/fileformat.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="file-format">
+<h1>File format<a class="headerlink" href="#file-format" title="Permalink to this headline">¶</a></h1>
+<p>The plenoptomos toolbox comes with a suggested data format for the light-fields.
+This data format is meant for storing the acquired light-fields and for their exchange.
+It addresses the following points:</p>
+<p>Rationale behind version 0:</p>
+<ul class="simple">
+<li>Single light-field per file</li>
+<li>Contains all the necessary metadata for interpretation of the light-field</li>
+<li>Based on <a class="reference external" href="https://www.hdfgroup.org/solutions/hdf5/">HDF5</a> and vaguely inspired by <a class="reference external" href="https://github.com/data-exchange/dxchange">DataExchange</a></li>
+</ul>
+<p>Convetions:</p>
+<ul class="simple">
+<li>Arrays are to be understood in the C convention</li>
+<li>(v, u) coordinates refer to positions on the main lens</li>
+<li>(t, s) coordinates refer to positions on the focal plane in the image space</li>
+</ul>
+<p>Tree structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>root
+ +--&lt;attribute&gt; = description : string -&gt; &quot;VoxelDataFormat&quot;
+ +--&lt;attribute&gt; = version : string -&gt; &quot;v0&quot;
+ |
+ +--&lt;group&gt; = data
+ |     |
+ |     +--&lt;dataset&gt; = image : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
+ |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
+ |     |      +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
+ |     |      +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
+ |     |
+ |     +--&lt;dataset&gt; = white : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
+ |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
+ |     |      +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
+ |     |      +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
+ |     |
+ |     +--&lt;dataset&gt; = dark : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
+ |            +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
+ |            +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
+ |            +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
+ |
+ +--&lt;group&gt; = instrument
+ |     |
+ |     +--&lt;group&gt; = source ?
+ |     |
+ |     +--&lt;group&gt; = camera
+ |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
+ |     |     +--&lt;attribute&gt; = model : string [optional]
+ |     |     |
+ |     |     +--&lt;group&gt; = micro_lenses_array
+ |     |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
+ |     |     |     +--&lt;attribute&gt; = model : string [optional]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = size : integer &lt;- number of micro-lenses
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = position : float &lt;- position of the center of the MLA with respect with the center of the main lens
+ |     |     |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = tilts ?
+ |     |     |
+ |     |     +--&lt;group&gt; = micro_lens
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = size : integer &lt;- size of each microlens in detector pixels after regularization
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;pixels&quot;
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = physical_size : float &lt;- physical size of each micro-lens
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;t:s&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = micro_image_size : float &lt;- footprint of each microlens over detector pixels
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;pixels&quot;
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = f2 : float &lt;- focal length of each lenslet
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = aperture : float &lt;- f-number
+ |     |     |
+ |     |     +--&lt;group&gt; = main_lens
+ |     |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
+ |     |     |     +--&lt;attribute&gt; = model : string [optional]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = pixel_size : float &lt;- angular resolution of the main-lens
+ |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;v:u&quot;
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = f1 : float &lt;- focal length of each lenslet
+ |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |     |     |
+ |     |     |     +--&lt;dataset&gt; = aperture : float &lt;- f-number
+ |     |     |
+ |     |     +--&lt;group&gt; = sensor
+ |     |           +--&lt;attribute&gt; = manufacturer : string [optional]
+ |     |           +--&lt;attribute&gt; = model : string [optional]
+ |     |           |
+ |     |           +--&lt;dataset&gt; = size : integer &lt;- number of pixels
+ |     |           |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |           |
+ |     |           +--&lt;dataset&gt; = pixel_size : float &lt;- physical size of each pixel
+ |     |           |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
+ |     |           |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |           |
+ |     |           +--&lt;dataset&gt; = position : float &lt;- position of the center of the sensor with respect with the center of the main lens
+ |     |           |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
+ |     |           |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |           |
+ |     |           +--&lt;dataset&gt; = tilts ?
+ |     |           |
+ |     |           +--&lt;dataset&gt; = detection parameters ? (i.e. material, thickness, quantum efficiency)
+ |     |
+ |     +--&lt;group&gt; = monochromator ? (could be used for RGB images -&gt; split into three-channels)
+ |     |
+ |     +--&lt;group&gt; = scintillator ? (might be related/redundant to/with detection parameters in detector)
+ |
+ +--&lt;group&gt; = sample [optional]
+ |     |
+ |     +--&lt;dataset&gt; = position : float &lt;- position of the center of the sample with respect with the center of the main lens
+ |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
+ |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |
+ |     +--&lt;dataset&gt; = size : float &lt;- size of the sample
+ |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
+ |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
+ |     |
+ |     +--&lt;dataset&gt; name : string
+ |     |
+ |     +--&lt;dataset&gt; description : string [optional]
+ |
+ +--&lt;group&gt; = acquisition
+       |
+       +--&lt;dataset&gt; = type : string -&gt; [ &quot;reflection&quot; | &quot;transmission&quot; ]
+       |
+       +--&lt;dataset&gt; = exposure_time : float
+              +-&lt;attribute&gt; = units : string -&gt; [ {&quot;s&quot;} | &quot;ms&quot; | &quot;us&quot; ]
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules.html" class="btn btn-neutral float-right" title="plenoptomos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="readme.html" class="btn btn-neutral float-left" title="plenoptomos" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

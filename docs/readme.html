@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="plenoptomos" href="modules.html" />
+    <link rel="next" title="File format" href="fileformat.html" />
     <link rel="prev" title="Welcome to the documentation of plenoptomos!" href="index.html" /> 
 </head>
 
@@ -95,8 +95,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#data-format">Data format</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="fileformat.html">File format</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples analysis</a></li>
 </ul>
 
             
@@ -200,7 +202,7 @@ The provided features are:</p>
 <p>The author of this package is in the process of setting up this
 package for optimal usability. The following has already been completed:</p>
 <ul>
-<li><p class="first">[ ] Documentation</p>
+<li><p class="first">[x] Documentation</p>
 <ul class="simple">
 <li>A package description has been written in the README</li>
 <li>Documentation has been generated using <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code>, committed,
@@ -229,9 +231,13 @@ with the “source” set to “master branch /docs folder”.</li>
 </div>
 <p>has been replaced by</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">requirements</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;numpy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;scipy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;matplotlib&#39;</span><span class="p">,</span>
     <span class="s1">&#39;astra-toolbox&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;sacred&gt;=0.7.2&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tables==3.4.4&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;h5py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;configparser&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;pillow&#39;</span><span class="p">,</span>
 <span class="p">]</span>
 </pre></div>
 </div>
@@ -310,139 +316,12 @@ examples folder.</p>
 </div>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
-<p>This project is licensed under the GNU General Public License v3 - see the <a class="reference external" href="LICENSE">LICENSE.md</a> file for details.</p>
+<p>This project is licensed under the GNU General Public License v3 - see the <a class="reference external" href="LICENSE">LICENSE</a> file for details.</p>
 </div>
 <div class="section" id="data-format">
 <h2>Data format<a class="headerlink" href="#data-format" title="Permalink to this headline">¶</a></h2>
 <p>This package comes with a suggested data format for the light-fields.
-The datata format is described in the data_format.py module, and it addresses
-the following points:</p>
-<p>Rationale behind version 0:</p>
-<ul class="simple">
-<li>single image</li>
-<li>initial standardization containing all the necessary metadata</li>
-<li>first structure, vaguely inspired by DataExchange</li>
-</ul>
-<p>Structure:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>root
- +--&lt;attribute&gt; = description : string -&gt; &quot;VoxelDataFormat&quot;
- +--&lt;attribute&gt; = version : string -&gt; &quot;v0&quot;
- |
- +--&lt;group&gt; = data
- |     |
- |     +--&lt;dataset&gt; = image : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
- |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
- |     |      +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
- |     |      +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
- |     |
- |     +--&lt;dataset&gt; = white : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
- |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
- |     |      +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
- |     |      +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
- |     |
- |     +--&lt;dataset&gt; = dark : integer [ &lt;p x p x n x n&gt; | &lt;n x n x p x p&gt; | &lt;np x np&gt; | etc ]
- |            +-&lt;attribute&gt; = units : string -&gt; &quot;counts&quot;
- |            +-&lt;attribute&gt; = axes : string -&gt; [ &quot;v:u:t:s&quot; | &quot;t:s:v:u&quot; | &quot;tau:sigma&quot; | etc ]
- |            +-&lt;attribute&gt; = mode : string -&gt; [ &quot;sub-aperture&quot; | &quot;micro-image&quot; | &quot;raw&quot; | etc ]
- |
- +--&lt;group&gt; = instrument
- |     |
- |     +--&lt;group&gt; = source ?
- |     |
- |     +--&lt;group&gt; = camera
- |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
- |     |     +--&lt;attribute&gt; = model : string [optional]
- |     |     |
- |     |     +--&lt;group&gt; = micro_lenses_array
- |     |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
- |     |     |     +--&lt;attribute&gt; = model : string [optional]
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = size : integer &lt;- number of micro-lenses
- |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = position : float &lt;- position of the center of the MLA with respect with the center of the main lens
- |     |     |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
- |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = tilts ?
- |     |     |
- |     |     +--&lt;group&gt; = micro_lens
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = size : integer &lt;- size of each microlens in detector pixels after regularization
- |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
- |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;pixels&quot;
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = physical_size : float &lt;- physical size of each micro-lens
- |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;t:s&quot;
- |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = micro_image_size : float &lt;- footprint of each microlens over detector pixels
- |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
- |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; &quot;pixels&quot;
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = f2 : float &lt;- focal length of each lenslet
- |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = aperture : float &lt;- f-number
- |     |     |
- |     |     +--&lt;group&gt; = main_lens
- |     |     |     +--&lt;attribute&gt; = manufacturer : string [optional]
- |     |     |     +--&lt;attribute&gt; = model : string [optional]
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = pixel_size : float &lt;- angular resolution of the main-lens
- |     |     |     |      +-&lt;attribute&gt; axes : string -&gt; &quot;v:u&quot;
- |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = f1 : float &lt;- focal length of each lenslet
- |     |     |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |     |     |
- |     |     |     +--&lt;dataset&gt; = aperture : float &lt;- f-number
- |     |     |
- |     |     +--&lt;group&gt; = sensor
- |     |           +--&lt;attribute&gt; = manufacturer : string [optional]
- |     |           +--&lt;attribute&gt; = model : string [optional]
- |     |           |
- |     |           +--&lt;dataset&gt; = size : integer &lt;- number of pixels
- |     |           |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
- |     |           |
- |     |           +--&lt;dataset&gt; = pixel_size : float &lt;- physical size of each pixel
- |     |           |      +-&lt;attribute&gt; axes : string -&gt; &quot;tau:sigma&quot;
- |     |           |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |           |
- |     |           +--&lt;dataset&gt; = position : float &lt;- position of the center of the sensor with respect with the center of the main lens
- |     |           |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
- |     |           |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |           |
- |     |           +--&lt;dataset&gt; = tilts ?
- |     |           |
- |     |           +--&lt;dataset&gt; = detection parameters ? (i.e. material, thickness, quantum efficiency)
- |     |
- |     +--&lt;group&gt; = monochromator ? (could be used for RGB images -&gt; split into three-channels)
- |     |
- |     +--&lt;group&gt; = scintillator ? (might be related/redundant to/with detection parameters in detector)
- |
- +--&lt;group&gt; = sample [optional]
- |     |
- |     +--&lt;dataset&gt; = position : float &lt;- position of the center of the sample with respect with the center of the main lens
- |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
- |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |
- |     +--&lt;dataset&gt; = size : float &lt;- size of the sample
- |     |      +-&lt;attribute&gt; = axes : string -&gt; &quot;x:y:z&quot;
- |     |      +-&lt;attribute&gt; = units : string -&gt; [ {&quot;mm&quot;} | &quot;um&quot; | &quot;m&quot; ]
- |     |
- |     +--&lt;dataset&gt; name : string
- |     |
- |     +--&lt;dataset&gt; description : string [optional]
- |
- +--&lt;group&gt; = acquisition
-       |
-       +--&lt;dataset&gt; = type : string -&gt; [ &quot;reflection&quot; | &quot;transmission&quot; ]
-       |
-       +--&lt;dataset&gt; = exposure_time : float
-              +-&lt;attribute&gt; = units : string -&gt; [ {&quot;s&quot;} | &quot;ms&quot; | &quot;us&quot; ]
-</pre></div>
-</div>
+We refer to the <a class="reference internal" href="fileformat.html"><span class="doc">File format</span></a> section for more information.</p>
 </div>
 </div>
 
@@ -454,7 +333,7 @@ the following points:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="modules.html" class="btn btn-neutral float-right" title="plenoptomos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="fileformat.html" class="btn btn-neutral float-right" title="File format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to the documentation of plenoptomos!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

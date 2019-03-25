@@ -11,8 +11,10 @@ Contents:
 
 
    readme
+   fileformat
    modules
    changelog
+   examples
 
 
 Indices and tables
