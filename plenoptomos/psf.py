@@ -211,7 +211,7 @@ class PSFApply(object):
     """Class PSFApply handles all PSF/OTF applications
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
+    def __init__(self, psf_d=None, img_size=None, use_otf=False, data_format=None, use_fftconv=True):
         print("- Initializing PSF application class..", end='', flush=True)
         c_in = tm.time()
 
@@ -398,7 +398,7 @@ class PSFApply(object):
         slicing_op = [slice(None)] * pre_pos
         for ii in range(pad_scheme.shape[0] - pre_pos):
             slicing_op.append(slice(pad_scheme[ii + pre_pos, 0], -pad_scheme[ii + pre_pos, 1]))
-        return imgs[slicing_op]
+        return imgs[tuple(slicing_op)]
 
     def _apply_psf(self, imgs, is_direct):
         if is_direct or self.is_symmetric:
@@ -421,7 +421,7 @@ class PSFApply2D(PSFApply):
     """Class PSFApply2D handles all PSF applications and
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
+    def __init__(self, psf_d=None, img_size=None, use_otf=False, data_format=None, use_fftconv=True):
         self.otf_axes = (-2, -1)
         if isinstance(psf_d, PSF):
             psf = psf_d.data
@@ -444,7 +444,7 @@ class PSFApply4D(PSFApply):
     """Class PSFApply4D handles all PSF applications and
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
+    def __init__(self, psf_d=None, img_size=None, use_otf=False, data_format=None, use_fftconv=True):
         self.otf_axes = (-4, -3, -2, -1)
         if isinstance(psf_d, PSF):
             psf = psf_d.data
