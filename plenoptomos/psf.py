@@ -211,7 +211,7 @@ class PSFApply(object):
     """Class PSFApply handles all PSF/OTF applications
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=False):
+    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
         print("- Initializing PSF application class..", end='', flush=True)
         c_in = tm.time()
 
@@ -425,6 +425,8 @@ class PSFApply2D(PSFApply):
         self.otf_axes = (-2, -1)
         if isinstance(psf_d, PSF):
             psf = psf_d.data
+            if data_format is None:
+                data_format = psf_d.data_format
         else:
             psf = np.squeeze(psf_d)
         PSFApply.__init__(self, psf, img_size=img_size, use_otf=use_otf, data_format=data_format, use_fftconv=use_fftconv)
@@ -442,10 +444,12 @@ class PSFApply4D(PSFApply):
     """Class PSFApply4D handles all PSF applications and
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=False):
+    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
         self.otf_axes = (-4, -3, -2, -1)
         if isinstance(psf_d, PSF):
             psf = psf_d.data
+            if data_format is None:
+                data_format = psf_d.data_format
         else:
             psf = np.squeeze(psf_d)
         PSFApply.__init__(self, psf, img_size=img_size, use_otf=use_otf, data_format=data_format, use_fftconv=use_fftconv)

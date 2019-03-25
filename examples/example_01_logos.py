@@ -12,7 +12,7 @@ import matplotlib.image as mim
 
 import plenoptomos as pleno
 
-# Setting up the known volume
+print('Setting up the known volume..')
 cwi_img = mim.imread('examples/cwi_logo_small.png')
 vox_img = mim.imread('examples/voxel_logo_small.png')
 
@@ -39,7 +39,7 @@ vols_b[2, 136:cwi_img.shape[0]+136, 244:cwi_img.shape[1]+244] = cwi_img[:, :, 2]
 vols_b[1, 0:vox_img.shape[0], 0:vox_img.shape[1]] = vox_img[:, :, 2]
 vols_b[0, 136:cwi_img.shape[0]+136, 0:cwi_img.shape[1]] = np.rot90(cwi_img[:, :, 2] * (cwi_img[:, :, 3] > 0), k=2)
 
-# Setting up the camera structure (containing light-field metadata)
+print('Setting up the camera structure (containing light-field metadata)..')
 camera = pleno.lightfield.get_camera('synthetic')
 
 z0 = camera.get_focused_distance()
@@ -60,13 +60,12 @@ vols_r_pad = np.pad(vols_r, ((0, ), (border,), (border,)), mode='constant')
 vols_g_pad = np.pad(vols_g, ((0, ), (border,), (border,)), mode='constant')
 vols_b_pad = np.pad(vols_b, ((0, ), (border,), (border,)), mode='constant')
 
-# Forward projecting the volume to the sub-aperture images
+print('Creating the synthetic light-field: forward projecting the volume to the sub-aperture images..')
 lf_r = pleno.tomo.compute_forwardprojection(camera_r, z0s_ph, vols_r_pad, masks_pad)
 lf_g = pleno.tomo.compute_forwardprojection(camera_g, z0s_ph, vols_g_pad, masks_pad)
 lf_b = pleno.tomo.compute_forwardprojection(camera_b, z0s_ph, vols_b_pad, masks_pad)
 
 print("\nPerforming refocusing...\n")
-
 # The conversions are done using the formulas from:
 # [1] N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,”
 # Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.
