@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - <insert-features-not-in-a-release-yet>
 ### Fixed
-- <insert-bugs-fixed-not-in-a-release-yet>
+- OTF functionality in PSF convolution
 
 ## 0.1.0 - 2019-03-25
 ### Added

@@ -860,6 +860,11 @@ detector format</p>
 <dt id="plenoptomos.psf.PSF">
 <em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSF</code><span class="sig-paren">(</span><em>coordinates</em>, <em>data=None</em>, <em>conf=None</em>, <em>data_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="plenoptomos.psf.PSF.clone">
+<code class="descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF.clone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="staticmethod">
 <dt id="plenoptomos.psf.PSF.compute_defocus_psf">
 <em class="property">static </em><code class="descname">compute_defocus_psf</code><span class="sig-paren">(</span><em>conf</em>, <em>norm=2</em>, <em>keep_oversampling=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF.compute_defocus_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF.compute_defocus_psf" title="Permalink to this definition">¶</a></dt>
@@ -879,7 +884,7 @@ detector format</p>
 
 <dl class="class">
 <dt id="plenoptomos.psf.PSFApply">
-<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=False</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class PSFApply handles all PSF/OTF applications</p>
 <dl class="method">
@@ -911,14 +916,14 @@ detector format</p>
 
 <dl class="class">
 <dt id="plenoptomos.psf.PSFApply2D">
-<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply2D</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=False</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply2D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply2D</code><span class="sig-paren">(</span><em>psf_d</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#plenoptomos.psf.PSFApply" title="plenoptomos.psf.PSFApply"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.psf.PSFApply</span></code></a></p>
 <p>Class PSFApply2D handles all PSF applications and</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="plenoptomos.psf.PSFApply4D">
-<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply4D</code><span class="sig-paren">(</span><em>psf_d=None</em>, <em>img_size=None</em>, <em>use_otf=False</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply4D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply4D" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSFApply4D</code><span class="sig-paren">(</span><em>psf_d</em>, <em>img_size=None</em>, <em>use_otf=True</em>, <em>data_format=None</em>, <em>use_fftconv=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply4D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply4D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#plenoptomos.psf.PSFApply" title="plenoptomos.psf.PSFApply"><code class="xref py py-class docutils literal notranslate"><span class="pre">plenoptomos.psf.PSFApply</span></code></a></p>
 <p>Class PSFApply4D handles all PSF applications and</p>
 </dd></dl>
