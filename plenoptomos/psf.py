@@ -227,6 +227,14 @@ class PSFApply(object):
         c_out = tm.time()
         print("\b\b: Done in %g seconds." % (c_out - c_in))
 
+    def print(self):
+        print("PSF object's properties:")
+        for k, v in self.__dict__.items():
+            if v is not None and k.lower() in ('psf_direct', 'psf_adjoint', 'otf_direct', 'otf_adjoint'):
+                print(' %18s : %s, %s' % (k, str(v.shape), str(v.dtype)))
+            else:
+                print(' %18s : %s' % (k, str(v)))
+
     def _reset(self):
         self.data_type = np.float32
 
@@ -242,7 +250,7 @@ class PSFApply(object):
         self.use_otf = True
         self.use_fftconv = False
         self.psf_edge = np.zeros((0, ), dtype=self.data_type)
-        self.extra_pad = np.zeros((2, 2), dtype=self.data_type)
+        self.extra_pad = np.zeros((0, ), dtype=self.data_type)
         self.data_format = None
 
     def set_psf_direct(self, psf_d, img_size=None):
@@ -278,16 +286,9 @@ class PSFApply(object):
 
         if img_size is not None:
             self.image_size = np.array(img_size)
-            self.set_paddings()
         # if we know the images sizes, we can already compute the OTF
         if self.use_otf is True and self.image_size is not None:
             self._init_otfs()
-
-    def set_paddings(self):
-        total_size = self.image_size + 2 * self.psf_edge
-        for ii in self.otf_axes:
-            total_size[ii] = fftpack.helper.next_fast_len(total_size[ii])
-        self.extra_pad = total_size - self.image_size
 
     def apply_psf_direct(self, imgs):
         self._check_incoming_images(imgs)
@@ -312,7 +313,17 @@ class PSFApply(object):
             sol = solvers.Sirt(verbose=verbose)
         return sol(self.apply_psf_direct, imgs, iterations, At=self.apply_psf_adjoint, lower_limit=lower_limit, upper_limit=upper_limit)
 
+    def _get_psf_datashape(self):
+        psf_shape = np.zeros_like(self.image_size)
+        psf_shape[np.r_[self.otf_axes]] = self.psf_edge * 2
+        return psf_shape + 1
+
     def _init_otfs(self):
+        full_conv_shape = self.image_size + self._get_psf_datashape() - 1
+        for ii in self.otf_axes:
+            full_conv_shape[ii] = fftpack.helper.next_fast_len(full_conv_shape[ii])
+        self.extra_pad = full_conv_shape - self.image_size
+
         self.otf_direct = self._init_single_otf(self.psf_direct)
 
         if self.is_symmetric is not True:
@@ -320,15 +331,15 @@ class PSFApply(object):
 
     def _init_single_otf(self, psf):
         imgs_shape = self.image_size + self.extra_pad
-        return np.fft.rfftn(psf, imgs_shape, axes=self.otf_axes)
+        psf = np.reshape(psf, self._get_psf_datashape())
+        fft_shape = imgs_shape[np.r_[self.otf_axes]]
+        return np.fft.rfftn(psf, fft_shape, axes=self.otf_axes)
 
     def _check_incoming_psf(self, psf_d):
         raise NotImplementedError()
 
     def _check_incoming_images(self, img):
         img_size = np.array(img.shape)
-        if len(img_size) > len(self.otf_axes):
-            img_size = img_size[-len(self.otf_axes):]
 
         if self.image_size is None:
             self.otf_direct = None
@@ -342,24 +353,27 @@ class PSFApply(object):
             self.image_size = img_size
 
         if self.use_otf is True and self.otf_direct is None:
-            self.set_paddings()
             self._init_otfs()
 
     def _apply_otf(self, imgs, is_direct):
         imgs_shape = self.image_size + self.extra_pad
-        imgs = np.fft.rfftn(imgs, imgs_shape, axes=self.otf_axes)
+        fft_shape = imgs_shape[np.r_[self.otf_axes]]
+        imgs = np.fft.rfftn(imgs, fft_shape, axes=self.otf_axes)
 
         if is_direct or self.is_symmetric:
             imgs *= self.otf_direct
         else:
             imgs *= self.otf_adjoint
 
-        imgs = np.fft.irfftn(imgs, imgs_shape, axes=self.otf_axes)
+        imgs = np.fft.irfftn(imgs, fft_shape, axes=self.otf_axes)
         imgs = np.real(imgs)
 
         # slicing images to remove padding used during convolution
-        fslice = tuple([slice(self.psf_edge[ii], s + self.psf_edge[ii]) for ii, s in enumerate(self.image_size)])
-        return imgs[fslice]
+        psf_edge_shape = ((self._get_psf_datashape() - 1) / 2).astype(np.int)
+        fslice = [slice(None), ] * len(self.image_size)
+        for ii in self.otf_axes:
+            fslice[ii] = slice(psf_edge_shape[ii], self.image_size[ii] + psf_edge_shape[ii])
+        return imgs[tuple(fslice)]
 
     def _apply_psf(self, imgs, is_direct):
         if is_direct or self.is_symmetric:

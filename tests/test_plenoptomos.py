@@ -53,6 +53,7 @@ class TestPlenoptomos(unittest.TestCase):
 
         raw_img = self.lf.get_raw_detector_picture()
 
+        print('Testing direct PSF application..')
         conv_no = psf_ml_no.apply_psf_direct(raw_img)
         conv_yo = psf_ml_yo.apply_psf_direct(raw_img)
 
@@ -61,6 +62,25 @@ class TestPlenoptomos(unittest.TestCase):
 #        axf[1].imshow(conv_yo)
 #        axf[2].imshow(conv_no - conv_yo)
 #        plt.show()
+
+        self.assertTrue(np.all((conv_no - conv_yo) == 0))
+
+        print('Testing adjoint PSF application..')
+        conv_no = psf_ml_no.apply_psf_adjoint(raw_img)
+        conv_yo = psf_ml_yo.apply_psf_adjoint(raw_img)
+
+#        (ff, axf) = plt.subplots(1, 3, sharex=True, sharey=True)
+#        axf[0].imshow(conv_no)
+#        axf[1].imshow(conv_yo)
+#        axf[2].imshow(conv_no - conv_yo)
+#        plt.show()
+
+        self.assertTrue(np.all((conv_no - conv_yo) == 0))
+
+        print('Testing direct PSF application on extended shapes..')
+        raw_img = raw_img[np.newaxis, ...]
+        conv_no = psf_ml_no.apply_psf_direct(raw_img)
+        conv_yo = psf_ml_yo.apply_psf_direct(raw_img)
 
         self.assertTrue(np.all((conv_no - conv_yo) == 0))
 
