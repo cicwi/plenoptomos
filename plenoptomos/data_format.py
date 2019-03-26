@@ -35,11 +35,10 @@ from . import lightfield
 
 def load_raw_sensor_image(raw_file, file_ext):
     im = mim.imread(raw_file)
-    if file_ext[1:].lower() == 'png':
-        im = im[..., 0] * 255
-    elif file_ext[1:].lower() in ('tif', 'tiff') \
-            or (len(im.shape) == 3 and im.shape[2] > 1):
+    if len(im.shape) == 3 and im.shape[2] > 1:
         im = im[..., 0]
+    if file_ext[1:].lower() == 'png':
+        im *= 255
     return im
 
 
