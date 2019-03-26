@@ -6,18 +6,15 @@ Created on Tue Oct 10 18:31:14 2017
 @author: vigano
 """
 
-import numpy as np
+import copy
 
-try:
-    import scipy.fftpack as fft
-    has_fftpack = True
-except ImportError:
-    import numpy.fft as fft
-    has_fftpack = False
+import numpy as np
+import numpy.fft
 
 import scipy.ndimage as spimg
 import scipy.special as spspecial
 import scipy.signal as spsig
+from scipy import fftpack
 
 import matplotlib.pyplot as plt
 # Do not remove the following import: it is used somehow by the plotting
@@ -37,6 +34,9 @@ class PSF(object):
         self.data = data
         self.conf = conf
         self.data_format = data_format
+
+    def clone(self):
+        return copy.deepcopy(self)
 
     @staticmethod
     def create_theo_psf(camera, coordinates, wavelength_steps=10, \
@@ -211,7 +211,7 @@ class PSFApply(object):
     """Class PSFApply handles all PSF/OTF applications
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=False, data_format=None, use_fftconv=True):
+    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
         print("- Initializing PSF application class..", end='', flush=True)
         c_in = tm.time()
 
@@ -284,15 +284,10 @@ class PSFApply(object):
             self._init_otfs()
 
     def set_paddings(self):
-        round_to_multiple = lambda x, y: x + np.mod(y - np.mod(x, y), y)
-
         total_size = self.image_size + 2 * self.psf_edge
-        base_multiple = 2 ** np.ceil(np.ceil(np.log2(total_size)) / 2)
-        final_size = round_to_multiple(total_size, base_multiple)
-
-        lower_pad = np.ceil((final_size - total_size) / 2)
-        upper_pad = np.floor((final_size - total_size) / 2)
-        self.extra_pad = np.array((lower_pad, upper_pad)).astype(np.intp)
+        for ii in self.otf_axes:
+            total_size[ii] = fftpack.helper.next_fast_len(total_size[ii])
+        self.extra_pad = total_size - self.image_size
 
     def apply_psf_direct(self, imgs):
         self._check_incoming_images(imgs)
@@ -324,22 +319,8 @@ class PSFApply(object):
             self.otf_adjoint = self._init_single_otf(self.psf_adjoint)
 
     def _init_single_otf(self, psf):
-        psf_size = 2 * self.psf_edge + 1
-        total_extra_pad = np.sum(self.extra_pad, axis=0)
-        lower_psf_padding = np.ceil((self.image_size + total_extra_pad - psf_size) / 2.0) + self.psf_edge
-        upper_psf_padding = np.floor((self.image_size + total_extra_pad - psf_size) / 2.0) + self.psf_edge
-        psf_padding = np.array((lower_psf_padding, upper_psf_padding)).transpose((1, 0)).astype(np.int32)
-
-        otf = np.pad(psf, pad_width=psf_padding, mode='constant')
-
-        otf = fft.ifftshift(otf, axes=self.otf_axes)
-        if has_fftpack and self.is_symmetric:
-            for a in self.otf_axes:
-                otf = fft.rfft(otf, axis=a)
-        else:
-            otf = fft.fftn(otf, axes=self.otf_axes)
-
-        return otf
+        imgs_shape = self.image_size + self.extra_pad
+        return np.fft.rfftn(psf, imgs_shape, axes=self.otf_axes)
 
     def _check_incoming_psf(self, psf_d):
         raise NotImplementedError()
@@ -365,40 +346,20 @@ class PSFApply(object):
             self._init_otfs()
 
     def _apply_otf(self, imgs, is_direct):
-        pre_pos = len(imgs.shape) - len(self.otf_axes)
-        pre_zeros = np.zeros((2, pre_pos), dtype=np.intp)
-        pad_scheme = np.concatenate((pre_zeros, self.psf_edge + self.extra_pad), axis=-1)
-        pad_scheme = pad_scheme.transpose((1, 0)).astype(np.intp)
-        imgs = np.pad(imgs, pad_scheme, mode='constant')
-
-        imgs = fft.fftshift(imgs, axes=self.otf_axes)
-
-        if has_fftpack and self.is_symmetric:
-            for a in self.otf_axes:
-                imgs = fft.rfft(imgs, axis=a)
-        else:
-            imgs = fft.fftn(imgs, axes=self.otf_axes)
+        imgs_shape = self.image_size + self.extra_pad
+        imgs = np.fft.rfftn(imgs, imgs_shape, axes=self.otf_axes)
 
         if is_direct or self.is_symmetric:
             imgs *= self.otf_direct
         else:
             imgs *= self.otf_adjoint
 
-        if has_fftpack and self.is_symmetric:
-            for a in self.otf_axes:
-                imgs = fft.irfft(imgs, axis=a)
-        else:
-            imgs = fft.ifftn(imgs, axes=self.otf_axes)
-
+        imgs = np.fft.irfftn(imgs, imgs_shape, axes=self.otf_axes)
         imgs = np.real(imgs)
 
-        imgs = fft.ifftshift(imgs, axes=self.otf_axes)
-
         # slicing images to remove padding used during convolution
-        slicing_op = [slice(None)] * pre_pos
-        for ii in range(pad_scheme.shape[0] - pre_pos):
-            slicing_op.append(slice(pad_scheme[ii + pre_pos, 0], -pad_scheme[ii + pre_pos, 1]))
-        return imgs[tuple(slicing_op)]
+        fslice = tuple([slice(self.psf_edge[ii], s + self.psf_edge[ii]) for ii, s in enumerate(self.image_size)])
+        return imgs[fslice]
 
     def _apply_psf(self, imgs, is_direct):
         if is_direct or self.is_symmetric:
@@ -421,12 +382,13 @@ class PSFApply2D(PSFApply):
     """Class PSFApply2D handles all PSF applications and
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=False, data_format=None, use_fftconv=True):
+    def __init__(self, psf_d, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
         self.otf_axes = (-2, -1)
         if isinstance(psf_d, PSF):
-            psf = psf_d.data
+            psf_inst = psf_d.clone()
+            psf = np.squeeze(psf_inst.data)
             if data_format is None:
-                data_format = psf_d.data_format
+                data_format = psf_inst.data_format
         else:
             psf = np.squeeze(psf_d)
         PSFApply.__init__(self, psf, img_size=img_size, use_otf=use_otf, data_format=data_format, use_fftconv=use_fftconv)
@@ -444,7 +406,7 @@ class PSFApply4D(PSFApply):
     """Class PSFApply4D handles all PSF applications and
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=False, data_format=None, use_fftconv=True):
+    def __init__(self, psf_d, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
         self.otf_axes = (-4, -3, -2, -1)
         if isinstance(psf_d, PSF):
             psf = psf_d.data
