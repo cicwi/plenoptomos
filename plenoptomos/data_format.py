@@ -201,6 +201,7 @@ def find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None,
         ax[1, 0].set_title('Peaks found (dim 1)')
         ax[0, 1].set_title('Fitted peaks (dim 0)')
         ax[1, 1].set_title('Fitted peaks(dim 1)')
+        f.tight_layout()
 
     peak_rm_front = np.array(peak_rm_front)
     peak_rm_back = np.array(peak_rm_back)
@@ -222,6 +223,7 @@ def find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None,
             ax[ii_d, 0].plot(summed_micro_imgs)
             for ii in peak_pos:
                 ax[ii_d, 0].plot((ii, ii), (0, max_peaks), 'r-')
+            f.tight_layout()
             plt.draw()
             plt.show(block=False)
 
@@ -265,6 +267,7 @@ def find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None,
                 peak_position = ii * mean_dist[ii_d] + offset[ii_d]
                 ax[ii_d, 1].plot((peak_position, peak_position), (0, max_peaks), 'r-')
             plt.draw()
+            f.tight_layout()
             plt.show(block=False)
 
     return (mean_dist, offset)
