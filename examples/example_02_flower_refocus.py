@@ -13,8 +13,11 @@ import os
 
 import plenoptomos as pleno
 
-dpath = 'examples/flowers_plants_30_eslf.png'
-jpath = 'examples/flowers_plants_30.json'
+data_dir = 'examples/data/'
+dpath = os.path.join(data_dir, 'flowers_plants_30_eslf.png')
+jpath = os.path.join(data_dir, 'flowers_plants_30.json')
+
+error_msg_lf_files = 'Please download the following files from the Stanford light-field archive and put them in %s:\n - %s\n - %s'
 
 if not os.path.exists(dpath):
     print('Example files: "%s" and "%s" do not exist.' % (dpath, jpath))
@@ -28,10 +31,7 @@ if not os.path.exists(dpath):
         print(' - %s' % jpath_url)
         ur.urlretrieve(jpath_url, jpath)
     except ImportError:
-        print('Please download them from the Stanford light-field archive and put them in examples/')
-        print('For instance:')
-        print(' - %s' % dpath_url)
-        print(' - %s' % jpath_url)
+        raise ValueError(error_msg_lf_files % (data_dir, dpath_url, jpath_url))
 
 print('Importing the light-field from the Lytro eslf format..')
 (lf_r ,lf_g, lf_b) = pleno.import_lf.from_lytro(dpath, jpath, source='eslf', mode='rgb')

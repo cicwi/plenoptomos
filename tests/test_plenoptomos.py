@@ -13,10 +13,11 @@ import os
 
 import plenoptomos as pleno
 
-dpath = 'examples/flowers_plants_30_eslf.png'
-jpath = 'examples/flowers_plants_30.json'
+data_dir = 'examples/data/'
+dpath = os.path.join(data_dir, 'flowers_plants_30_eslf.png')
+jpath = os.path.join(data_dir, 'flowers_plants_30.json')
 
-error_msg_lf_files = 'Please download the following files from the Stanford light-field archive and put them in examples/\n - %s\n - %s'
+error_msg_lf_files = 'Please download the following files from the Stanford light-field archive and put them in %s:\n - %s\n - %s'
 
 class TestPlenoptomos(unittest.TestCase):
     """Tests for `plenoptomos` package."""
@@ -35,7 +36,7 @@ class TestPlenoptomos(unittest.TestCase):
                 print(' - %s' % jpath_url)
                 ur.urlretrieve(jpath_url, jpath)
             except ImportError:
-                raise ValueError(error_msg_lf_files % (dpath_url, jpath_url))
+                raise ValueError(error_msg_lf_files % (data_dir, dpath_url, jpath_url))
 
 #        (self.lf_r ,self.lf_g, self.lf_b) = pleno.import_lf.from_lytro(dpath, jpath, source='eslf', mode='rgb')
         self.lf = pleno.import_lf.from_lytro(dpath, jpath, source='eslf')
