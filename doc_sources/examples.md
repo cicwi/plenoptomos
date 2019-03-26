@@ -1,4 +1,4 @@
-# Examples analysis
+# Examples description
 
 Here we analyse the code and results of the example files
 Examples 02 and 03 use data from the [Stanford light-field archive](http://lightfields.stanford.edu/).
@@ -110,3 +110,69 @@ will use the sirt algorithm to compute the the focal stack.
 Moreover, it allows more advanced filtering options than what was initially proposed in Tao's article.
 Aside from the proposed rectangular filter (`window_shape='rect'`), it also accepts triangular (`'tri'`), circular (`'circ'`), gaussian (`'gauss'`) filters.
 The size of the filters is adjusted using the option `window_size` (default: `window_size=(9, 9)`).
+
+
+## example_04_letters.py
+
+This fourth example shows the creation and calibration of .vox datasets from raw images, and a metadata file.
+
+The used dataset was collected in the labs of [Imagine Optic](https://www.imagine-optic.com/) (Bordeaux, France).
+The data collection has been performed by Charlotte Herzog, Pablo Martinez Gil, and Nicola Viganò.
+
+To initiate this process few files are needed:
+- A file containing the collected light-field data
+```
+raw_file = os.path.join(data_dir, 'letters_ULF_M1.png')
+```
+- A file containing the flat-field: it is also used for calibrating the light-field data
+```
+raw_file_white = os.path.join(data_dir, 'letters_ULF_M1_white.png')
+```
+
+- A file containing the dark-field (optional): it provides the background, but currently not used
+```
+raw_file_dark = os.path.join(data_dir, 'letters_ULF_M1_dark.png')
+```
+
+- A file containing the metadata in ini format. The names and sections follow the description of the vox data format
+```
+ini_file = os.path.join(data_dir, 'letters_ULF_M1.ini')
+```
+
+Finally we indicate the temporary uncalibrate and the final calibrated file names:
+```
+vox_file_uncal = os.path.join(data_dir, 'letters_ULF_M1_uncalibrated.vox')
+vox_file = os.path.join(data_dir, 'letters_ULF_M1.vox')
+```
+
+We then proceed with the creation of the uncalibrated file with the following command:
+```
+pleno.data_format.create_vox_from_raw(raw_file, ini_file, raw_det_white=raw_file_white, raw_det_dark=raw_file_dark, out_file=vox_file_uncal)
+```
+and then to the interactive calibration:
+```
+pleno.data_format.calibrate_raw_image(vox_file_uncal, vox_file_out=vox_file)
+```
+This will open a window, which shows the peaks associated to the lenslets in each dimension of the raw detector image (it is obtained through a sum in the perpendicular direction).
+![](Images/example_04_dim0_pre-fit.png "pre-fit dim0")
+
+In this case, the first and last peaks are either truncated or not fully illuminated, so it makes sense to remove them from the dataset.
+For the fitting, moreover, we suggest to skip the first and last of the remaining set.
+
+Once confirmed, the window will be updated to handle the other image dimension:
+![](Images/example_04_dim1_pre-fit.png "pre-fit dim1")
+
+Also in this case, the first and last peaks can be removed from the dataset, and the first and last of the remaining set can be temporarily excluded from the fitting.
+
+The fully fitted lenslet positions should look like the following:
+![](Images/example_04_post-fit.png "post-fit")
+
+The computed dimensions of the lenslets should be (48.2, 48.2273), and the expected offsets should be (46.5125, 30.5504).
+In case a series of datasets were to be acquired with an identical camera setup, it is possible to skip the fitting procedure by passing directly the `pitch` (lenslet size) and `offset` values.
+
+The calibrated dataset can then be loaded using the `load` function:
+```
+lfv = pleno.data_format.load(vox_file)
+```
+
+The rest of the example is fundamentally a duplicate of example 02.

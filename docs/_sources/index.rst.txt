@@ -12,9 +12,9 @@ Contents:
 
    readme
    fileformat
+   examples
    modules
    changelog
-   examples
 
 
 Indices and tables

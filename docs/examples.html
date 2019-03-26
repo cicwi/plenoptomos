@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Examples analysis &mdash; plenoptomos  documentation</title>
+  <title>Examples description &mdash; plenoptomos  documentation</title>
   
 
   
@@ -35,7 +35,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Changelog" href="changelog.html" /> 
+    <link rel="next" title="plenoptomos" href="modules.html" />
+    <link rel="prev" title="File format" href="fileformat.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,14 +83,15 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">plenoptomos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fileformat.html">File format</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples analysis</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples description</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#example-01-logos-py">example_01_logos.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#example-02-flower-refocusing-py">example_02_flower_refocusing.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#example-03-flower-depth-py">example_03_flower_depth.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-04-letters-py">example_04_letters.py</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -135,7 +137,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Examples analysis</li>
+      <li>Examples description</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -154,8 +156,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="examples-analysis">
-<h1>Examples analysis<a class="headerlink" href="#examples-analysis" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="examples-description">
+<h1>Examples description<a class="headerlink" href="#examples-description" title="Permalink to this headline">¶</a></h1>
 <p>Here we analyse the code and results of the example files
 Examples 02 and 03 use data from the <a class="reference external" href="http://lightfields.stanford.edu/">Stanford light-field archive</a>.</p>
 <div class="section" id="example-01-logos-py">
@@ -254,6 +256,66 @@ Moreover, it allows more advanced filtering options than what was initially prop
 Aside from the proposed rectangular filter (<code class="docutils literal notranslate"><span class="pre">window_shape='rect'</span></code>), it also accepts triangular (<code class="docutils literal notranslate"><span class="pre">'tri'</span></code>), circular (<code class="docutils literal notranslate"><span class="pre">'circ'</span></code>), gaussian (<code class="docutils literal notranslate"><span class="pre">'gauss'</span></code>) filters.
 The size of the filters is adjusted using the option <code class="docutils literal notranslate"><span class="pre">window_size</span></code> (default: <code class="docutils literal notranslate"><span class="pre">window_size=(9,</span> <span class="pre">9)</span></code>).</p>
 </div>
+<div class="section" id="example-04-letters-py">
+<h2>example_04_letters.py<a class="headerlink" href="#example-04-letters-py" title="Permalink to this headline">¶</a></h2>
+<p>This fourth example shows the creation and calibration of .vox datasets from raw images, and a metadata file.</p>
+<p>The used dataset was collected in the labs of <a class="reference external" href="https://www.imagine-optic.com/">Imagine Optic</a> (Bordeaux, France).
+The data collection has been performed by Charlotte Herzog, Pablo Martinez Gil, and Nicola Viganò.</p>
+<p>To initiate this process few files are needed:</p>
+<ul class="simple">
+<li>A file containing the collected light-field data</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">raw_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>A file containing the flat-field: it is also used for calibrating the light-field data</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">raw_file_white</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1_white.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>A file containing the dark-field (optional): it provides the background, but currently not used</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">raw_file_dark</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1_dark.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>A file containing the metadata in ini format. The names and sections follow the description of the vox data format</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ini_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1.ini&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally we indicate the temporary uncalibrate and the final calibrated file names:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vox_file_uncal</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1_uncalibrated.vox&#39;</span><span class="p">)</span>
+<span class="n">vox_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1.vox&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We then proceed with the creation of the uncalibrated file with the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pleno</span><span class="o">.</span><span class="n">data_format</span><span class="o">.</span><span class="n">create_vox_from_raw</span><span class="p">(</span><span class="n">raw_file</span><span class="p">,</span> <span class="n">ini_file</span><span class="p">,</span> <span class="n">raw_det_white</span><span class="o">=</span><span class="n">raw_file_white</span><span class="p">,</span> <span class="n">raw_det_dark</span><span class="o">=</span><span class="n">raw_file_dark</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="n">vox_file_uncal</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and then to the interactive calibration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pleno</span><span class="o">.</span><span class="n">data_format</span><span class="o">.</span><span class="n">calibrate_raw_image</span><span class="p">(</span><span class="n">vox_file_uncal</span><span class="p">,</span> <span class="n">vox_file_out</span><span class="o">=</span><span class="n">vox_file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will open a window, which shows the peaks associated to the lenslets in each dimension of the raw detector image (it is obtained through a sum in the perpendicular direction).
+<img alt="pre-fit dim0" src="_images/example_04_dim0_pre-fit.png" /></p>
+<p>In this case, the first and last peaks are either truncated or not fully illuminated, so it makes sense to remove them from the dataset.
+For the fitting, moreover, we suggest to skip the first and last of the remaining set.</p>
+<p>Once confirmed, the window will be updated to handle the other image dimension:
+<img alt="pre-fit dim1" src="_images/example_04_dim1_pre-fit.png" /></p>
+<p>Also in this case, the first and last peaks can be removed from the dataset, and the first and last of the remaining set can be temporarily excluded from the fitting.</p>
+<p>The fully fitted lenslet positions should look like the following:
+<img alt="post-fit" src="_images/example_04_post-fit.png" /></p>
+<p>The computed dimensions of the lenslets should be (48.2, 48.2273), and the expected offsets should be (46.5125, 30.5504).
+In case a series of datasets were to be acquired with an identical camera setup, it is possible to skip the fitting procedure by passing directly the <code class="docutils literal notranslate"><span class="pre">pitch</span></code> (lenslet size) and <code class="docutils literal notranslate"><span class="pre">offset</span></code> values.</p>
+<p>The calibrated dataset can then be loaded using the <code class="docutils literal notranslate"><span class="pre">load</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lfv</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">data_format</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">vox_file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The rest of the example is fundamentally a duplicate of example 02.</p>
+</div>
 </div>
 
 
@@ -264,8 +326,10 @@ The size of the filters is adjusted using the option <code class="docutils liter
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="modules.html" class="btn btn-neutral float-right" title="plenoptomos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="changelog.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="fileformat.html" class="btn btn-neutral float-left" title="File format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
