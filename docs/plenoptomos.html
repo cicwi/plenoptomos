@@ -178,6 +178,8 @@
 <span id="plenoptomos-colors-module"></span><h2>plenoptomos.colors module<a class="headerlink" href="#module-plenoptomos.colors" title="Permalink to this headline">¶</a></h2>
 <p>Created on Tue Apr  4 16:01:41 2017</p>
 <p>&#64;author: vigano</p>
+<p>Convenience functions for handling multi-channel datasets.
+They mainly focus on visible light (RGB channels).</p>
 <dl class="function">
 <dt id="plenoptomos.colors.convert_energy_to_wavelength">
 <code class="descclassname">plenoptomos.colors.</code><code class="descname">convert_energy_to_wavelength</code><span class="sig-paren">(</span><em>energy</em>, <em>unit_energy='eV'</em>, <em>unit_lambda='um'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#convert_energy_to_wavelength"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.convert_energy_to_wavelength" title="Permalink to this definition">¶</a></dt>
@@ -205,7 +207,7 @@
 
 <dl class="function">
 <dt id="plenoptomos.colors.merge_rgb_images">
-<code class="descclassname">plenoptomos.colors.</code><code class="descname">merge_rgb_images</code><span class="sig-paren">(</span><em>imgs_r</em>, <em>imgs_g</em>, <em>imgs_b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#merge_rgb_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.merge_rgb_images" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">plenoptomos.colors.</code><code class="descname">merge_rgb_images</code><span class="sig-paren">(</span><em>imgs_r</em>, <em>imgs_g</em>, <em>imgs_b</em>, <em>vmin=0.0</em>, <em>vmax=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/colors.html#merge_rgb_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.colors.merge_rgb_images" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -227,29 +229,45 @@
 - Based on [HDF5](<a class="reference external" href="https://www.hdfgroup.org/solutions/hdf5/">https://www.hdfgroup.org/solutions/hdf5/</a>) and vaguely inspired by [DataExchange](<a class="reference external" href="https://github.com/data-exchange/dxchange">https://github.com/data-exchange/dxchange</a>)</p>
 <p>The updated structure can be found at: <a class="reference external" href="https://cicwi.github.io/plenoptomos">https://cicwi.github.io/plenoptomos</a></p>
 <dl class="function">
-<dt id="plenoptomos.data_format.assign_optional_attr">
-<code class="descclassname">plenoptomos.data_format.</code><code class="descname">assign_optional_attr</code><span class="sig-paren">(</span><em>obj</em>, <em>conf</em>, <em>label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#assign_optional_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.assign_optional_attr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="plenoptomos.data_format.calibrate_raw_image">
 <code class="descclassname">plenoptomos.data_format.</code><code class="descname">calibrate_raw_image</code><span class="sig-paren">(</span><em>vox_file_in</em>, <em>vox_file_out=None</em>, <em>pitch=None</em>, <em>offset=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#calibrate_raw_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.calibrate_raw_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Calibrate the array offsets and lenslet pitch for a .vox light-field file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vox_file_in</strong> – the uncalibrated light-field file path (string)</li>
+<li><strong>vox_file_out</strong> – the calibrated light-field file path (string)</li>
+<li><strong>pitch</strong> – OPTIONAL lenslet pitch, that would otherwise be calibrated (&lt;2x1&gt; list or tuple, default: None)</li>
+<li><strong>offset</strong> – OPTIONAL MLA offset, that would otherwise be calibrated (&lt;2x1&gt; list or tuple, default: None)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="plenoptomos.data_format.create_vox_from_raw">
 <code class="descclassname">plenoptomos.data_format.</code><code class="descname">create_vox_from_raw</code><span class="sig-paren">(</span><em>raw_det_file</em>, <em>conf_file</em>, <em>out_file=None</em>, <em>raw_det_white=None</em>, <em>raw_det_dark=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#create_vox_from_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.create_vox_from_raw" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="plenoptomos.data_format.find_offsets_and_pitch">
-<code class="descclassname">plenoptomos.data_format.</code><code class="descname">find_offsets_and_pitch</code><span class="sig-paren">(</span><em>w_im</em>, <em>peak_rm_front=(None</em>, <em>None)</em>, <em>peak_rm_back=(None</em>, <em>None)</em>, <em>peak_skip_front=(None</em>, <em>None)</em>, <em>peak_skip_back=(None</em>, <em>None)</em>, <em>verbose=False</em>, <em>interactive=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#find_offsets_and_pitch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.find_offsets_and_pitch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="plenoptomos.data_format.has_fields_for_raw_to_microimage">
-<code class="descclassname">plenoptomos.data_format.</code><code class="descname">has_fields_for_raw_to_microimage</code><span class="sig-paren">(</span><em>vox_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#has_fields_for_raw_to_microimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.has_fields_for_raw_to_microimage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates a .vox light-field file, from a raw detector image and metadata.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>raw_det_file</strong> – the raw image file path (string)</li>
+<li><strong>conf_file</strong> – the metadata file path (string)</li>
+<li><strong>out_file</strong> – the uncalibrated light-field file path (string)</li>
+<li><strong>raw_det_white</strong> – the flat-field image file path (string, default: None)</li>
+<li><strong>raw_det_dark</strong> – the dark-field image file path (string, default: None)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="plenoptomos.data_format.load">
@@ -268,16 +286,6 @@
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="function">
-<dt id="plenoptomos.data_format.load_raw_image">
-<code class="descclassname">plenoptomos.data_format.</code><code class="descname">load_raw_image</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#load_raw_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.load_raw_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="plenoptomos.data_format.load_raw_sensor_image">
-<code class="descclassname">plenoptomos.data_format.</code><code class="descname">load_raw_sensor_image</code><span class="sig-paren">(</span><em>raw_file</em>, <em>file_ext</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/data_format.html#load_raw_sensor_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.data_format.load_raw_sensor_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="function">
 <dt id="plenoptomos.data_format.raw_to_microimage_exact">
@@ -367,40 +375,34 @@ in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp
 </dd></dl>
 
 <dl class="function">
-<dt id="plenoptomos.depth.divergence2">
-<code class="descclassname">plenoptomos.depth.</code><code class="descname">divergence2</code><span class="sig-paren">(</span><em>x0</em>, <em>x1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#divergence2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.divergence2" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="plenoptomos.depth.get_central_subaperture">
-<code class="descclassname">plenoptomos.depth.</code><code class="descname">get_central_subaperture</code><span class="sig-paren">(</span><em>lf_sa</em>, <em>origin_vu=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#get_central_subaperture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.get_central_subaperture" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="plenoptomos.depth.get_distances">
 <code class="descclassname">plenoptomos.depth.</code><code class="descname">get_distances</code><span class="sig-paren">(</span><em>dm</em>, <em>zs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#get_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.get_distances" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="plenoptomos.depth.gradient2">
-<code class="descclassname">plenoptomos.depth.</code><code class="descname">gradient2</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#gradient2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.gradient2" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="plenoptomos.depth.laplacian2">
-<code class="descclassname">plenoptomos.depth.</code><code class="descname">laplacian2</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#laplacian2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.laplacian2" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert depth map indices into distances</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dm</strong> – the depth map (numpy.array_like)</li>
+<li><strong>zs</strong> – the corresponding distances in the depth map (numpy.array_like)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the depth-map containing the real distances</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-plenoptomos.import_lf">
 <span id="plenoptomos-import-lf-module"></span><h2>plenoptomos.import_lf module<a class="headerlink" href="#module-plenoptomos.import_lf" title="Permalink to this headline">¶</a></h2>
 <p>Created on Mon Feb 18 16:08:43 2019</p>
 <p>&#64;author: vigano</p>
-<dl class="function">
-<dt id="plenoptomos.import_lf.flexray_parse_source_det_positions">
-<code class="descclassname">plenoptomos.import_lf.</code><code class="descname">flexray_parse_source_det_positions</code><span class="sig-paren">(</span><em>script_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#flexray_parse_source_det_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.flexray_parse_source_det_positions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="function">
 <dt id="plenoptomos.import_lf.from_flexray">
 <code class="descclassname">plenoptomos.import_lf.</code><code class="descname">from_flexray</code><span class="sig-paren">(</span><em>dset_path</em>, <em>crop_fixed_det=True</em>, <em>data_type=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#from_flexray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.from_flexray" title="Permalink to this definition">¶</a></dt>
@@ -419,7 +421,7 @@ in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The imported light-field datastructure</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a></p>
 </td>
 </tr>
 </tbody>
@@ -448,7 +450,7 @@ in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The imported light-field datastructure</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a></p>
 </td>
 </tr>
 </tbody>
@@ -475,7 +477,7 @@ in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The imported light-field datastructure</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(<a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#plenoptomos.lightfield.Lightfield" title="plenoptomos.lightfield.Lightfield">lightfield.Lightfield</a></p>
 </td>
 </tr>
 </tbody>
@@ -500,7 +502,20 @@ corresponding json file</p>
 <dl class="function">
 <dt id="plenoptomos.import_lf.lytro_read_metadata">
 <code class="descclassname">plenoptomos.import_lf.</code><code class="descname">lytro_read_metadata</code><span class="sig-paren">(</span><em>fname_json</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#lytro_read_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.lytro_read_metadata" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Reads the Lytro ILLUM metadata from the json file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname_json</strong> – The path to the .json file (string)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The camera object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#plenoptomos.lightfield.Camera" title="plenoptomos.lightfield.Camera">lightfield.Camera</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-plenoptomos.lightfield">
@@ -860,6 +875,8 @@ detector format</p>
 <dt id="plenoptomos.psf.PSF">
 <em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSF</code><span class="sig-paren">(</span><em>coordinates</em>, <em>data=None</em>, <em>conf=None</em>, <em>data_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Data class that allows to store n-dimensional PSFs, and their
+accompanying information.</p>
 <dl class="method">
 <dt id="plenoptomos.psf.PSF.clone">
 <code class="descname">clone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF.clone" title="Permalink to this definition">¶</a></dt>
@@ -878,7 +895,30 @@ detector format</p>
 <dl class="staticmethod">
 <dt id="plenoptomos.psf.PSF.create_theo_psf">
 <em class="property">static </em><code class="descname">create_theo_psf</code><span class="sig-paren">(</span><em>camera</em>, <em>coordinates</em>, <em>wavelength_steps=10</em>, <em>wavelength_intensity=1</em>, <em>airy_rings=2</em>, <em>refocus_distance=None</em>, <em>up_sampling=1</em>, <em>beam_coherence='incoherent'</em>, <em>over_sampling=25</em>, <em>data_type=&lt;class 'numpy.float32'&gt;</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF.create_theo_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF.create_theo_psf" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute the theoretical PSF for the given coordinates in the given
+camera setup.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>camera</strong> – The camera setup object (lightfield.Camera)</li>
+<li><strong>coordinates</strong> – The coordinates where to compute the PSF. Options: ‘vu’ | ‘ts’ (string)</li>
+<li><strong>airy_rings</strong> – Orders of the Airy function to consider (int, default:2)</li>
+<li><strong>beam_coherence</strong> – coherence of the light source. Options: ‘incoherent’ | coherent (string, default: ‘incoherent’)</li>
+<li><strong>refocus_distance</strong> – Distance of refocusing, for fine tuning the disk of confusion (float, default: None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The computed PSF.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#plenoptomos.psf.PSF" title="plenoptomos.psf.PSF">PSF</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -890,17 +930,66 @@ detector format</p>
 <dl class="method">
 <dt id="plenoptomos.psf.PSFApply.apply_psf_adjoint">
 <code class="descname">apply_psf_adjoint</code><span class="sig-paren">(</span><em>imgs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply.apply_psf_adjoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply.apply_psf_adjoint" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Applies the adjoint of the PSF to the given images</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>imgs</strong> – The incoming images (numpy.array_like)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The convolution between the images and the adjoint of the PSF</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="plenoptomos.psf.PSFApply.apply_psf_direct">
 <code class="descname">apply_psf_direct</code><span class="sig-paren">(</span><em>imgs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply.apply_psf_direct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply.apply_psf_direct" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Applies the PSF to the given images</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>imgs</strong> – The incoming images (numpy.array_like)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The convolution between the images and the PSF</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy.array_like</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="plenoptomos.psf.PSFApply.deconvolve">
 <code class="descname">deconvolve</code><span class="sig-paren">(</span><em>imgs</em>, <em>iterations=100</em>, <em>data_term='l2'</em>, <em>lambda_wl=None</em>, <em>lower_limit=None</em>, <em>upper_limit=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSFApply.deconvolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSFApply.deconvolve" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Uses iterative algorithms to deconvolve the PSF from the given images</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>imgs</strong> – The incoming images (numpy.array_like)</li>
+<li><strong>iterations</strong> – The number of reconstruciton iterations (int, default: 100)</li>
+<li><strong>lambda_wl</strong> – Weight factor for the wavelet deconvolution. If None is passed, the SIRT algorithm will be used instead (float, default: None)</li>
+<li><strong>data_term</strong> – Data consistency term used by the wl recosntruction. Options: ‘l2’ | ‘kl’ (string, default: ‘l2’)</li>
+<li><strong>lower_limit</strong> – Lower clipping value (float, default: None)</li>
+<li><strong>upper_limit</strong> – Upper clipping value (float, default: None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The deconvolution of the images</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array_like</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="plenoptomos.psf.PSFApply.print">

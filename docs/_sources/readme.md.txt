@@ -27,7 +27,7 @@ Other useful information:
 * Free software: GNU General Public License v3
 * Documentation: [https://cicwi.github.io/plenoptomos]
 
-
+<!--
 ## Readiness
 
 The author of this package is in the process of setting up this
@@ -39,7 +39,7 @@ package for optimal usability. The following has already been completed:
         and pushed to GitHub.
 	- GitHub pages have been setup in the project settings
 	  with the "source" set to "master branch /docs folder".
-- [ ] An initial release
+- [x] An initial release
 	- In `CHANGELOG.md`, a release date has been added to v0.1.0 (change the YYYY-MM-DD).
 	- The release has been marked a release on GitHub.
 	- For more info, see the [Software Release Guide](https://cicwi.github.io/software-guides/software-release-guide).
@@ -86,7 +86,7 @@ package for optimal usability. The following has already been completed:
     - The installation instructions (below) have been updated. Do not
       forget to add the required channels, e.g., `-c some-channel -c
       some-other-channel`, and your own channel, e.g., `-c cicwi`.
-
+-->
 
 ## Getting Started
 

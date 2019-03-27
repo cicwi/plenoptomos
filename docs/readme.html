@@ -82,7 +82,6 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">plenoptomos</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#readiness">Readiness</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#installing-with-conda">Installing with conda</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-from-source">Installing from source</a></li>
@@ -197,80 +196,66 @@ The provided features are:</p>
 <li>Free software: GNU General Public License v3</li>
 <li>Documentation: [https://cicwi.github.io/plenoptomos]</li>
 </ul>
-<div class="section" id="readiness">
-<h2>Readiness<a class="headerlink" href="#readiness" title="Permalink to this headline">¶</a></h2>
-<p>The author of this package is in the process of setting up this
-package for optimal usability. The following has already been completed:</p>
-<ul>
-<li><p class="first">[x] Documentation</p>
-<ul class="simple">
-<li>A package description has been written in the README</li>
-<li>Documentation has been generated using <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code>, committed,
-and pushed to GitHub.</li>
-<li>GitHub pages have been setup in the project settings
-with the “source” set to “master branch /docs folder”.</li>
-</ul>
-</li>
-<li><p class="first">[ ] An initial release</p>
-<ul class="simple">
-<li>In <code class="docutils literal notranslate"><span class="pre">CHANGELOG.md</span></code>, a release date has been added to v0.1.0 (change the YYYY-MM-DD).</li>
-<li>The release has been marked a release on GitHub.</li>
-<li>For more info, see the <a class="reference external" href="https://cicwi.github.io/software-guides/software-release-guide">Software Release Guide</a>.</li>
-</ul>
-</li>
-<li><p class="first">[x] A conda package</p>
-<ul>
-<li><p class="first">Required packages have been added to <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, for instance,</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">requirements</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="c1"># Add your project&#39;s requirements here, e.g.,</span>
-    <span class="c1"># &#39;astra-toolbox&#39;,</span>
-    <span class="c1"># &#39;sacred&gt;=0.7.2&#39;,</span>
-    <span class="c1"># &#39;tables==3.4.4&#39;,</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-<p>has been replaced by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">requirements</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;numpy&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;scipy&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;matplotlib&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;astra-toolbox&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;h5py&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;configparser&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pillow&#39;</span><span class="p">,</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">All “conda channels” that are required for building and
-installing the package have been added to the
-<code class="docutils literal notranslate"><span class="pre">Makefile</span></code>. Specifically, replace</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda_package</span><span class="p">:</span>
-  <span class="n">conda</span> <span class="n">install</span> <span class="n">conda</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">y</span>
-  <span class="n">conda</span> <span class="n">build</span> <span class="n">conda</span><span class="o">/</span>
-</pre></div>
-</div>
-<p>by</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda_package</span><span class="p">:</span>
-  <span class="n">conda</span> <span class="n">install</span> <span class="n">conda</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">y</span>
-  <span class="n">conda</span> <span class="n">build</span> <span class="n">conda</span><span class="o">/</span> <span class="o">-</span><span class="n">c</span> <span class="n">some</span><span class="o">-</span><span class="n">channel</span> <span class="o">-</span><span class="n">c</span> <span class="n">some</span><span class="o">-</span><span class="n">other</span><span class="o">-</span><span class="n">channel</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Conda packages have been built successfully with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">conda_package</span></code>.</p>
-</li>
-<li><p class="first">These conda packages have been uploaded to
-<a class="reference external" href="https://anaconda.org">Anaconda</a>. <a class="reference external" href="http://docs.anaconda.com/anaconda-cloud/user-guide/getting-started/#cloud-getting-started-build-upload">This</a>
-is a good getting started guide.</p>
-</li>
-<li><p class="first">The installation instructions (below) have been updated. Do not
-forget to add the required channels, e.g., <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">some-channel</span> <span class="pre">-c</span> <span class="pre">some-other-channel</span></code>, and your own channel, e.g., <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">cicwi</span></code>.</p>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="getting-started">
+<!--
+## Readiness
+
+The author of this package is in the process of setting up this
+package for optimal usability. The following has already been completed:
+
+- [x] Documentation
+    - A package description has been written in the README
+    - Documentation has been generated using `make docs`, committed,
+        and pushed to GitHub.
+	- GitHub pages have been setup in the project settings
+	  with the "source" set to "master branch /docs folder".
+- [x] An initial release
+	- In `CHANGELOG.md`, a release date has been added to v0.1.0 (change the YYYY-MM-DD).
+	- The release has been marked a release on GitHub.
+	- For more info, see the [Software Release Guide](https://cicwi.github.io/software-guides/software-release-guide).
+- [x] A conda package
+    - Required packages have been added to `setup.py`, for instance,
+      ```
+      requirements = [
+          # Add your project's requirements here, e.g.,
+          # 'astra-toolbox',
+          # 'sacred>=0.7.2',
+          # 'tables==3.4.4',
+      ]
+      ```
+      has been replaced by
+      ```
+      requirements = [
+          'numpy',
+          'scipy',
+          'matplotlib',
+          'astra-toolbox',
+          'h5py',
+          'configparser',
+          'pillow',
+      ]
+      ```
+    - All "conda channels" that are required for building and
+      installing the package have been added to the
+      `Makefile`. Specifically, replace
+      ```
+      conda_package:
+        conda install conda-build -y
+        conda build conda/
+      ```
+      by
+      ```
+      conda_package:
+        conda install conda-build -y
+        conda build conda/ -c some-channel -c some-other-channel
+      ```
+    - Conda packages have been built successfully with `make conda_package`.
+    - These conda packages have been uploaded to
+      [Anaconda](https://anaconda.org). [This](http://docs.anaconda.com/anaconda-cloud/user-guide/getting-started/#cloud-getting-started-build-upload)
+      is a good getting started guide.
+    - The installation instructions (below) have been updated. Do not
+      forget to add the required channels, e.g., `-c some-channel -c
+      some-other-channel`, and your own channel, e.g., `-c cicwi`.
+--><div class="section" id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <p>It takes a few steps to setup plenoptomos on your
 machine. We recommend installing

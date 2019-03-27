@@ -177,6 +177,9 @@
 <span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">tm</span>
 
 <div class="viewcode-block" id="PSF"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSF">[docs]</a><span class="k">class</span> <span class="nc">PSF</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Data class that allows to store n-dimensional PSFs, and their</span>
+<span class="sd">    accompanying information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -193,6 +196,18 @@
                         <span class="n">refocus_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">up_sampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> \
                         <span class="n">beam_coherence</span><span class="o">=</span><span class="s1">&#39;incoherent&#39;</span><span class="p">,</span> \
                         <span class="n">over_sampling</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the theoretical PSF for the given coordinates in the given</span>
+<span class="sd">        camera setup.</span>
+
+<span class="sd">        :param camera: The camera setup object (lightfield.Camera)</span>
+<span class="sd">        :param coordinates: The coordinates where to compute the PSF. Options: &#39;vu&#39; | &#39;ts&#39; (string)</span>
+<span class="sd">        :param airy_rings: Orders of the Airy function to consider (int, default:2)</span>
+<span class="sd">        :param beam_coherence: coherence of the light source. Options: &#39;incoherent&#39; | coherent (string, default: &#39;incoherent&#39;)</span>
+<span class="sd">        :param refocus_distance: Distance of refocusing, for fine tuning the disk of confusion (float, default: None)</span>
+
+<span class="sd">        :returns: The computed PSF.</span>
+<span class="sd">        :rtype: PSF</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># We think in mm</span>
         <span class="k">if</span> <span class="n">camera</span><span class="o">.</span><span class="n">wavelength_unit</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;mm&#39;</span><span class="p">:</span>
             <span class="n">ls_unit</span> <span class="o">=</span> <span class="mi">1</span>
@@ -440,6 +455,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_otfs</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="PSFApply.apply_psf_direct"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply.apply_psf_direct">[docs]</a>    <span class="k">def</span> <span class="nf">apply_psf_direct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Applies the PSF to the given images</span>
+
+<span class="sd">        :param imgs: The incoming images (numpy.array_like)</span>
+
+<span class="sd">        :returns: The convolution between the images and the PSF</span>
+<span class="sd">        :rtype: numpy.array_like</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_incoming_images</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_otf</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -448,6 +470,13 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_psf</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PSFApply.apply_psf_adjoint"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply.apply_psf_adjoint">[docs]</a>    <span class="k">def</span> <span class="nf">apply_psf_adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Applies the adjoint of the PSF to the given images</span>
+
+<span class="sd">        :param imgs: The incoming images (numpy.array_like)</span>
+
+<span class="sd">        :returns: The convolution between the images and the adjoint of the PSF</span>
+<span class="sd">        :rtype: numpy.array_like</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_incoming_images</span><span class="p">(</span><span class="n">imgs</span><span class="p">);</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_otf</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -456,6 +485,18 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_psf</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PSFApply.deconvolve"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.psf.PSFApply.deconvolve">[docs]</a>    <span class="k">def</span> <span class="nf">deconvolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgs</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Uses iterative algorithms to deconvolve the PSF from the given images</span>
+
+<span class="sd">        :param imgs: The incoming images (numpy.array_like)</span>
+<span class="sd">        :param iterations: The number of reconstruciton iterations (int, default: 100)</span>
+<span class="sd">        :param lambda_wl: Weight factor for the wavelet deconvolution. If None is passed, the SIRT algorithm will be used instead (float, default: None)</span>
+<span class="sd">        :param data_term: Data consistency term used by the wl recosntruction. Options: &#39;l2&#39; | &#39;kl&#39; (string, default: &#39;l2&#39;)</span>
+<span class="sd">        :param lower_limit: Lower clipping value (float, default: None)</span>
+<span class="sd">        :param upper_limit: Upper clipping value (float, default: None)</span>
+
+<span class="sd">        :returns: The deconvolution of the images</span>
+<span class="sd">        :rtype: numpy.array_like</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">lambda_wl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sol</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_wl</span><span class="p">(</span><span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="n">lambda_wl</span><span class="p">,</span> <span class="n">wl_type</span><span class="o">=</span><span class="s1">&#39;db1&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
