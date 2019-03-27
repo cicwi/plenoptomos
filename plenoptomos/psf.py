@@ -28,6 +28,9 @@ from . import solvers
 import time as tm
 
 class PSF(object):
+    """Data class that allows to store n-dimensional PSFs, and their
+    accompanying information.
+    """
 
     def __init__(self, coordinates, data=None, conf=None, data_format=None):
         self.coordinates = (coordinates[0], coordinates[1])
@@ -44,6 +47,18 @@ class PSF(object):
                         refocus_distance=None, up_sampling=1, \
                         beam_coherence='incoherent', \
                         over_sampling=25, data_type=np.float32, plot=False):
+        """Compute the theoretical PSF for the given coordinates in the given
+        camera setup.
+
+        :param camera: The camera setup object (lightfield.Camera)
+        :param coordinates: The coordinates where to compute the PSF. Options: 'vu' | 'ts' (string)
+        :param airy_rings: Orders of the Airy function to consider (int, default:2)
+        :param beam_coherence: coherence of the light source. Options: 'incoherent' | coherent (string, default: 'incoherent')
+        :param refocus_distance: Distance of refocusing, for fine tuning the disk of confusion (float, default: None)
+
+        :returns: The computed PSF.
+        :rtype: PSF
+        """
         # We think in mm
         if camera.wavelength_unit.lower() == 'mm':
             ls_unit = 1
@@ -291,6 +306,13 @@ class PSFApply(object):
             self._init_otfs()
 
     def apply_psf_direct(self, imgs):
+        """Applies the PSF to the given images
+
+        :param imgs: The incoming images (numpy.array_like)
+
+        :returns: The convolution between the images and the PSF
+        :rtype: numpy.array_like
+        """
         self._check_incoming_images(imgs)
 
         if self.use_otf is True:
@@ -299,6 +321,13 @@ class PSFApply(object):
             return self._apply_psf(imgs, True)
 
     def apply_psf_adjoint(self, imgs):
+        """Applies the adjoint of the PSF to the given images
+
+        :param imgs: The incoming images (numpy.array_like)
+
+        :returns: The convolution between the images and the adjoint of the PSF
+        :rtype: numpy.array_like
+        """
         self._check_incoming_images(imgs);
 
         if self.use_otf is True:
@@ -307,6 +336,18 @@ class PSFApply(object):
             return self._apply_psf(imgs, False)
 
     def deconvolve(self, imgs, iterations=100, data_term='l2', lambda_wl=None, lower_limit=None, upper_limit=None, verbose=False):
+        """Uses iterative algorithms to deconvolve the PSF from the given images
+
+        :param imgs: The incoming images (numpy.array_like)
+        :param iterations: The number of reconstruciton iterations (int, default: 100)
+        :param lambda_wl: Weight factor for the wavelet deconvolution. If None is passed, the SIRT algorithm will be used instead (float, default: None)
+        :param data_term: Data consistency term used by the wl recosntruction. Options: 'l2' | 'kl' (string, default: 'l2')
+        :param lower_limit: Lower clipping value (float, default: None)
+        :param upper_limit: Upper clipping value (float, default: None)
+
+        :returns: The deconvolution of the images
+        :rtype: numpy.array_like
+        """
         if lambda_wl is not None:
             sol = solvers.CP_wl(data_term=data_term, lambda_wl=lambda_wl, wl_type='db1', verbose=verbose)
         else:

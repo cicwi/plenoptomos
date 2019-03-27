@@ -194,7 +194,7 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
 
         if subtract_profile_blur is not None or compute_emergence is not None:
             blur_win = np.ones((subtract_profile_blur, subtract_profile_blur)) / subtract_profile_blur ** 2
-            cent_pad = get_central_subaperture(lf_sa)
+            cent_pad = _get_central_subaperture(lf_sa)
             cent_pad = spimg.convolve(cent_pad, blur_win, mode='nearest')
             l_alpha_intuv_d = cent_pad - l_alpha_intuv
 
@@ -204,7 +204,7 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
                 l_alpha_intuv_dn[l_alpha_intuv_d < 0] = 0
             else:
                 l_alpha_intuv_dn = l_alpha_intuv
-            l = laplacian2(np.squeeze(l_alpha_intuv_dn))
+            l = _laplacian2(np.squeeze(l_alpha_intuv_dn))
             l = np.abs(l)
 
             depth_defocus = spimg.convolve(l, window_filter, mode='constant', cval=0.0)
@@ -438,19 +438,19 @@ def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_smooth=0
     tau = 1 / tau
 
     for ii in range(iterations):
-        (d0, d1) = gradient2(depth_it)
+        (d0, d1) = _gradient2(depth_it)
         d_2 = np.stack((d0, d1)) / 2
         q_g += d_2
         grad_l2_norm = np.fmax(1, np.sqrt(np.sum(q_g ** 2, axis=0)))
         q_g /= grad_l2_norm
 
-        update = - lambda_tv * divergence2(q_g[0, :, :], q_g[1, :, :])
+        update = - lambda_tv * _divergence2(q_g[0, :, :], q_g[1, :, :])
         if lambda_smooth is not None:
-            l = laplacian2(depth_it)
+            l = _laplacian2(depth_it)
             q_l += l / 8
             q_l /= np.fmax(1, np.abs(q_l))
 
-            update += lambda_smooth * laplacian2(q_l)
+            update += lambda_smooth * _laplacian2(q_l)
 
         if use_defocus > 0:
             q_d += (depth_it - a_d)
@@ -480,13 +480,21 @@ def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_smooth=0
 
 
 def get_distances(dm, zs):
+    """Convert depth map indices into distances
+
+    :param dm: the depth map (numpy.array_like)
+    :param zs: the corresponding distances in the depth map (numpy.array_like)
+
+    :returns: the depth-map containing the real distances
+    :rtype: numpy.array_like
+    """
     dm = np.fmin(dm, len(zs)-1)
     dm = np.fmax(dm, 0)
     interp_dists = sp.interpolate.interp1d(np.arange(zs.size), zs)
     return np.reshape(interp_dists(dm.flatten()), dm.shape)
 
 
-def get_central_subaperture(lf_sa, origin_vu=None):
+def _get_central_subaperture(lf_sa, origin_vu=None):
     center_vu = (np.array(lf_sa.camera.data_size_vu, dtype=np.float) - 1) / 2
     if origin_vu is None:
         origin_vu = np.array((0., 0.))
@@ -511,13 +519,13 @@ def get_central_subaperture(lf_sa, origin_vu=None):
     return out_img
 
 
-def laplacian2(x):
+def _laplacian2(x):
     l0 = np.pad(x, ((1, 1), (0, 0)), mode='edge')
     l1 = np.pad(x, ((0, 0), (1, 1)), mode='edge')
     return np.diff(l0, n=2, axis=0) + np.diff(l1, n=2, axis=1)
 
 
-def gradient2(x):
+def _gradient2(x):
     d0 = np.pad(x, ((0, 1), (0, 0)), mode='constant')
     d0 = np.diff(d0, n=1, axis=0)
     d1 = np.pad(x, ((0, 0), (0, 1)), mode='constant')
@@ -525,7 +533,7 @@ def gradient2(x):
     return (d0, d1)
 
 
-def divergence2(x0, x1):
+def _divergence2(x0, x1):
     d0 = np.pad(x0, ((1, 0), (0, 0)), mode='constant')
     d1 = np.pad(x1, ((0, 0), (1, 0)), mode='constant')
     return np.diff(d0, n=1, axis=0) + np.diff(d1, n=1, axis=1)

@@ -33,7 +33,7 @@ import matplotlib.image as mim
 from . import lightfield
 
 
-def load_raw_sensor_image(raw_file, file_ext):
+def _load_raw_sensor_image(raw_file, file_ext):
     im = mim.imread(raw_file)
     if len(im.shape) == 3 and im.shape[2] > 1:
         im = im[..., 0]
@@ -42,7 +42,7 @@ def load_raw_sensor_image(raw_file, file_ext):
     return im
 
 
-def assign_optional_attr(obj, conf, label):
+def _assign_optional_attr(obj, conf, label):
     try:
         obj.attrs[label] = conf[label]
     except:
@@ -50,6 +50,14 @@ def assign_optional_attr(obj, conf, label):
 
 
 def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=None, raw_det_dark=None):
+    """ Creates a .vox light-field file, from a raw detector image and metadata.
+
+    :param raw_det_file: the raw image file path (string)
+    :param conf_file: the metadata file path (string)
+    :param out_file: the uncalibrated light-field file path (string)
+    :param raw_det_white: the flat-field image file path (string, default: None)
+    :param raw_det_dark: the dark-field image file path (string, default: None)
+    """
     config = configparser.ConfigParser()
     config.read(conf_file)
 
@@ -57,13 +65,13 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
     if out_file is None:
         out_file = "%s.vox" % file_base
 
-    im = load_raw_sensor_image(raw_det_file, file_ext)
+    im = _load_raw_sensor_image(raw_det_file, file_ext)
     if raw_det_white is not None:
         (_, file_ext_w) = os.path.splitext(raw_det_white)
-        white = load_raw_sensor_image(raw_det_white, file_ext_w)
+        white = _load_raw_sensor_image(raw_det_white, file_ext_w)
     if raw_det_dark is not None:
         (_, file_ext_d) = os.path.splitext(raw_det_dark)
-        dark = load_raw_sensor_image(raw_det_dark, file_ext_d)
+        dark = _load_raw_sensor_image(raw_det_dark, file_ext_d)
 
     with h5py.File(out_file, 'w') as f:
         f.attrs['description'] = 'VoxelDataFormat'
@@ -96,8 +104,8 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
         try:
             conf_cam = config['camera']
 
-            assign_optional_attr(camera, conf_cam, 'manufacturer')
-            assign_optional_attr(camera, conf_cam, 'model')
+            _assign_optional_attr(camera, conf_cam, 'manufacturer')
+            _assign_optional_attr(camera, conf_cam, 'model')
         except:
             pass
 
@@ -130,8 +138,8 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
         conf_mla = config['micro_lenses_array']
         mla = camera.create_group('micro_lenses_array')
 
-        assign_optional_attr(mla, conf_mla, 'manufacturer')
-        assign_optional_attr(mla, conf_mla, 'model')
+        _assign_optional_attr(mla, conf_mla, 'manufacturer')
+        _assign_optional_attr(mla, conf_mla, 'model')
 
         mla_size = mla.create_dataset('size', (2, ), dtype='i')
         mla_size[:] = np.array((int(conf_mla['size_t']), int(conf_mla['size_s'])))
@@ -146,8 +154,8 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
         conf_Ml = config['main_lens']
         Ml = camera.create_group('main_lens')
 
-        assign_optional_attr(Ml, conf_Ml, 'manufacturer')
-        assign_optional_attr(Ml, conf_Ml, 'model')
+        _assign_optional_attr(Ml, conf_Ml, 'manufacturer')
+        _assign_optional_attr(Ml, conf_Ml, 'model')
 
         Ml_psize = Ml.create_dataset('pixel_size', (2, ), dtype='f')
         Ml_psize[:] = np.array((float(conf_Ml['pixel_size_v']), float(conf_Ml['pixel_size_u'])))
@@ -164,8 +172,8 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
         conf_s = config['sensor']
         s = camera.create_group('sensor')
 
-        assign_optional_attr(s, conf_s, 'manufacturer')
-        assign_optional_attr(s, conf_s, 'model')
+        _assign_optional_attr(s, conf_s, 'manufacturer')
+        _assign_optional_attr(s, conf_s, 'model')
 
         s_size = s.create_dataset('size', (2, ), dtype='i')
         s_size[:] = np.array((int(conf_s['size_y']), int(conf_s['size_x'])))
@@ -188,7 +196,7 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
 
 ###############################################################################
 
-def find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None, None), \
+def _find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None, None), \
                            peak_skip_front=(None, None), peak_skip_back=(None, None), \
                            verbose=False, interactive=False):
 
@@ -274,6 +282,13 @@ def find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None,
 
 
 def calibrate_raw_image(vox_file_in, vox_file_out=None, pitch=None, offset=None):
+    """ Calibrate the array offsets and lenslet pitch for a .vox light-field file
+
+    :param vox_file_in: the uncalibrated light-field file path (string)
+    :param vox_file_out: the calibrated light-field file path (string)
+    :param pitch: OPTIONAL lenslet pitch, that would otherwise be calibrated (<2x1> list or tuple, default: None)
+    :param offset: OPTIONAL MLA offset, that would otherwise be calibrated (<2x1> list or tuple, default: None)
+    """
     if vox_file_out is None:
         (out_file_base, out_file_ext) = os.path.splitext(vox_file_in)
         vox_file_out = '%s_calibrated%s' % (out_file_base, out_file_ext)
@@ -286,7 +301,7 @@ def calibrate_raw_image(vox_file_in, vox_file_out=None, pitch=None, offset=None)
         w_im = f_in['/data/white'][()]
         satisfied = pitch is not None and offset is not None
         while not satisfied:
-            (pitch, offset) = find_offsets_and_pitch(w_im, interactive=True)
+            (pitch, offset) = _find_offsets_and_pitch(w_im, interactive=True)
             answer = input('Are you satisfied? (y/n [y]): ')
             satisfied = answer.lower() in ('y', '')
 
@@ -300,7 +315,7 @@ def calibrate_raw_image(vox_file_in, vox_file_out=None, pitch=None, offset=None)
 
 ###############################################################################
 
-def has_fields_for_raw_to_microimage(vox_file):
+def _has_fields_for_raw_to_microimage(vox_file):
     return not (np.any(vox_file['/instrument/camera/main_lens/pixel_size'][()] == 0) \
                 or np.any(vox_file['/instrument/camera/micro_lens/physical_size'][()] == 0))
 
@@ -363,10 +378,10 @@ def transform_2D_to_4D(data, out_shape_tsvu):
     return np.transpose(data, axes=(1, 3, 0, 2))
 
 
-def load_raw_image(f):
+def _load_raw_image(f):
     im = f['/data/image']
     if im.attrs['mode'] == 'raw':
-        if not has_fields_for_raw_to_microimage(f):
+        if not _has_fields_for_raw_to_microimage(f):
             raise ValueError('You should calibrate your images first!')
         else:
             mla_xy = f['/instrument/camera/micro_lenses_array/position'][0:2]
@@ -414,6 +429,7 @@ def load(vox_file):
     """ Loads a .vox light-field file
 
     :param vox_file: the light-field file path (string)
+
     :returns: the loaded light-field
     :rtype: light-field.Lightfield
     """
@@ -423,7 +439,7 @@ def load(vox_file):
     with h5py.File(vox_file, 'r') as f:
         im = f['/data/image']
         if im.attrs['mode'] == 'raw':
-            (data, lf_shape) = load_raw_image(f)
+            (data, lf_shape) = _load_raw_image(f)
             lf_data = data[0]
             camera.data_size_ts = lf_shape[0:2]
             camera.data_size_vu = lf_shape[2:4]

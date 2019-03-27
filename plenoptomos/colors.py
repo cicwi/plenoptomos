@@ -4,15 +4,18 @@
 Created on Tue Apr  4 16:01:41 2017
 
 @author: vigano
+
+Convenience functions for handling multi-channel datasets.
+They mainly focus on visible light (RGB channels).
 """
 
 import numpy as np
 
 
-def merge_rgb_images(imgs_r, imgs_g, imgs_b):
+def merge_rgb_images(imgs_r, imgs_g, imgs_b, vmin=0.0, vmax=1.0):
     imgs_t = np.array((imgs_r, imgs_g, imgs_b))
-    imgs_t = np.fmin(imgs_t, 1)
-    imgs_t = np.fmax(imgs_t, 0)
+    imgs_t = np.fmin(imgs_t, vmax)
+    imgs_t = np.fmax(imgs_t, vmin)
     return np.transpose(imgs_t, (1, 2, 3, 0))
 
 

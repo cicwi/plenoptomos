@@ -56,6 +56,13 @@ def lytro_create_warps(file_path):
 
 
 def lytro_read_metadata(fname_json):
+    """Reads the Lytro ILLUM metadata from the json file.
+
+    :param fname_json: The path to the .json file (string)
+
+    :returns: The camera object
+    :rtype: lightfield.Camera
+    """
     camera = lightfield.get_camera('lytro_illum')
 
     with open(fname_json) as f:
@@ -99,8 +106,8 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
     :param binning: Binning of the input images, used to reduce their size and resolution (int, default: 1)
     :param data_type: Datatype of the output light-field data (np.dtype)
 
-    :returns: The imported light-field datastructure 
-    :rtype: (lightfield.Lightfield)
+    :returns: The imported light-field datastructure
+    :rtype: lightfield.Lightfield
     """
     print('Initializing metadata..', end='', flush=True)
     c = tm.time()
@@ -211,8 +218,8 @@ def from_stanford_archive(dataset_path, mode='grayscale', rgb2gs_mode='luma', bi
     :param binning: Binning of the input images, used to reduce their size and resolution (int, default: 1)
     :param data_type: Datatype of the output light-field data (np.dtype)
 
-    :returns: The imported light-field datastructure 
-    :rtype: (lightfield.Lightfield)
+    :returns: The imported light-field datastructure
+    :rtype: lightfield.Lightfield
     """
     print('Initializing metadata..', end='', flush=True)
     c = tm.time()
@@ -312,7 +319,7 @@ def from_stanford_archive(dataset_path, mode='grayscale', rgb2gs_mode='luma', bi
         return (lf_r, lf_g, lf_b)
 
 
-def flexray_parse_source_det_positions(script_path):
+def _flexray_parse_source_det_positions(script_path):
     script_lines = []
     movement_list = []
     # Make sure file gets closed after being iterated
@@ -399,8 +406,8 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     :param crop_fixed_det: Crops the images, in case of fixed detector acquisitions (Boolean, default: True)
     :param data_type: Datatype of the output light-field data (np.dtype)
 
-    :returns: The imported light-field datastructure 
-    :rtype: (lightfield.Lightfield)
+    :returns: The imported light-field datastructure
+    :rtype: lightfield.Lightfield
     """
     print('Initializing metadata..', end='', flush=True)
     c = tm.time()
@@ -413,7 +420,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
         script_name = os.path.split(script_name[0])
 #    script_path = os.path.join(dset_path, '%s.txt' % script_name[1])
     script_path = os.path.join(dset_path, 'script_executed.txt')
-    (positions_tube, positions_det, num_phases, binnings, rois, grid_size, det_is_fixed) = flexray_parse_source_det_positions(script_path)
+    (positions_tube, positions_det, num_phases, binnings, rois, grid_size, det_is_fixed) = _flexray_parse_source_det_positions(script_path)
     res_uv = np.abs(np.array((positions_tube[0, 1, 0] - positions_tube[0, 0, 0], positions_tube[1, 0, 1] - positions_tube[0, 0, 1])))
 
     camera = lightfield.get_camera('flexray', down_sampling_st=binnings[-1])
