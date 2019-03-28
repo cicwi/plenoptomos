@@ -4,6 +4,8 @@
 Created on Tue Oct 10 18:31:14 2017
 
 @author: vigano
+
+This module implements the point spread function (PSF) handling routines.
 """
 
 import copy

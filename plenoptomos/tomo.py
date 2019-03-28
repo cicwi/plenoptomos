@@ -4,6 +4,8 @@
 Created on Wed Mar  8 11:30:00 2017
 
 @author: vigano
+
+This module contains the tomographic refocusing routines.
 """
 
 import numpy as np

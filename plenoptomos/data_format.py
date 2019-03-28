@@ -5,7 +5,8 @@ Created on Tue Nov 21 23:50:47 2017
 
 @author: Nicola Vigano, Charlotte Herzog, Pablo Martinez
 
-Here we define the versions of the Voxel data format.
+This module implements the handling of the .vox data format.
+It exposes routines that allow to create, calibrate and read vox files.
 
 Convetions:
 - arrays are understood in the C convention

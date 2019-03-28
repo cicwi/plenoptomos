@@ -4,6 +4,8 @@
 Created on Thu Mar  2 18:48:28 2017
 
 @author: vigano
+
+This module contains the implementation of the traditional reference refocusing algorithms.
 """
 
 import numpy as np

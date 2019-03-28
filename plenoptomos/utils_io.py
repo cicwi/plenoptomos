@@ -4,6 +4,9 @@
 Created on Wed Mar  1 16:09:53 2017
 
 @author: vigano
+
+Convenience functions for handling IO with hdf5 files of frequently used data
+structures.
 """
 
 import numpy as np

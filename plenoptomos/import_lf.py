@@ -4,6 +4,8 @@
 Created on Mon Feb 18 16:08:43 2019
 
 @author: vigano
+
+This module contains the import functions for external light-field data formats.
 """
 
 import numpy as np

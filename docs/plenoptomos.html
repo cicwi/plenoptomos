@@ -220,7 +220,8 @@ They mainly focus on visible light (RGB channels).</p>
 <span id="plenoptomos-data-format-module"></span><h2>plenoptomos.data_format module<a class="headerlink" href="#module-plenoptomos.data_format" title="Permalink to this headline">¶</a></h2>
 <p>Created on Tue Nov 21 23:50:47 2017</p>
 <p>&#64;author: Nicola Vigano, Charlotte Herzog, Pablo Martinez</p>
-<p>Here we define the versions of the Voxel data format.</p>
+<p>This module implements the handling of the .vox data format.
+It exposes routines that allow to create, calibrate and read vox files.</p>
 <p>Convetions:
 - arrays are understood in the C convention</p>
 <p>Rationale behind version 0:
@@ -307,6 +308,8 @@ They mainly focus on visible light (RGB channels).</p>
 <span id="plenoptomos-depth-module"></span><h2>plenoptomos.depth module<a class="headerlink" href="#module-plenoptomos.depth" title="Permalink to this headline">¶</a></h2>
 <p>Created on Wed Mar 29 12:34:36 2017</p>
 <p>&#64;author: vigano</p>
+<p>This module implements the depth estimation routines, that allow to compute
+depth-maps from light-fields.</p>
 <dl class="function">
 <dt id="plenoptomos.depth.compute_depth_cues">
 <code class="descclassname">plenoptomos.depth.</code><code class="descname">compute_depth_cues</code><span class="sig-paren">(</span><em>lf: plenoptomos.lightfield.Lightfield</em>, <em>zs</em>, <em>beam_geometry='parallel'</em>, <em>domain='object'</em>, <em>compute_defocus=True</em>, <em>compute_correspondence=True</em>, <em>compute_emergence=None</em>, <em>subtract_profile_blur=None</em>, <em>window_size=(9</em>, <em>9)</em>, <em>window_shape='gauss'</em>, <em>up_sampling=1</em>, <em>super_sampling=1</em>, <em>algorithm='bpj'</em>, <em>iterations=5</em>, <em>psf=None</em>, <em>corresp_method='bpj'</em>, <em>iterations_corresp=5</em>, <em>confidence_method='integral'</em>, <em>peak_range=3</em>, <em>plot_filter=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/depth.html#compute_depth_cues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.depth.compute_depth_cues" title="Permalink to this definition">¶</a></dt>
@@ -403,6 +406,7 @@ in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp
 <span id="plenoptomos-import-lf-module"></span><h2>plenoptomos.import_lf module<a class="headerlink" href="#module-plenoptomos.import_lf" title="Permalink to this headline">¶</a></h2>
 <p>Created on Mon Feb 18 16:08:43 2019</p>
 <p>&#64;author: vigano</p>
+<p>This module contains the import functions for external light-field data formats.</p>
 <dl class="function">
 <dt id="plenoptomos.import_lf.from_flexray">
 <code class="descclassname">plenoptomos.import_lf.</code><code class="descname">from_flexray</code><span class="sig-paren">(</span><em>dset_path</em>, <em>crop_fixed_det=True</em>, <em>data_type=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#from_flexray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.from_flexray" title="Permalink to this definition">¶</a></dt>
@@ -522,6 +526,10 @@ corresponding json file</p>
 <span id="plenoptomos-lightfield-module"></span><h2>plenoptomos.lightfield module<a class="headerlink" href="#module-plenoptomos.lightfield" title="Permalink to this headline">¶</a></h2>
 <p>Created on Wed Mar  1 16:08:17 2017</p>
 <p>&#64;author: vigano</p>
+<p>This module implements two important data containers: the data container
+‘Lightfield’ and the metadata container ‘Camera’.
+They are used throughout the entire package for interpreting and performing low
+level manipulation of the raw light-field data.</p>
 <dl class="class">
 <dt id="plenoptomos.lightfield.Camera">
 <em class="property">class </em><code class="descclassname">plenoptomos.lightfield.</code><code class="descname">Camera</code><span class="sig-paren">(</span><em>model='unknown'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/lightfield.html#Camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.lightfield.Camera" title="Permalink to this definition">¶</a></dt>
@@ -871,6 +879,7 @@ detector format</p>
 <span id="plenoptomos-psf-module"></span><h2>plenoptomos.psf module<a class="headerlink" href="#module-plenoptomos.psf" title="Permalink to this headline">¶</a></h2>
 <p>Created on Tue Oct 10 18:31:14 2017</p>
 <p>&#64;author: vigano</p>
+<p>This module implements the point spread function (PSF) handling routines.</p>
 <dl class="class">
 <dt id="plenoptomos.psf.PSF">
 <em class="property">class </em><code class="descclassname">plenoptomos.psf.</code><code class="descname">PSF</code><span class="sig-paren">(</span><em>coordinates</em>, <em>data=None</em>, <em>conf=None</em>, <em>data_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/psf.html#PSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.psf.PSF" title="Permalink to this definition">¶</a></dt>
@@ -1022,6 +1031,7 @@ camera setup.</p>
 <span id="plenoptomos-refocus-module"></span><h2>plenoptomos.refocus module<a class="headerlink" href="#module-plenoptomos.refocus" title="Permalink to this headline">¶</a></h2>
 <p>Created on Thu Mar  2 18:48:28 2017</p>
 <p>&#64;author: vigano</p>
+<p>This module contains the implementation of the traditional reference refocusing algorithms.</p>
 <dl class="function">
 <dt id="plenoptomos.refocus.compute_refocus_fourier">
 <code class="descclassname">plenoptomos.refocus.</code><code class="descname">compute_refocus_fourier</code><span class="sig-paren">(</span><em>lf: plenoptomos.lightfield.Lightfield</em>, <em>zs</em>, <em>method='slice'</em>, <em>beam_geometry='parallel'</em>, <em>domain='object'</em>, <em>up_sampling=1</em>, <em>border=4</em>, <em>border_padding='edge'</em>, <em>padding_factor=1.1</em>, <em>oversampling=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/refocus.html#compute_refocus_fourier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.refocus.compute_refocus_fourier" title="Permalink to this definition">¶</a></dt>
@@ -1203,6 +1213,7 @@ Stanford Univ. Tech. Rep. CSTR 2005-02, 2005.</p>
 <span id="plenoptomos-tomo-module"></span><h2>plenoptomos.tomo module<a class="headerlink" href="#module-plenoptomos.tomo" title="Permalink to this headline">¶</a></h2>
 <p>Created on Wed Mar  8 11:30:00 2017</p>
 <p>&#64;author: vigano</p>
+<p>This module contains the tomographic refocusing routines.</p>
 <dl class="class">
 <dt id="plenoptomos.tomo.Projector">
 <em class="property">class </em><code class="descclassname">plenoptomos.tomo.</code><code class="descname">Projector</code><span class="sig-paren">(</span><em>camera: plenoptomos.lightfield.Camera</em>, <em>zs</em>, <em>flat=None</em>, <em>shifts_vu=(None</em>, <em>None)</em>, <em>beam_geometry='cone'</em>, <em>domain='object'</em>, <em>psf_d=None</em>, <em>use_otf=True</em>, <em>mode='independent'</em>, <em>up_sampling=1</em>, <em>vu_origin=None</em>, <em>super_sampling=1</em>, <em>gpu_index=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/tomo.html#Projector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.tomo.Projector" title="Permalink to this definition">¶</a></dt>
@@ -1365,6 +1376,8 @@ distances by applying iterative methods.</p>
 <span id="plenoptomos-utils-io-module"></span><h2>plenoptomos.utils_io module<a class="headerlink" href="#module-plenoptomos.utils_io" title="Permalink to this headline">¶</a></h2>
 <p>Created on Wed Mar  1 16:09:53 2017</p>
 <p>&#64;author: vigano</p>
+<p>Convenience functions for handling IO with hdf5 files of frequently used data
+structures.</p>
 <dl class="function">
 <dt id="plenoptomos.utils_io.load_field_fromh5">
 <code class="descclassname">plenoptomos.utils_io.</code><code class="descname">load_field_fromh5</code><span class="sig-paren">(</span><em>filename</em>, <em>dset</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_io.html#load_field_fromh5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_io.load_field_fromh5" title="Permalink to this definition">¶</a></dt>

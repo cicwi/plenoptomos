@@ -162,15 +162,17 @@
 Examples 02 and 03 use data from the <a class="reference external" href="http://lightfields.stanford.edu/">Stanford light-field archive</a>.</p>
 <div class="section" id="example-01-logos-py">
 <h2>example_01_logos.py<a class="headerlink" href="#example-01-logos-py" title="Permalink to this headline">¶</a></h2>
-<p>This is a preliminary eaxample that serves only to demonstrate the concepts discussed in:</p>
+<p>This is a preliminary example that serves to demonstrate the concepts discussed in:</p>
 <blockquote>
 <div>N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,” Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.</div></blockquote>
-<p>In particular it displays the scaling differents in refocusing alpha parameter, and the size of the refocused objects in the scene.</p>
+<p>In particular it displays the position and size scaling of the refocused objects in the scene for different refocusing alpha parameter.</p>
 </div>
 <div class="section" id="example-02-flower-refocusing-py">
 <h2>example_02_flower_refocusing.py<a class="headerlink" href="#example-02-flower-refocusing-py" title="Permalink to this headline">¶</a></h2>
-<p>This example shows a selection of all the possible refocusing options and tools available in plenoptomos.
-It uses the <a class="reference external" href="http://lightfields.stanford.edu/flowers_plants.html">flowers &amp; plants</a> example number 30, and so it requires importing.</p>
+<p>This example demonstrates a selection of the possible refocusing options and tools available in plenoptomos.
+It uses the <a class="reference external" href="http://lightfields.stanford.edu/flowers_plants.html">flowers &amp; plants</a>
+example number 30 from the public Stanford light-field archive.
+It is distributed in the ESLF format, and so it requires importing.</p>
 <p>First we import the ESLF image of choice:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">lf_r</span> <span class="p">,</span><span class="n">lf_g</span><span class="p">,</span> <span class="n">lf_b</span><span class="p">)</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">import_lf</span><span class="o">.</span><span class="n">from_lytro</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">jpath</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s1">&#39;eslf&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rgb&#39;</span><span class="p">)</span>
 </pre></div>
@@ -261,7 +263,7 @@ The size of the filters is adjusted using the option <code class="docutils liter
 <p>This fourth example shows the creation and calibration of .vox datasets from raw images, and a metadata file.</p>
 <p>The used dataset was collected in the labs of <a class="reference external" href="https://www.imagine-optic.com/">Imagine Optic</a> (Bordeaux, France).
 The data collection has been performed by Charlotte Herzog, Pablo Martinez Gil, and Nicola Viganò.</p>
-<p>To initiate this process few files are needed:</p>
+<p>To initiate this process a few specific files are needed:</p>
 <ul class="simple">
 <li>A file containing the collected light-field data</li>
 </ul>
@@ -314,7 +316,7 @@ In case a series of datasets were to be acquired with an identical camera setup,
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lfv</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">data_format</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">vox_file</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The rest of the example is fundamentally a duplicate of example 02.</p>
+<p>The rest of the example is mainly a duplicate of example 02.</p>
 </div>
 </div>
 

@@ -5,15 +5,17 @@ Examples 02 and 03 use data from the [Stanford light-field archive](http://light
 
 ## example_01_logos.py
 
-This is a preliminary eaxample that serves only to demonstrate the concepts discussed in:
+This is a preliminary example that serves to demonstrate the concepts discussed in:
 > N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,” Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.
 
-In particular it displays the scaling differents in refocusing alpha parameter, and the size of the refocused objects in the scene.
+In particular it displays the position and size scaling of the refocused objects in the scene for different refocusing alpha parameter.
 
 ## example_02_flower_refocusing.py
 
-This example shows a selection of all the possible refocusing options and tools available in plenoptomos.
-It uses the [flowers & plants](http://lightfields.stanford.edu/flowers_plants.html) example number 30, and so it requires importing.
+This example demonstrates a selection of the possible refocusing options and tools available in plenoptomos.
+It uses the [flowers & plants](http://lightfields.stanford.edu/flowers_plants.html)
+example number 30 from the public Stanford light-field archive.
+It is distributed in the ESLF format, and so it requires importing.
 
 First we import the ESLF image of choice:
 ```
@@ -119,7 +121,7 @@ This fourth example shows the creation and calibration of .vox datasets from raw
 The used dataset was collected in the labs of [Imagine Optic](https://www.imagine-optic.com/) (Bordeaux, France).
 The data collection has been performed by Charlotte Herzog, Pablo Martinez Gil, and Nicola Viganò.
 
-To initiate this process few files are needed:
+To initiate this process a few specific files are needed:
 - A file containing the collected light-field data
 ```
 raw_file = os.path.join(data_dir, 'letters_ULF_M1.png')
@@ -175,4 +177,4 @@ The calibrated dataset can then be loaded using the `load` function:
 lfv = pleno.data_format.load(vox_file)
 ```
 
-The rest of the example is fundamentally a duplicate of example 02.
+The rest of the example is mainly a duplicate of example 02.
