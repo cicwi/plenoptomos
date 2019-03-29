@@ -4,6 +4,8 @@
 Created on Wed Mar  8 11:27:12 2017
 
 @author: vigano
+
+This module implements a few different solvers from the tomography reconstruction literature.
 """
 
 import numpy as np

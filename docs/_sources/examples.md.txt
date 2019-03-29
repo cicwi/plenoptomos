@@ -121,7 +121,7 @@ This fourth example shows the creation and calibration of .vox datasets from raw
 The used dataset was collected in the labs of [Imagine Optic](https://www.imagine-optic.com/) (Bordeaux, France).
 The data collection has been performed by Charlotte Herzog, Pablo Martinez Gil, and Nicola Viganò.
 
-To initiate this process a few specific files are needed:
+To initiate this process, a few specific files are needed:
 - A file containing the collected light-field data
 ```
 raw_file = os.path.join(data_dir, 'letters_ULF_M1.png')
