@@ -396,12 +396,15 @@ def _load_raw_image(f):
         pitch_in = np.array(pitch_in)
         pitch_out = np.array(pitch_out)
         if np.any(pitch_out == 0):
-            pitch_out = np.ceil(pitch_in)
+            pitch_out = np.ceil(pitch_in - 0.1)
 
-        if np.all(np.abs(pitch_in - pitch_out) < np.finfo(np.float32).eps) \
-                and np.all(np.abs(offsets - np.round(offsets)) < np.finfo(np.float32).eps):
-            pitch_in = pitch_in.astype(np.intp)
-            offsets = offsets.astype(np.intp)
+        pitch_diff = np.abs(pitch_in - pitch_out)
+        offset_diff = np.abs(offsets - np.round(offsets))
+
+        if np.all(pitch_diff < np.finfo(np.float16).eps) \
+                and np.all(offset_diff < np.finfo(np.float16).eps):
+            pitch_in = np.round(pitch_in).astype(np.intp)
+            offsets = np.round(offsets).astype(np.intp)
 
             extract = lambda x : raw_to_microimage_exact(x, offsets, pitch_in)
         else:
