@@ -67,6 +67,14 @@ def compute_refocus_integration(lf : lightfield.Lightfield, zs, \
     camera_sheared = lf_sa.camera.clone()
     if up_sampling > 1:
         camera_sheared.regrid(regrid_size=(1, 1, up_sampling, up_sampling))
+        if lf.flat is not None:
+            tt = np.linspace(0.5, lf_sa.camera.data_size_ts[0]-0.5, lf_sa.camera.data_size_ts[0])
+            ss = np.linspace(0.5, lf_sa.camera.data_size_ts[1]-0.5, lf_sa.camera.data_size_ts[1])
+            interp_renorm = sp.interpolate.interp2d(tt, ss, renorm_sa_images, \
+                                                    bounds_error=False, fill_value=np.mean(renorm_sa_images))
+            tt = np.linspace(0.5/up_sampling, lf_sa.camera.data_size_ts[0]-0.5/up_sampling, lf_sa.camera.data_size_ts[0]*up_sampling)
+            ss = np.linspace(0.5/up_sampling, lf_sa.camera.data_size_ts[1]-0.5/up_sampling, lf_sa.camera.data_size_ts[1]*up_sampling)
+            renorm_sa_images = interp_renorm(tt, ss)
 
     imgs_size = (num_alphas, camera_sheared.data_size_ts[0], camera_sheared.data_size_ts[1])
 
