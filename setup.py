@@ -24,6 +24,7 @@ requirements = [
     'h5py',
     'configparser',
     'pillow',
+    'imageio',
 ]
 
 setup_requirements = [ ]

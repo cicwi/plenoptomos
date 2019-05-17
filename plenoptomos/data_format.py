@@ -29,13 +29,19 @@ import numpy as np
 import scipy.interpolate as spinterp
 import scipy.signal as spsig
 import matplotlib.pyplot as plt
-import matplotlib.image as mim
+
+try:
+    import imageio as iio
+except ImportError as ex:
+    print('WARNING: error importing Imageio, using matplotlib instead')
+    print('Error message:\n', ex)
+    import matplotlib.image as iio
 
 from . import lightfield
 
 
 def _load_raw_sensor_image(raw_file, file_ext):
-    im = mim.imread(raw_file)
+    im = iio.imread(raw_file)
     if len(im.shape) == 3 and im.shape[2] > 1:
         im = im[..., 0]
     if file_ext[1:].lower() == 'png':
