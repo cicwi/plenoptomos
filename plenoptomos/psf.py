@@ -337,12 +337,13 @@ class PSFApply(object):
         else:
             return self._apply_psf(imgs, False)
 
-    def deconvolve(self, imgs, iterations=100, data_term='l2', lambda_wl=None, lower_limit=None, upper_limit=None, verbose=False):
+    def deconvolve(self, imgs, iterations=100, data_term='l2', lambda_wl=None, lambda_tv=None, lower_limit=None, upper_limit=None, verbose=False):
         """Uses iterative algorithms to deconvolve the PSF from the given images
 
         :param imgs: The incoming images (numpy.array_like)
         :param iterations: The number of reconstruciton iterations (int, default: 100)
         :param lambda_wl: Weight factor for the wavelet deconvolution. If None is passed, the SIRT algorithm will be used instead (float, default: None)
+        :param lambda_tv: Weight factor for the TV term. If None is passed, the SIRT algorithm will be used instead (float, default: None)
         :param data_term: Data consistency term used by the wl recosntruction. Options: 'l2' | 'kl' (string, default: 'l2')
         :param lower_limit: Lower clipping value (float, default: None)
         :param upper_limit: Upper clipping value (float, default: None)
@@ -350,11 +351,24 @@ class PSFApply(object):
         :returns: The deconvolution of the images
         :rtype: numpy.array_like
         """
-        if lambda_wl is not None:
+        self.image_size = np.array(imgs.shape)
+        border = ((self._get_psf_datashape() - 1) / 2).astype(np.int) + 1
+        paddings = [(x, x) for x in border]
+        imgs = np.pad(imgs, pad_width=paddings, mode='edge')
+
+        if lambda_tv is not None:
+            sol = solvers.CP_tv(data_term=data_term, lambda_tv=lambda_tv, verbose=verbose)
+        elif lambda_wl is not None:
             sol = solvers.CP_wl(data_term=data_term, lambda_wl=lambda_wl, wl_type='db1', verbose=verbose)
         else:
             sol = solvers.Sirt(verbose=verbose)
-        return sol(self.apply_psf_direct, imgs, iterations, At=self.apply_psf_adjoint, lower_limit=lower_limit, upper_limit=upper_limit)
+        (imgs_dec, _) = sol(self.apply_psf_direct, imgs, iterations, At=self.apply_psf_adjoint, lower_limit=lower_limit, upper_limit=upper_limit)
+
+        crops = []
+        for b in border:
+            if b == 0: crops.append(slice(None))
+            else: crops.append(slice(b, -b))
+        return imgs_dec[crops]
 
     def _get_psf_datashape(self):
         psf_shape = np.zeros_like(self.image_size)
