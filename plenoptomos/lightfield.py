@@ -710,8 +710,8 @@ class Lightfield(object):
             if self.flat is not None:
                 self.flat = np.pad(self.flat, pad_width=paddings, mode=method, constant_values=pad_value)
 
-        self.camera.data_size_ts = self.data.shape[2:4]
-        self.camera.data_size_vu = self.data.shape[0:2]
+        self.camera.data_size_ts = np.array(self.data.shape[2:4]).astype(np.int)
+        self.camera.data_size_vu = np.array(self.data.shape[0:2]).astype(np.int)
 
         self.set_mode(old_mode)
 

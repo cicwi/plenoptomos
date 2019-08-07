@@ -205,7 +205,7 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
 
 def _find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None, None), \
                            peak_skip_front=(None, None), peak_skip_back=(None, None), \
-                           verbose=False, interactive=False):
+                           verbose=False, interactive=False, cwt_size=np.arange(1, 25)):
 
     win = spsig.general_gaussian(15, p=0.5, sig=2)
     win /= np.sum(win)
@@ -229,7 +229,7 @@ def _find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None
         summed_micro_imgs = np.sum(w_im, axis=(1 - ii_d))
         summed_micro_imgs_filt = spsig.convolve(summed_micro_imgs, win, mode='same')
 
-        peak_pos = spsig.find_peaks_cwt(summed_micro_imgs_filt, np.arange(1, 25))
+        peak_pos = spsig.find_peaks_cwt(summed_micro_imgs_filt, cwt_size)
         if verbose: print(peak_pos)
 
         max_peaks = np.max(summed_micro_imgs)
@@ -338,7 +338,7 @@ def raw_to_microimage_exact(data, offsets, pitch):
     return (data, out_shape_tsvu)
 
 
-def raw_to_microimage_interp(data, offsets, pitch_in, pitch_out):
+def raw_to_microimage_interp(data, offsets, pitch_in, pitch_out, array_size=None):
     pitch_out = pitch_out.astype(np.intp)
     # Let's first identify the lenslet interpolation grid:
     interp_points_x = np.linspace(0, pitch_in[1], pitch_out[1] + 1)
@@ -348,7 +348,8 @@ def raw_to_microimage_interp(data, offsets, pitch_in, pitch_out):
     interp_points_y = (interp_points_y[1:] + interp_points_y[:-1]) / 2
 
     # And we now replicate it over all the lenslets to obtain the global interpolation grid:
-    array_size = np.floor((data.shape[0:2] - offsets) / pitch_in).astype(np.intp)
+    if array_size is None:
+        array_size = np.floor((data.shape[0:2] - offsets) / pitch_in).astype(np.intp)
 
     offsets_x = pitch_in[1] * np.arange(0, array_size[1]) + offsets[1] + 0.5
     offsets_x = np.tile(offsets_x, reps=(pitch_out[1], 1))
