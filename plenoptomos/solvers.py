@@ -727,11 +727,11 @@ class CP_wl(Solver):
 
 class Segment(Solver, Operations):
 
-    def __init__(self, verbose=False, lambda_tv=1e-2, lambda_smooth=1e-2, axes=None):
+    def __init__(self, verbose=False, lambda_tv=1e-2, lambda_d2=1e-2, axes=None):
         Solver.__init__(self, verbose=verbose)
         Operations.__init__(self, axes)
         self.lambda_tv = lambda_tv
-        self.lambda_smooth = lambda_smooth
+        self.lambda_d2 = lambda_d2
 
     def levelset(self, im, mus, iterations=50, w_norm_p=2, data_term='l1'):
         c_in = tm.time()
@@ -755,8 +755,8 @@ class Segment(Solver, Operations):
             sigma_tv = 0.5
             q_tv = np.zeros(np.concatenate(([len(im.shape)], im.shape)))
 
-        if self.lambda_smooth is not None:
-            tau += 4 * self.lambda_smooth * len(im.shape)
+        if self.lambda_d2 is not None:
+            tau += 4 * self.lambda_d2 * len(im.shape)
             sigma_smooth = 1.0 / (4.0 * len(im.shape))
             q_l = np.zeros_like(im)
 
@@ -791,11 +791,11 @@ class Segment(Solver, Operations):
 
                 upd += self.lambda_tv * self.divergence(q_tv)
 
-            if self.lambda_smooth is not None:
+            if self.lambda_d2 is not None:
                 q_l += self.laplacian(xe) * sigma_smooth
                 q_l /= np.fmax(1, np.abs(q_l))
 
-                upd -= self.lambda_smooth * self.laplacian(q_l)
+                upd -= self.lambda_d2 * self.laplacian(q_l)
 
             xn = x + tau * upd
 
