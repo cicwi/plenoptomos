@@ -517,7 +517,7 @@
     <span class="k">return</span> <span class="n">depth_cues</span></div>
 
 
-<div class="viewcode-block" id="compute_depth_map"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.depth.compute_depth_map">[docs]</a><span class="k">def</span> <span class="nf">compute_depth_map</span><span class="p">(</span><span class="n">depth_cues</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">lambda_smooth</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_defocus</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">use_correspondence</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="compute_depth_map"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.depth.compute_depth_map">[docs]</a><span class="k">def</span> <span class="nf">compute_depth_map</span><span class="p">(</span><span class="n">depth_cues</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">lambda_d2</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_defocus</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">use_correspondence</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Computes a depth map from the given depth cues.</span>
 
 <span class="sd">    This depth map is created following the procedure from:</span>
@@ -527,7 +527,7 @@
 <span class="sd">    :param depth_cues: The depth cues (dict)</span>
 <span class="sd">    :param iterations: Number of iterations (int)</span>
 <span class="sd">    :param lambda_tv: Lambda value of the TV term (float, default: 2.0)</span>
-<span class="sd">    :param lambda_smooth: Lambda value of the smoothing term (float, default: 0.05)</span>
+<span class="sd">    :param lambda_d2: Lambda value of the smoothing term (float, default: 0.05)</span>
 <span class="sd">    :param use_defocus: Weight for defocus cues (float, default: 1.0)</span>
 <span class="sd">    :param use_correspondence: Weight for corresponence cues (float, default: 1.0)</span>
 
@@ -571,9 +571,9 @@
 
     <span class="n">q_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="mi">2</span><span class="p">,</span> <span class="p">),</span> <span class="n">img_size</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
     <span class="n">tau</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">lambda_tv</span>
-    <span class="k">if</span> <span class="n">lambda_smooth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">lambda_d2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">q_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
-        <span class="n">tau</span> <span class="o">+=</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">lambda_smooth</span>
+        <span class="n">tau</span> <span class="o">+=</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">lambda_d2</span>
     <span class="k">if</span> <span class="n">use_defocus</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">q_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
         <span class="n">tau</span> <span class="o">+=</span> <span class="n">W_d</span>
@@ -597,12 +597,12 @@
         <span class="n">q_g</span> <span class="o">/=</span> <span class="n">grad_l2_norm</span>
 
         <span class="n">update</span> <span class="o">=</span> <span class="o">-</span> <span class="n">lambda_tv</span> <span class="o">*</span> <span class="n">_divergence2</span><span class="p">(</span><span class="n">q_g</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">q_g</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
-        <span class="k">if</span> <span class="n">lambda_smooth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lambda_d2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">l</span> <span class="o">=</span> <span class="n">_laplacian2</span><span class="p">(</span><span class="n">depth_it</span><span class="p">)</span>
             <span class="n">q_l</span> <span class="o">+=</span> <span class="n">l</span> <span class="o">/</span> <span class="mi">8</span>
             <span class="n">q_l</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_l</span><span class="p">))</span>
 
-            <span class="n">update</span> <span class="o">+=</span> <span class="n">lambda_smooth</span> <span class="o">*</span> <span class="n">_laplacian2</span><span class="p">(</span><span class="n">q_l</span><span class="p">)</span>
+            <span class="n">update</span> <span class="o">+=</span> <span class="n">lambda_d2</span> <span class="o">*</span> <span class="n">_laplacian2</span><span class="p">(</span><span class="n">q_l</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">use_defocus</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">q_d</span> <span class="o">+=</span> <span class="p">(</span><span class="n">depth_it</span> <span class="o">-</span> <span class="n">a_d</span><span class="p">)</span>

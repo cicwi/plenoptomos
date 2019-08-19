@@ -170,31 +170,32 @@ programme (<a class="reference external" href="https://ec.europa.eu/programmes/h
 <p>It provides a Python package that allows to read and manipulate light-field images.
 The provided features are:</p>
 <ul class="simple">
-<li>support for a few types of datasets and formats (including the .vox format).</li>
-<li>support for refocusing using standard algorithms like the integration [3] and Fourier [4] methods.</li>
-<li>support for GPU accelerated tomography based refocusing, including the following algorithms:<ul>
-<li>unfiltered back-projection [1]</li>
-<li>SIRT [2]</li>
-<li>Chambolle-Pock (Least-square, TV) [2]</li>
+<li><p>support for a few types of datasets and formats (including the .vox format).</p></li>
+<li><p>support for refocusing using standard algorithms like the integration [3] and Fourier [4] methods.</p></li>
+<li><p>support for GPU accelerated tomography based refocusing, including the following algorithms:</p>
+<ul>
+<li><p>unfiltered back-projection [1]</p></li>
+<li><p>SIRT [2]</p></li>
+<li><p>Chambolle-Pock (Least-square, TV) [2]</p></li>
 </ul>
 </li>
-<li>support for depth estimation [5]</li>
+<li><p>support for depth estimation [5]</p></li>
 </ul>
 <p>This work is based on the following articles:</p>
 <ul class="simple">
-<li>[1] N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,” Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.</li>
-<li>[2] N. Viganò, et al., “Advanced light-field refocusing through tomographic modeling of the photographed scene,” Opt. Express, vol. 27, no. 6, p. 7834, Mar. 2019.</li>
+<li><p>[1] N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,” Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.</p></li>
+<li><p>[2] N. Viganò, et al., “Advanced light-field refocusing through tomographic modeling of the photographed scene,” Opt. Express, vol. 27, no. 6, p. 7834, Mar. 2019.</p></li>
 </ul>
 <p>It also implements methods from, the following articles:</p>
 <ul class="simple">
-<li>[3] R. Ng, et al., “Light Field Photography with a Hand-held Plenoptic Camera,” Stanford Univ. Tech. Rep. CSTR 2005-02, 2005.</li>
-<li>[4] R. Ng, “Fourier slice photography,” ACM Trans. Graph., vol. 24, no. 3, p. 735, 2005.</li>
-<li>[5] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,” Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.</li>
+<li><p>[3] R. Ng, et al., “Light Field Photography with a Hand-held Plenoptic Camera,” Stanford Univ. Tech. Rep. CSTR 2005-02, 2005.</p></li>
+<li><p>[4] R. Ng, “Fourier slice photography,” ACM Trans. Graph., vol. 24, no. 3, p. 735, 2005.</p></li>
+<li><p>[5] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,” Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.</p></li>
 </ul>
 <p>Other useful information:</p>
 <ul class="simple">
-<li>Free software: GNU General Public License v3</li>
-<li>Documentation: [https://cicwi.github.io/plenoptomos]</li>
+<li><p>Free software: GNU General Public License v3</p></li>
+<li><p>Documentation: [https://cicwi.github.io/plenoptomos]</p></li>
 </ul>
 <!--
 ## Readiness
@@ -232,6 +233,7 @@ package for optimal usability. The following has already been completed:
           'h5py',
           'configparser',
           'pillow',
+          'imageio',
       ]
       ```
     - All "conda channels" that are required for building and
@@ -287,10 +289,10 @@ examples folder.</p>
 <div class="section" id="authors-and-contributors">
 <h2>Authors and contributors<a class="headerlink" href="#authors-and-contributors" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><strong>Nicola Viganò</strong> - <em>Main developer</em></li>
-<li><strong>Francesco Brun</strong> - <em>Initial contributions</em></li>
-<li><strong>Pablo Martinez Gil</strong> - <em>Contributed to the creation and enabling of the .vox data format, and to the wavelet solver</em></li>
-<li><strong>Charlotte Herzog</strong> - *Contributed to the creation an</li>
+<li><p><strong>Nicola Viganò</strong> - <em>Main developer</em></p></li>
+<li><p><strong>Francesco Brun</strong> - <em>Initial contributions</em></p></li>
+<li><p><strong>Pablo Martinez Gil</strong> - <em>Contributed to the creation and enabling of the .vox data format, and to the wavelet solver</em></p></li>
+<li><p><strong>Charlotte Herzog</strong> - *Contributed to the creation an</p></li>
 </ul>
 <p>See also the list of <a class="reference external" href="https://github.com/cicwi/plenoptomos/contributors">contributors</a> who participated in this project.</p>
 </div>

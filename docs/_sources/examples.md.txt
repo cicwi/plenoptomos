@@ -98,7 +98,7 @@ dc = pleno.depth.compute_depth_cues(lf, z0s)
 
 The computed depth cues are then assembled in a depth-map with the following optimization routine:
 ```
-dm = pleno.depth.compute_depth_map(dc, lambda_tv=1.0, lambda_smooth=None)
+dm = pleno.depth.compute_depth_map(dc, lambda_tv=1.0, lambda_d2=None)
 ```
 The expected output is:
 ![](Images/example_03_results.png "results_rose_depth")

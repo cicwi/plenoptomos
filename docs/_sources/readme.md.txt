@@ -63,6 +63,7 @@ package for optimal usability. The following has already been completed:
           'h5py',
           'configparser',
           'pillow',
+          'imageio',
       ]
       ```
     - All "conda channels" that are required for building and

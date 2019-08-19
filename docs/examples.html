@@ -164,7 +164,8 @@ Examples 02 and 03 use data from the <a class="reference external" href="http://
 <h2>example_01_logos.py<a class="headerlink" href="#example-01-logos-py" title="Permalink to this headline">¶</a></h2>
 <p>This is a preliminary example that serves to demonstrate the concepts discussed in:</p>
 <blockquote>
-<div>N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,” Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.</div></blockquote>
+<div><p>N. Viganò, et al., “Tomographic approach for the quantitative scene reconstruction from light field images,” Opt. Express, vol. 26, no. 18, p. 22574, Sep. 2018.</p>
+</div></blockquote>
 <p>In particular it displays the position and size scaling of the refocused objects in the scene for different refocusing alpha parameter.</p>
 </div>
 <div class="section" id="example-02-flower-refocusing-py">
@@ -243,7 +244,7 @@ The Integration, Back-projection and SIRT functions are straight-forward:</p>
 </pre></div>
 </div>
 <p>The computed depth cues are then assembled in a depth-map with the following optimization routine:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dm</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">compute_depth_map</span><span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">lambda_smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dm</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">compute_depth_map</span><span class="p">(</span><span class="n">dc</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">lambda_d2</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The expected output is:
@@ -265,25 +266,25 @@ The size of the filters is adjusted using the option <code class="docutils liter
 The data collection has been performed by Charlotte Herzog, Pablo Martinez Gil, and Nicola Viganò.</p>
 <p>To initiate this process, a few specific files are needed:</p>
 <ul class="simple">
-<li>A file containing the collected light-field data</li>
+<li><p>A file containing the collected light-field data</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">raw_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>A file containing the flat-field: it is also used for calibrating the light-field data</li>
+<li><p>A file containing the flat-field: it is also used for calibrating the light-field data</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">raw_file_white</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1_white.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>A file containing the dark-field (optional): it provides the background, but currently not used</li>
+<li><p>A file containing the dark-field (optional): it provides the background, but currently not used</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">raw_file_dark</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1_dark.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>A file containing the metadata in ini format. The names and sections follow the description of the vox data format</li>
+<li><p>A file containing the metadata in ini format. The names and sections follow the description of the vox data format</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ini_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;letters_ULF_M1.ini&#39;</span><span class="p">)</span>
 </pre></div>

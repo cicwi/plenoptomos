@@ -6,11 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- <insert-features-not-in-a-release-yet>
+- Example on creating and using files in .vox data format
+- Added TV regularization to PSF deconvolution
 ### Fixed
-- <insert-bugs-fixed-not-in-a-release-yet>
+- Fixed and enabled OTF functionality in PSF convolution
+- Allow loading when ASTRA is not installed
+- Try using ImageIO for TIFF images before matplotlib
+- Fixed renormalization in traditional integration algorithm for upsampled cases
+- Small fixes to PSF deconvolution
 
-## 0.1.0 - YYYY-MM-DD
+## 0.1.0 - 2019-03-25
 ### Added
 - Initial release.
 
