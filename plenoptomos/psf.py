@@ -44,11 +44,11 @@ class PSF(object):
         return copy.deepcopy(self)
 
     @staticmethod
-    def create_theo_psf(camera, coordinates, wavelength_steps=10, \
-                        wavelength_intensity=1, airy_rings=2, \
-                        refocus_distance=None, up_sampling=1, \
-                        beam_coherence='incoherent', \
-                        over_sampling=25, data_type=np.float32, plot=False):
+    def create_theo_psf(
+            camera, coordinates, wavelength_steps=10, wavelength_intensity=1,
+            airy_rings=2, refocus_distance=None, up_sampling=1,
+            beam_coherence='incoherent', shape='circle', over_sampling=25,
+            data_type=np.float32, plot=False):
         """Compute the theoretical PSF for the given coordinates in the given
         camera setup.
 
@@ -228,7 +228,9 @@ class PSFApply(object):
     """Class PSFApply handles all PSF/OTF applications
     """
 
-    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
+    def __init__(
+            self, psf_d=None, img_size=None, use_otf=True, data_format=None,
+            use_fftconv=True):
         print("- Initializing PSF application class..", end='', flush=True)
         c_in = tm.time()
 
@@ -337,7 +339,9 @@ class PSFApply(object):
         else:
             return self._apply_psf(imgs, False)
 
-    def deconvolve(self, imgs, iterations=100, data_term='l2', lambda_wl=None, lambda_tv=None, lower_limit=None, upper_limit=None, verbose=False):
+    def deconvolve(
+            self, imgs, iterations=100, data_term='l2', lambda_wl=None,
+            lambda_tv=None, lower_limit=None, upper_limit=None, verbose=False):
         """Uses iterative algorithms to deconvolve the PSF from the given images
 
         :param imgs: The incoming images (numpy.array_like)
@@ -357,12 +361,18 @@ class PSFApply(object):
         imgs = np.pad(imgs, pad_width=paddings, mode='edge')
 
         if lambda_tv is not None:
-            sol = solvers.CP_tv(data_term=data_term, lambda_tv=lambda_tv, verbose=verbose)
+            sol = solvers.CP_tv(
+                    data_term=data_term, lambda_tv=lambda_tv, verbose=verbose)
         elif lambda_wl is not None:
-            sol = solvers.CP_wl(data_term=data_term, lambda_wl=lambda_wl, wl_type='db1', verbose=verbose)
+            sol = solvers.CP_wl(
+                    data_term=data_term, lambda_wl=lambda_wl, wl_type='db1',
+                    verbose=verbose)
         else:
             sol = solvers.Sirt(verbose=verbose)
-        (imgs_dec, _) = sol(self.apply_psf_direct, imgs, iterations, At=self.apply_psf_adjoint, lower_limit=lower_limit, upper_limit=upper_limit)
+
+        (imgs_dec, _) = sol(self.apply_psf_direct, imgs, iterations, x0=imgs,
+                            At=self.apply_psf_adjoint, lower_limit=lower_limit,
+                            upper_limit=upper_limit)
 
         crops = []
         for b in border:
@@ -453,7 +463,9 @@ class PSFApply2D(PSFApply):
     """Class PSFApply2D handles all PSF applications and
     """
 
-    def __init__(self, psf_d, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
+    def __init__(
+            self, psf_d, img_size=None, use_otf=True, data_format=None,
+            use_fftconv=True):
         self.otf_axes = (-2, -1)
         if isinstance(psf_d, PSF):
             psf_inst = psf_d.clone()
@@ -462,7 +474,9 @@ class PSFApply2D(PSFApply):
                 data_format = psf_inst.data_format
         else:
             psf = np.squeeze(psf_d)
-        PSFApply.__init__(self, psf, img_size=img_size, use_otf=use_otf, data_format=data_format, use_fftconv=use_fftconv)
+        PSFApply.__init__(
+                self, psf, img_size=img_size, use_otf=use_otf,
+                data_format=data_format, use_fftconv=use_fftconv)
 
     def _check_incoming_psf(self, psf_d):
         if len(psf_d) == 0 or not len(psf_d.shape) in (2, 3):
@@ -477,7 +491,9 @@ class PSFApply4D(PSFApply):
     """Class PSFApply4D handles all PSF applications and
     """
 
-    def __init__(self, psf_d, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
+    def __init__(
+            self, psf_d, img_size=None, use_otf=True, data_format=None,
+            use_fftconv=True):
         self.otf_axes = (-4, -3, -2, -1)
         if isinstance(psf_d, PSF):
             psf = psf_d.data
@@ -485,7 +501,9 @@ class PSFApply4D(PSFApply):
                 data_format = psf_d.data_format
         else:
             psf = np.squeeze(psf_d)
-        PSFApply.__init__(self, psf, img_size=img_size, use_otf=use_otf, data_format=data_format, use_fftconv=use_fftconv)
+        PSFApply.__init__(
+                self, psf, img_size=img_size, use_otf=use_otf,
+                data_format=data_format, use_fftconv=use_fftconv)
 
     def _check_incoming_psf(self, psf_d):
         if len(psf_d) == 0 or not len(psf_d.shape) == 4:

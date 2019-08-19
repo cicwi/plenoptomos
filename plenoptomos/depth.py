@@ -368,7 +368,7 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
     return depth_cues
 
 
-def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_smooth=0.05, lambda_wl=None, use_defocus=1.0, use_correspondence=1.0):
+def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_d2=0.05, lambda_wl=None, use_defocus=1.0, use_correspondence=1.0):
     """Computes a depth map from the given depth cues.
 
     This depth map is created following the procedure from:
@@ -378,7 +378,7 @@ def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_smooth=0
     :param depth_cues: The depth cues (dict)
     :param iterations: Number of iterations (int)
     :param lambda_tv: Lambda value of the TV term (float, default: 2.0)
-    :param lambda_smooth: Lambda value of the smoothing term (float, default: 0.05)
+    :param lambda_d2: Lambda value of the smoothing term (float, default: 0.05)
     :param use_defocus: Weight for defocus cues (float, default: 1.0)
     :param use_correspondence: Weight for corresponence cues (float, default: 1.0)
 
@@ -422,9 +422,9 @@ def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_smooth=0
 
     q_g = np.zeros(np.concatenate(((2, ), img_size)), dtype=data_type)
     tau = 4 * lambda_tv
-    if lambda_smooth is not None:
+    if lambda_d2 is not None:
         q_l = np.zeros(img_size, dtype=data_type)
-        tau += 8 * lambda_smooth
+        tau += 8 * lambda_d2
     if use_defocus > 0:
         q_d = np.zeros(img_size, dtype=data_type)
         tau += W_d
@@ -448,12 +448,12 @@ def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_smooth=0
         q_g /= grad_l2_norm
 
         update = - lambda_tv * _divergence2(q_g[0, :, :], q_g[1, :, :])
-        if lambda_smooth is not None:
+        if lambda_d2 is not None:
             l = _laplacian2(depth_it)
             q_l += l / 8
             q_l /= np.fmax(1, np.abs(q_l))
 
-            update += lambda_smooth * _laplacian2(q_l)
+            update += lambda_d2 * _laplacian2(q_l)
 
         if use_defocus > 0:
             q_d += (depth_it - a_d)

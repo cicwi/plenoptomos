@@ -66,11 +66,13 @@ class Solver(object):
 
 class BPJ(Solver):
 
-    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5):
+    def __init__(
+            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         self.weight_det = weight_det
 
-    def __call__(self, A, b, num_iter, At=None, upper_limit=None, lower_limit=None):
+    def __call__(
+            self, A, b, num_iter, At=None, upper_limit=None, lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -104,11 +106,14 @@ class BPJ(Solver):
 
 class Sirt(Solver):
 
-    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5):
+    def __init__(
+            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         self.weight_det = weight_det
 
-    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None, tol=1e-5):
+    def __call__(
+            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
+            lower_limit=None, tol=1e-5):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -127,7 +132,9 @@ class Sirt(Solver):
         renorm_fwd[(renorm_fwd / np.max(renorm_fwd)) < 1e-5] = 1
         renorm_fwd = 1 / renorm_fwd
 
-        x = x0 or At(b * renorm_fwd) * renorm_bwd
+        if x0 is None:
+            x0 = At(b * renorm_fwd) * renorm_bwd
+        x = x0
 
         res_norm_0 = npla.norm(b.flatten())
         rel_res_norms = np.empty((num_iter, ))
@@ -150,7 +157,7 @@ class Sirt(Solver):
             res = b - A(x)
 
             rel_res_norms[ii] = npla.norm(res.flatten()) / res_norm_0
-            if (rel_res_norms[ii] < tol):
+            if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
             x += (At(res * renorm_fwd)) * renorm_bwd
@@ -175,13 +182,16 @@ class Sirt(Solver):
 
 class CP_uc(Solver):
 
-    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
-                 data_term='l2'):
+    def __init__(
+            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
+            data_term='l2'):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         self.weight_det = weight_det
         self.data_term = data_term
 
-    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
+    def __call__(
+            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
+            lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -202,7 +212,9 @@ class CP_uc(Solver):
 
         sigma1 = 1 / (1 + sigma)
 
-        x = x0 or np.zeros_like(tau)
+        if x0 is None:
+            x0 = np.zeros_like(tau)
+        x = x0
         x_ehn = x
 
         p = np.zeros(b.shape, dtype=data_type)
@@ -226,19 +238,24 @@ class CP_uc(Solver):
                 print(prnt_str, end='', flush=True)
 
             fp = A(x_ehn)
+
             res = fp - b
 
             rel_res_norms[ii] = npla.norm(res.flatten()) / res_norm_0
-            if (rel_res_norms[ii] < self.tol):
+            if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
             if self.data_term.lower() == 'kl':
-                temp_dual = p + fp * sigma
-                p = (1 + temp_dual - np.sqrt((temp_dual - 1) ** 2 + b_kl)) / 2
-            elif self.data_term.lower() == 'l2':
-                p = (p + res * sigma) * sigma1
+                p += fp * sigma
+                p = (1 + p - np.sqrt((p - 1) ** 2 + b_kl)) / 2
             else:
-                raise ValueError("Unknown data term: %s" % self.data_term)
+                p += res * sigma
+                if self.data_term.lower() == 'l1':
+                    p /= np.fmax(1, np.abs(p))
+                elif self.data_term.lower() == 'l2':
+                    p *= sigma1
+                else:
+                    raise ValueError("Unknown data term: %s" % self.data_term)
 
             x_new = x - At(p) * tau
 
@@ -310,8 +327,9 @@ class Operations(object):
 
 class CP_tv(Solver, Operations):
 
-    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
-                 data_term='l2', lambda_tv=1e-2, axes=None):
+    def __init__(
+            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
+            data_term='l2', lambda_tv=1e-2, axes=None):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         Operations.__init__(self, axes)
 
@@ -321,7 +339,9 @@ class CP_tv(Solver, Operations):
         self.lambda_tv = lambda_tv
         self.axes = axes
 
-    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
+    def __call__(
+            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
+            lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -346,7 +366,9 @@ class CP_tv(Solver, Operations):
 
         sigma1 = 1 / (1 + sigma)
 
-        x = x0 or np.zeros_like(tau)
+        if x0 is None:
+            x0 = np.zeros_like(tau)
+        x = x0
         x_ehn = x
 
         p = np.zeros(b.shape, dtype=data_type)
@@ -372,19 +394,24 @@ class CP_tv(Solver, Operations):
                 print(prnt_str, end='', flush=True)
 
             fp = A(x_ehn)
+
             res = fp - b
 
             rel_res_norms[ii] = npla.norm(res.flatten()) / res_norm_0
-            if (rel_res_norms[ii] < self.tol):
+            if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
             if self.data_term.lower() == 'kl':
-                temp_dual = p + fp * sigma
-                p = (1 + temp_dual - np.sqrt((temp_dual - 1) ** 2 + b_kl)) / 2
-            elif self.data_term.lower() == 'l2':
-                p = (p + res * sigma) * sigma1
+                p += fp * sigma
+                p = (1 + p - np.sqrt((p - 1) ** 2 + b_kl)) / 2
             else:
-                raise ValueError("Unknown data term: %s" % self.data_term)
+                p += res * sigma
+                if self.data_term.lower() == 'l1':
+                    p /= np.fmax(1, np.abs(p))
+                elif self.data_term.lower() == 'l2':
+                    p *= sigma1
+                else:
+                    raise ValueError("Unknown data term: %s" % self.data_term)
 
             d = self.gradient(x_ehn)
             d_2 = np.stack(d) / 2
@@ -420,18 +447,21 @@ class CP_tv(Solver, Operations):
 
 class CP_smooth(Solver, Operations):
 
-    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
-                 data_term='l2', lambda_smooth=1e-2, axes=None):
+    def __init__(
+            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
+            data_term='l2', lambda_d2=1e-2, axes=None):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         Operations.__init__(self, axes)
 
         self.weight_det = weight_det
 
         self.data_term = data_term
-        self.lambda_smooth = lambda_smooth
+        self.lambda_d2 = lambda_d2
         self.axes = axes
 
-    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
+    def __call__(
+            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
+            lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -447,7 +477,7 @@ class CP_smooth(Solver, Operations):
             self.axes = range(len(tau.shape))
 
         tau[(tau / np.max(tau)) < 1e-5] = 1
-        tau = 1 / (tau + 4 * len(self.axes) * self.lambda_smooth)
+        tau = 1 / (tau + 4 * len(self.axes) * self.lambda_d2)
 
         sigma = np.array(self.weight_det) or A(np.ones(tau.shape, dtype=data_type))
         sigma = np.abs(sigma)
@@ -456,7 +486,9 @@ class CP_smooth(Solver, Operations):
 
         sigma1 = 1 / (1 + sigma)
 
-        x = x0 or np.zeros_like(tau)
+        if x0 is None:
+            x0 = np.zeros_like(tau)
+        x = x0
         x_ehn = x
 
         p = np.zeros(b.shape, dtype=data_type)
@@ -486,21 +518,26 @@ class CP_smooth(Solver, Operations):
             res = fp - b
 
             rel_res_norms[ii] = npla.norm(res.flatten()) / res_norm_0
-            if (rel_res_norms[ii] < self.tol):
+            if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
             if self.data_term.lower() == 'kl':
-                temp_dual = p + fp * sigma
-                p = (1 + temp_dual - np.sqrt((temp_dual - 1) ** 2 + b_kl)) / 2
-            elif self.data_term.lower() == 'l2':
-                p = (p + res * sigma) * sigma1
+                p += fp * sigma
+                p = (1 + p - np.sqrt((p - 1) ** 2 + b_kl)) / 2
             else:
-                raise ValueError("Unknown data term: %s" % self.data_term)
+                p += res * sigma
+                if self.data_term.lower() == 'l1':
+                    p /= np.fmax(1, np.abs(p))
+                elif self.data_term.lower() == 'l2':
+                    p *= sigma1
+                else:
+                    raise ValueError("Unknown data term: %s" % self.data_term)
+
 
             q_g += self.laplacian(x_ehn) / (4 * len(self.axes))
             q_g /= np.fmax(1, np.abs(q_g))
 
-            x_new = x - (At(p) + self.lambda_smooth * self.laplacian(q_g)) * tau
+            x_new = x - (At(p) + self.lambda_d2 * self.laplacian(q_g)) * tau
 
             if lower_limit is not None:
                 x_new = np.fmax(x_new, lower_limit)
@@ -528,9 +565,10 @@ class CP_smooth(Solver, Operations):
 
 class CP_wl(Solver):
 
-    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
-                 data_term='l2', lambda_wl=1e-2, axes=None,
-                 wl_type='db4', use_decimated=False, decomp_lvl=3):
+    def __init__(
+            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
+            data_term='l2', lambda_wl=1e-2, axes=None, wl_type='db4',
+            use_decimated=False, decomp_lvl=3):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         self.weight_det = weight_det
 
@@ -556,10 +594,11 @@ class CP_wl(Solver):
                 Ht = lambda x : pywt.iswt2(x, wavelet=self.wl_type)[np.newaxis, ...]
         return (H, Ht)
 
-    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
-        """
-        ChambollePock implementization of wavelet based regularization term.
 
+    def __call__(
+            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
+            lower_limit=None):
+        """ChambollePock implementization of wavelet regularized minimization.
         """
         if not has_pywt:
             raise ImportError('The module pywt was not found, please install it before you try using wavelet minimization')
@@ -586,7 +625,9 @@ class CP_wl(Solver):
         if self.axes is None:
             self.axes = range(len(tau.shape))
 
-        x = x0 or np.zeros_like(tau)
+        if x0 is None:
+            x0 = np.zeros_like(tau)
+        x = x0
         x_ehn = x
         p = np.zeros(b.shape, dtype=data_type)
 
@@ -620,16 +661,20 @@ class CP_wl(Solver):
             res = fp - b
 
             rel_res_norms[ii] = npla.norm(res.flatten()) / res_norm_0
-            if rel_res_norms[ii] < self.tol:
+            if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
             if self.data_term.lower() == 'kl':
-                temp_dual = p + fp * sigma
-                p = (1 + temp_dual - np.sqrt((temp_dual - 1) ** 2 + b_kl)) / 2
-            elif self.data_term.lower() == 'l2':
-                p = (p + res * sigma) * sigma1
+                p += fp * sigma
+                p = (1 + p - np.sqrt((p - 1) ** 2 + b_kl)) / 2
             else:
-                raise ValueError("Unknown data term: %s" % self.data_term)
+                p += res * sigma
+                if self.data_term.lower() == 'l1':
+                    p /= np.fmax(1, np.abs(p))
+                elif self.data_term.lower() == 'l2':
+                    p *= sigma1
+                else:
+                    raise ValueError("Unknown data term: %s" % self.data_term)
 
             d = H(x_ehn)
 
