@@ -40,6 +40,7 @@ class Projector(object):
 
         self.projectors = []
         self.Ws = []
+        self.is_initialized = False
 
         self.camera = camera
         self.img_size = np.concatenate((camera.data_size_vu, camera.data_size_ts))
@@ -203,6 +204,7 @@ class Projector(object):
         for p in self.projectors:
             astra.projector.delete(p)
         self.projectors = []
+        self.is_initialized = False
 
     def _init_projectors(self):
         # Volume downscaling option and similar:
@@ -215,6 +217,7 @@ class Projector(object):
             proj_id = astra.create_projector('cuda3d', self.proj_geom, vg, opts)
             self.projectors.append(proj_id)
             self.Ws.append(astra.OpTomo(proj_id))
+        self.is_initialized = True
 
     def _apply_psf_to_subpixel(self, y, is_direct=True):
         for p in self.psf:
@@ -258,6 +261,9 @@ class Projector(object):
         :returns: The projected light-field
         :rtype: numpy.array_like
         """
+        if not self.is_initialized:
+            raise RuntimeError('Projector not initialized!!')
+
         proj_stack_shape = (
                 len(self.Ws), self.img_size_us[-2],
                 self.camera.get_number_of_subaperture_images(),
@@ -301,6 +307,9 @@ class Projector(object):
         :returns: The back-projected volume
         :rtype: numpy.array_like
         """
+        if not self.is_initialized:
+            raise RuntimeError('Projector not initialized!!')
+
         y = np.reshape(y, np.concatenate(((-1, ), self.img_size)))
 
         self._apply_psf_to_lightfield(y, is_direct=False)
