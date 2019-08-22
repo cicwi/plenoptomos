@@ -799,6 +799,7 @@ class Lightfield(object):
         self.set_mode_subaperture()
 
         if crop_size_ts is not None:
+            crop_size_ts = np.array(crop_size_ts)
             if len(crop_size_ts) == 2:
                 # Centered
                 center_data_ts = (self.camera.data_size_ts - 1) / 2
@@ -808,13 +809,14 @@ class Lightfield(object):
                 crop_roi_ts = np.concatenate((start_ts, end_ts))
             else:
                 crop_roi_ts = crop_size_ts
-                crop_size_ts = crop_roi_ts[2:] - crop_roi_ts[:2] + 1
+                crop_size_ts = crop_roi_ts[2:] - crop_roi_ts[:2]
 
             self.data = self.data[..., crop_roi_ts[0]:crop_roi_ts[2], crop_roi_ts[1]:crop_roi_ts[3]]
             if self.flat is not None:
                 self.flat = self.flat[..., crop_roi_ts[0]:crop_roi_ts[2], crop_roi_ts[1]:crop_roi_ts[3]]
 
         if crop_size_vu is not None:
+            crop_size_vu = np.array(crop_size_vu)
             if len(crop_size_vu) == 2:
                 # Centered
                 center_data_vu = (self.camera.data_size_vu - 1) / 2
@@ -824,7 +826,7 @@ class Lightfield(object):
                 crop_roi_vu = np.concatenate((start_vu, end_vu))
             else:
                 crop_roi_vu = crop_size_vu
-                crop_size_vu = crop_roi_vu[2:] - crop_roi_vu[:2] + 1
+                crop_size_vu = crop_roi_vu[2:] - crop_roi_vu[:2]
 
             self.data = self.data[crop_roi_vu[0]:crop_roi_vu[2], crop_roi_vu[1]:crop_roi_vu[3], ...]
             if self.flat is not None:
