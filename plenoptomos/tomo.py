@@ -374,8 +374,8 @@ def compute_refocus_backprojection(lf : lightfield.Lightfield, zs, \
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
 
-    paddings_st = np.array((border, border))
-    lf_sa.pad((0, 0, paddings_st[0], paddings_st[1]), method=border_padding)
+    paddings_ts = np.array((border, border))
+    lf_sa.pad((0, 0, paddings_ts[0], paddings_ts[1]), method=border_padding)
 
     with Projector(lf_sa.camera, zs, flat=lf_sa.flat, mode='range', shifts_vu=lf_sa.shifts_vu, \
                       up_sampling=up_sampling, super_sampling=super_sampling, \
@@ -386,14 +386,35 @@ def compute_refocus_backprojection(lf : lightfield.Lightfield, zs, \
         imgs /= ones
 
     # Crop the refocused images:
-    paddings_st = paddings_st * up_sampling
-    imgs = imgs[:, paddings_st[0]:-paddings_st[0], paddings_st[1]:-paddings_st[1]]
+    paddings_ts = paddings_ts * up_sampling
+    imgs = imgs[:, paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
     c_out = tm.time()
     print("\b\b: Done in %g seconds." % (c_out - c_in))
 
     # Return the stack of refocused images:
     return imgs
+
+
+def _get_paddings(data_size_ts, border, up_sampling, algorithm):
+    paddings_ts_upper = np.array((border, border))
+    paddings_ts_lower = np.array((border, border))
+    final_size_ts = (data_size_ts + paddings_ts_lower + paddings_ts_upper) * up_sampling
+
+    if isinstance(algorithm, str) and algorithm.lower() == 'cp_wl':
+        padding_align = 8
+    elif isinstance(algorithm, solvers.CP_wl):
+        padding_align = 2 ** algorithm.decomp_lvl
+    else:
+        padding_align = 0
+
+    if padding_align > 0:
+        additional_padding_ts = ((padding_align - (final_size_ts % padding_align)) % padding_align) / up_sampling
+        paddings_ts_lower += np.ceil(additional_padding_ts / 2).astype(np.int)
+        paddings_ts_upper += np.floor(additional_padding_ts / 2).astype(np.int)
+
+    return (paddings_ts_lower, paddings_ts_upper)
+
 
 def compute_refocus_iterative(lf : lightfield.Lightfield, zs, iterations=10, \
                               algorithm='sirt', up_sampling=1, \
@@ -422,14 +443,16 @@ def compute_refocus_iterative(lf : lightfield.Lightfield, zs, iterations=10, \
     """
 
     num_dists = len(zs)
-    print("Simultaneous refocusing through %s of %d distances:" % (algorithm.upper(), num_dists))
+    print("Refocusing through %s of %d distances:" % (algorithm.upper(), num_dists))
     c_in = tm.time()
 
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
 
-    paddings_st = np.array((border, border))
-    lf_sa.pad((0, 0, paddings_st[0], paddings_st[1]), method=border_padding)
+    (paddings_ts_lower, paddings_ts_upper) = _get_paddings(lf_sa.camera.data_size_ts, border, up_sampling, algorithm)
+    lf_sa.pad(
+            ((0, 0), (0, 0), (paddings_ts_lower[0], paddings_ts_upper[0]), (paddings_ts_lower[1], paddings_ts_upper[1])),
+            method=border_padding)
 
     imgs = np.empty((num_dists, lf_sa.camera.data_size_ts[0] * up_sampling, lf_sa.camera.data_size_ts[1] * up_sampling), dtype=lf_sa.data.dtype)
 
@@ -467,8 +490,9 @@ def compute_refocus_iterative(lf : lightfield.Lightfield, zs, iterations=10, \
             imgs[ii_z:ii_z+len(sel_zs), ...], rel_res_norms = algo(A, b, iterations, At=At, lower_limit=0)
 
     # Crop the refocused images:
-    paddings_st = paddings_st * up_sampling
-    imgs = imgs[:, paddings_st[0]:-paddings_st[0], paddings_st[1]:-paddings_st[1]]
+    paddings_ts_lower = paddings_ts_lower * up_sampling
+    paddings_ts_upper = paddings_ts_upper * up_sampling
+    imgs = imgs[:, paddings_ts_lower[0]:-paddings_ts_upper[0], paddings_ts_lower[1]:-paddings_ts_upper[1]]
 
     c_out = tm.time()
     print(" * Done in %g seconds." % (c_out - c_in))
@@ -508,8 +532,10 @@ def compute_refocus_iterative_multiple(lf : lightfield.Lightfield, zs, iteration
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
 
-    paddings_st = np.array((border, border))
-    lf_sa.pad((0, 0, paddings_st[0], paddings_st[1]), method=border_padding)
+    (paddings_ts_lower, paddings_ts_upper) = _get_paddings(lf_sa.camera.data_size_ts, border, up_sampling, algorithm)
+    lf_sa.pad(
+            ((0, 0), (0, 0), (paddings_ts_lower[0], paddings_ts_upper[0]), (paddings_ts_lower[1], paddings_ts_upper[1])),
+            method=border_padding)
 
     with Projector(lf_sa.camera, zs, flat=lf_sa.flat, psf_d=psf, shifts_vu=lf_sa.shifts_vu, \
                       mode='simultaneous', up_sampling=up_sampling, \
@@ -538,8 +564,9 @@ def compute_refocus_iterative_multiple(lf : lightfield.Lightfield, zs, iteration
         imgs, rel_res_norms = algo(A, b, iterations, At=At, lower_limit=0)
 
     # Crop the refocused images:
-    paddings_st = paddings_st * up_sampling
-    imgs = imgs[:, paddings_st[0]:-paddings_st[0], paddings_st[1]:-paddings_st[1]]
+    paddings_ts_lower = paddings_ts_lower * up_sampling
+    paddings_ts_upper = paddings_ts_upper * up_sampling
+    imgs = imgs[:, paddings_ts_lower[0]:-paddings_ts_upper[0], paddings_ts_lower[1]:-paddings_ts_upper[1]]
 
     c_out = tm.time()
     print("Done in %g seconds." % (c_out - c_in))
