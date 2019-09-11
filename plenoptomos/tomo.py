@@ -16,7 +16,6 @@ import astra
 
 from . import lightfield
 from . import solvers
-from . import psf
 
 
 class Projector(object):
@@ -26,17 +25,17 @@ class Projector(object):
     provided in the containing module.
     """
 
-    def __init__(self, camera : lightfield.Camera, zs, flat=None, shifts_vu=(None, None), \
-                 beam_geometry='cone', domain='object', psf_d=None, \
-                 use_otf=True, mode='independent', up_sampling=1, vu_origin=None, \
-                 super_sampling=1, gpu_index=-1):
+    def __init__(
+            self, camera : lightfield.Camera, zs, flat=None,
+            beam_geometry='cone', domain='object', psf_d=[],
+            up_sampling=1, super_sampling=1,
+            mode='independent', shifts_vu=(None, None), gpu_index=-1):
         self.mode = mode # can be: {'independent' | 'simultaneous' | 'range'}
         self.up_sampling = up_sampling
         self.super_sampling = super_sampling
         self.gpu_index = gpu_index
         self.beam_geometry = beam_geometry
         self.domain = domain
-        self.vu_origin = vu_origin
 
         self.projectors = []
         self.Ws = []
@@ -49,27 +48,12 @@ class Projector(object):
         self.flat = flat
         if self.flat is not None:
             self.flat = np.reshape(flat, np.concatenate(((-1, ), self.img_size)))
+
         self.shifts_vu = shifts_vu
 
-        self._initialize_geometry(zs)
+        self.psf = psf_d
 
-        if psf_d is None:
-            self.psf = ()
-        elif isinstance(psf_d, str) and psf_d.lower() in ('theo_2d2d', 'theo_uv2d', 'theo_array'):
-            psf_Ml = psf.PSF.create_theo_psf(camera, coordinates='st')
-            if psf_d.lower() == 'theo_2d2d':
-                psf_ml = psf.PSF.create_theo_psf(camera, coordinates='uv')
-                self.psf = (psf.PSFApply2D(psf_d=psf_Ml.data, img_size=camera.data_size_ts, use_otf=use_otf), \
-                            psf.PSFApply2D(psf_d=psf_ml.data, img_size=self.photo_size_2D, use_otf=use_otf, data_format='raw'))
-            elif psf_d.lower() == 'theo_uv2d':
-                psf_ml = psf.PSF.create_theo_psf(camera, coordinates='uv')
-                self.psf = (psf.PSFApply2D(psf_d=psf_ml.data, img_size=self.photo_size_2D, use_otf=use_otf, data_format='raw'), )
-            elif psf_d.lower() == 'theo_array':
-                self.psf = (psf.PSFApply2D(psf_d=psf_Ml.data, img_size=camera.data_size_ts, use_otf=use_otf), )
-        elif isinstance(psf_d, psf.PSFApply):
-            self.psf = (psf_d, )
-        else:
-            self.psf = psf_d
+        self._initialize_geometry(zs)
 
     def __enter__(self):
         self._initialize_projectors()
@@ -88,17 +72,14 @@ class Projector(object):
         p. 22574, Sep. 2018.
         """
         (samp_v, samp_u, _, _) = self.camera.get_grid_points(space='direct')
-        if self.vu_origin is not None:
-            (_, _, scale_v, scale_u) = self.camera.get_scales(space='direct', domain=self.domain)
-            samp_v -= self.vu_origin[0] * scale_v
-            samp_u -= self.vu_origin[1] * scale_u
 
         (virt_pos_v, virt_pos_u) = np.meshgrid(samp_v, samp_u, indexing='ij')
 
+        (_, _, scale_v, scale_u) = self.camera.get_scales(space='direct', domain=self.domain)
         if self.shifts_vu[0] is not None:
-            virt_pos_v += self.shifts_vu[0]
+            virt_pos_v += self.shifts_vu[0] * scale_v
         if self.shifts_vu[1] is not None:
-            virt_pos_u += self.shifts_vu[1]
+            virt_pos_u += self.shifts_vu[1] * scale_u
 
         if self.domain.lower() == 'object':
             ref_z = self.camera.get_focused_distance()
@@ -310,10 +291,10 @@ class Projector(object):
         return x
 
 
-def compute_forwardprojection(camera : lightfield.Camera, zs, vols, masks, \
-                              up_sampling=1, border_padding='edge', \
-                              super_sampling=1, border=5, gpu_index=-1, \
-                              reflective_geom=True):
+def compute_forwardprojection(
+        camera : lightfield.Camera, zs, vols, masks, reflective_geom=True,
+        up_sampling=1, super_sampling=1, border=5, border_padding='edge',
+        gpu_index=-1):
 
     print("Creating projected lightfield..", end='', flush=True)
     c_in = tm.time()
@@ -346,11 +327,10 @@ def compute_forwardprojection(camera : lightfield.Camera, zs, vols, masks, \
     # Return the stack of refocused images:
     return lf
 
-def compute_refocus_backprojection(lf : lightfield.Lightfield, zs, \
-                                   up_sampling=1, border_padding='edge', \
-                                   super_sampling=1, border=4, \
-                                   beam_geometry='cone', domain='object', \
-                                   gpu_index=-1):
+def compute_refocus_backprojection(
+        lf : lightfield.Lightfield, zs, border=4, border_padding='edge',
+        up_sampling=1, super_sampling=1,
+        beam_geometry='cone', domain='object', gpu_index=-1):
     """Compute refocusing of the input lightfield image at the input distances by
     applying the backprojection method.
 
@@ -377,10 +357,12 @@ def compute_refocus_backprojection(lf : lightfield.Lightfield, zs, \
     paddings_ts = np.array((border, border))
     lf_sa.pad((0, 0, paddings_ts[0], paddings_ts[1]), method=border_padding)
 
-    with Projector(lf_sa.camera, zs, flat=lf_sa.flat, mode='range', shifts_vu=lf_sa.shifts_vu, \
-                      up_sampling=up_sampling, super_sampling=super_sampling, \
-                      gpu_index=gpu_index, beam_geometry=beam_geometry, \
-                      domain=domain) as p:
+    with Projector(
+            lf_sa.camera, zs, flat=lf_sa.flat, mode='range',
+            beam_geometry=beam_geometry, domain=domain,
+            up_sampling=up_sampling,
+            super_sampling=super_sampling, shifts_vu=lf_sa.shifts_vu,
+            gpu_index=gpu_index) as p:
         imgs = p.BP(lf_sa.data)
         ones = p.BP(np.ones_like(lf_sa.data))
         imgs /= ones
@@ -416,12 +398,11 @@ def _get_paddings(data_size_ts, border, up_sampling, algorithm):
     return (paddings_ts_lower, paddings_ts_upper)
 
 
-def compute_refocus_iterative(lf : lightfield.Lightfield, zs, iterations=10, \
-                              algorithm='sirt', up_sampling=1, \
-                              border_padding='edge', super_sampling=1, \
-                              gpu_index=-1, beam_geometry='cone', domain='object', \
-                              psf=None, vu_origin=None, \
-                              use_otf=False, border=4, verbose=False, chunks_zs=1):
+def compute_refocus_iterative(
+        lf : lightfield.Lightfield, zs, iterations=10, algorithm='sirt',
+        up_sampling=1, super_sampling=1,
+        border_padding='edge', beam_geometry='cone', domain='object',
+        psf=None, border=4, gpu_index=-1, verbose=False, chunks_zs=1):
     """Compute refocusing of the input lightfield image at the input distances by
     applying iterative methods.
 
@@ -463,11 +444,12 @@ def compute_refocus_iterative(lf : lightfield.Lightfield, zs, iterations=10, \
         print(" * Refocusing chunk of %03d-%03d (avg: %g seconds)" % (ii_z, ii_z+chunks_zs-1, (tm.time() - c_init) / np.fmax(ii_z, 1)))
 
         sel_zs = zs[ii_z:ii_z+chunks_zs]
-        with Projector(lf_sa.camera, sel_zs, flat=lf_sa.flat, psf_d=psf, shifts_vu=lf_sa.shifts_vu, \
-                          mode='independent', up_sampling=up_sampling, \
-                          super_sampling=super_sampling, use_otf=use_otf, \
-                          gpu_index=gpu_index, beam_geometry=beam_geometry, \
-                          domain=domain, vu_origin=vu_origin) as p:
+        with Projector(
+                lf_sa.camera, sel_zs, flat=lf_sa.flat, psf_d=psf,
+                shifts_vu=lf_sa.shifts_vu, mode='independent',
+                up_sampling=up_sampling,
+                super_sampling=super_sampling, gpu_index=gpu_index,
+                beam_geometry=beam_geometry, domain=domain) as p:
             A = lambda x: p.FP(x)
             At = lambda y: p.BP(y)
             b = np.tile(np.reshape(lf_sa.data, np.concatenate(((1, ), p.img_size))), (len(sel_zs), 1, 1, 1, 1))
@@ -500,12 +482,11 @@ def compute_refocus_iterative(lf : lightfield.Lightfield, zs, iterations=10, \
     # Return the stack of refocused images:
     return imgs
 
-def compute_refocus_iterative_multiple(lf : lightfield.Lightfield, zs, iterations=10, \
-                                       algorithm='sirt', up_sampling=1, \
-                                       border_padding='edge', super_sampling=1, \
-                                       gpu_index=-1, beam_geometry='cone', domain='object', \
-                                       psf=None, vu_origin=None, \
-                                       use_otf=True, border=4, verbose=False):
+def compute_refocus_iterative_multiple(
+        lf : lightfield.Lightfield, zs, iterations=10, algorithm='sirt',
+        up_sampling=1, super_sampling=1, border=4, border_padding='edge',
+        beam_geometry='cone', domain='object', psf=None, gpu_index=-1,
+        verbose=False):
     """Compute refocusing of the input lightfield image simultaneously at the input
     distances by applying iterative methods.
 
@@ -537,11 +518,11 @@ def compute_refocus_iterative_multiple(lf : lightfield.Lightfield, zs, iteration
             ((0, 0), (0, 0), (paddings_ts_lower[0], paddings_ts_upper[0]), (paddings_ts_lower[1], paddings_ts_upper[1])),
             method=border_padding)
 
-    with Projector(lf_sa.camera, zs, flat=lf_sa.flat, psf_d=psf, shifts_vu=lf_sa.shifts_vu, \
-                      mode='simultaneous', up_sampling=up_sampling, \
-                      super_sampling=super_sampling, use_otf=use_otf, \
-                      gpu_index=gpu_index, beam_shape=beam_geometry, \
-                      domain=domain, vu_origin=vu_origin) as p:
+    with Projector(
+            lf_sa.camera, zs, flat=lf_sa.flat, psf_d=psf,
+            shifts_vu=lf_sa.shifts_vu, mode='simultaneous',
+            up_sampling=up_sampling, super_sampling=super_sampling,
+            gpu_index=gpu_index, beam_shape=beam_geometry, domain=domain) as p:
         A = lambda x: p.FP(x)
         At = lambda y: p.BP(y)
         b = np.reshape(lf_sa.data, np.concatenate(((1, ), p.img_size)))
