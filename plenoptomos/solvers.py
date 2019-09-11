@@ -127,7 +127,9 @@ class Sirt(Solver):
         renorm_bwd[(renorm_bwd / np.max(renorm_bwd)) < 1e-5] = 1
         renorm_bwd = 1 / renorm_bwd
 
-        renorm_fwd = np.array(self.weight_det) or A(np.ones(renorm_bwd.shape, data_type))
+        if self.weight_det is None:
+            self.weight_det = A(np.ones(renorm_bwd.shape, dtype=data_type))
+        renorm_fwd = np.array(self.weight_det)
         renorm_fwd = np.abs(renorm_fwd)
         renorm_fwd[(renorm_fwd / np.max(renorm_fwd)) < 1e-5] = 1
         renorm_fwd = 1 / renorm_fwd
@@ -205,8 +207,10 @@ class CP_uc(Solver):
         tau[(tau / np.max(tau)) < 1e-5] = 1
         tau = 1 / tau
 
-        sigma = np.array(self.weight_det) or A(np.ones(tau.shape, dtype=data_type))
-        sigma = np.abs(sigma)
+        if self.weight_det is None:
+            self.weight_det = A(np.ones(tau.shape, dtype=data_type))
+        sigma = np.array(self.weight_det)
+        sigma = np.abs(self.weight_det)
         sigma[(sigma / np.max(sigma)) < 1e-5] = 1
         sigma = 1 / sigma
 
@@ -359,7 +363,9 @@ class CP_tv(Solver, Operations):
         tau[(tau / np.max(tau)) < 1e-5] = 1
         tau = 1 / (tau + 2 * len(self.axes) * self.lambda_tv)
 
-        sigma = np.array(self.weight_det) or A(np.ones(tau.shape, dtype=data_type))
+        if self.weight_det is None:
+            self.weight_det = A(np.ones(tau.shape, dtype=data_type))
+        sigma = np.array(self.weight_det)
         sigma = np.abs(sigma)
         sigma[(sigma / np.max(sigma)) < 1e-5] = 1
         sigma = 1 / sigma
@@ -479,7 +485,9 @@ class CP_smooth(Solver, Operations):
         tau[(tau / np.max(tau)) < 1e-5] = 1
         tau = 1 / (tau + 4 * len(self.axes) * self.lambda_d2)
 
-        sigma = np.array(self.weight_det) or A(np.ones(tau.shape, dtype=data_type))
+        if self.weight_det is None:
+            self.weight_det = A(np.ones(tau.shape, dtype=data_type))
+        sigma = np.array(self.weight_det)
         sigma = np.abs(sigma)
         sigma[(sigma / np.max(sigma)) < 1e-5] = 1
         sigma = 1 / sigma
@@ -616,7 +624,9 @@ class CP_wl(Solver):
             self.decomp_lvl = pywt.dwt_max_level(len(tau), pywt.Wavelet(self.wl_type).dec_len)
         tau = 1 / (tau + self.lambda_wl * (2 ** self.decomp_lvl))
 
-        sigma = np.array(self.weight_det) or A(np.ones(tau.shape, dtype=data_type))
+        if self.weight_det is None:
+            self.weight_det = A(np.ones(tau.shape, dtype=data_type))
+        sigma = np.array(self.weight_det)
         sigma[np.abs(sigma) < 1e-3] = 1
         sigma = 1 / sigma
 
@@ -650,7 +660,8 @@ class CP_wl(Solver):
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s iterations (init: %g seconds): " % (self.wl_type.lower(), (c_init - c_in)), end='', flush=True)
+            print("- Performing CP-%s-%s iterations (init: %g seconds): " % (
+                    self.data_term, self.wl_type.lower(), (c_init - c_in)), end='', flush=True)
         for ii in range(num_iter):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, num_iter, (tm.time() - c_init) / np.fmax(ii, 1))
