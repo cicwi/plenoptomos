@@ -357,7 +357,18 @@ class PSFApply(object):
         """
         self.image_size = np.array(imgs.shape)
         border = ((self._get_psf_datashape() - 1) / 2).astype(np.int) + 1
-        paddings = [(x, x) for x in border]
+        paddings_ts_lower = border
+        paddings_ts_upper = border
+
+        if lambda_tv is None and lambda_wl is not None:
+            decomp_lvl = 3
+            padding_align = 2 ** decomp_lvl
+            final_size_ts = self.image_size + 2 * border
+            additional_padding_ts = ((padding_align - (final_size_ts % padding_align)) % padding_align)
+            paddings_ts_lower += np.ceil(additional_padding_ts / 2).astype(np.int)
+            paddings_ts_upper += np.floor(additional_padding_ts / 2).astype(np.int)
+
+        paddings = [(xl, xu) for xl, xu in zip(paddings_ts_lower, paddings_ts_upper)]
         imgs = np.pad(imgs, pad_width=paddings, mode='edge')
 
         if lambda_tv is not None:
@@ -366,7 +377,7 @@ class PSFApply(object):
         elif lambda_wl is not None:
             sol = solvers.CP_wl(
                     data_term=data_term, lambda_wl=lambda_wl, wl_type='db1',
-                    verbose=verbose)
+                    decomp_lvl=decomp_lvl, verbose=verbose)
         else:
             sol = solvers.Sirt(verbose=verbose)
 
