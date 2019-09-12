@@ -61,17 +61,17 @@ class Projector(object):
             psf_d = []
         self.psf = psf_d
 
-        self._initialize_geometry(zs)
+        self._init_geometry(zs)
         self._init_psf_mask_correction()
 
     def __enter__(self):
-        self._initialize_projectors()
+        self._init_projectors()
         return self
 
     def __exit__(self, *args):
         self.reset()
 
-    def _initialize_geometry(self, zs):
+    def _init_geometry(self, zs):
         """The this function produces the ASTRA geometry needed to refocus or
         project light-fields.
 
@@ -196,7 +196,7 @@ class Projector(object):
             astra.projector.delete(p)
         self.projectors = []
 
-    def _initialize_projectors(self):
+    def _init_projectors(self):
         # Volume downscaling option and similar:
         opts = {
             'VoxelSuperSampling': self.super_sampling,
@@ -207,6 +207,40 @@ class Projector(object):
             proj_id = astra.create_projector('cuda3d', self.proj_geom, vg, opts)
             self.projectors.append(proj_id)
             self.Ws.append(astra.OpTomo(proj_id))
+
+    def _apply_psf_to_subpixel(self, y, is_direct=True):
+        for p in self.psf:
+            psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
+            if psf_on_subpixel:
+                if is_direct:
+                    y = p.apply_psf_direct(y)
+                else:
+                    y = p.apply_psf_adjoint(y)
+        return y
+
+    def _apply_psf_to_lightfield(self, y, is_direct=True):
+        for ii, p in enumerate(self.psf):
+            psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
+            if not psf_on_subpixel:
+                psf_on_raw = p.data_format is not None and p.data_format.lower() == 'raw'
+                if psf_on_raw:
+                    # handle 2D flattening
+                    y = np.transpose(y, (0, 3, 1, 4, 2))
+                    img_size_det = y.shape
+                    y = np.reshape(y, np.concatenate(((-1, ), self.photo_size_2D)))
+
+                if is_direct:
+                    y = p.apply_psf_direct(y)
+                else:
+                    y = p.apply_psf_adjoint(y)
+
+                if psf_on_raw:
+                    y = np.reshape(y, img_size_det)
+                    y = np.transpose(y, (0, 2, 4, 1, 3))
+
+                if self.mask_psf_renorm[ii] is not None:
+                    y *= self.mask_psf_renorm[ii]
+        return y
 
     def FP(self, x):
         """Forward-projection function
@@ -221,9 +255,9 @@ class Projector(object):
                 self.camera.get_number_of_subaperture_images(),
                 self.img_size_us[-1])
 
-        if self.mode == 'range':
+        if self.mode.lower() == 'range':
             y = self.Ws[0].FP(np.squeeze(x))
-        elif self.mode in ('simultaneous', 'independent'):
+        elif self.mode.lower() in ('simultaneous', 'independent'):
             y = np.empty(proj_stack_shape, x.dtype)
             for ii, W in enumerate(self.Ws):
                 temp = x[ii, :, :]
@@ -231,10 +265,7 @@ class Projector(object):
                 y[ii, :, :, :] = temp
         y = np.transpose(y, (0, 2, 1, 3))
 
-        for p in self.psf:
-            psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
-            if psf_on_subpixel:
-                y = p.apply_psf_direct(y)
+        self._apply_psf_to_subpixel(y, is_direct=True)
 
         if self.up_sampling > 1:
             y = np.reshape(y, (-1, self.camera.get_number_of_subaperture_images(), self.img_size[-2], self.up_sampling, self.img_size[-1], self.up_sampling))
@@ -245,27 +276,10 @@ class Projector(object):
         if self.vignetting_int is not None:
             y *= self.vignetting_int
 
-        if self.mode == 'simultaneous':
+        if self.mode.lower() == 'simultaneous':
             y = np.sum(y, axis=0, keepdims=True)
 
-        for ii, p in enumerate(self.psf):
-            psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
-            if not psf_on_subpixel:
-                psf_on_raw = p.data_format is not None and p.data_format.lower() == 'raw'
-                if psf_on_raw:
-                    # handle 2D flattening
-                    y = np.transpose(y, (0, 3, 1, 4, 2))
-                    img_size_det = y.shape
-                    y = np.reshape(y, np.concatenate(((-1, ), self.photo_size_2D)))
-
-                y = p.apply_psf_direct(y)
-
-                if psf_on_raw:
-                    y = np.reshape(y, img_size_det)
-                    y = np.transpose(y, (0, 2, 4, 1, 3))
-
-                if self.mask_psf_renorm[ii] is not None:
-                    y *= self.mask_psf_renorm[ii]
+        self._apply_psf_to_lightfield(y, is_direct=True)
 
         return y
 
@@ -279,24 +293,7 @@ class Projector(object):
         """
         y = np.reshape(y, np.concatenate(((-1, ), self.img_size)))
 
-        for ii, p in enumerate(self.psf):
-            psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
-            if not psf_on_subpixel:
-                psf_on_raw = p.data_format is not None and p.data_format.lower() == 'raw'
-                if psf_on_raw:
-                    # handle 2D flattening
-                    y = np.transpose(y, (0, 3, 1, 4, 2))
-                    img_size_det = y.shape
-                    y = np.reshape(y, np.concatenate(((-1, ), self.photo_size_2D)))
-
-                y = p.apply_psf_adjoint(y)
-
-                if psf_on_raw:
-                    y = np.reshape(y, img_size_det)
-                    y = np.transpose(y, (0, 2, 4, 1, 3))
-
-                if self.mask_psf_renorm[ii] is not None:
-                    y *= self.mask_psf_renorm[ii]
+        self._apply_psf_to_lightfield(y, is_direct=False)
 
         if self.vignetting_int is not None:
             y *= self.vignetting_int
@@ -310,16 +307,13 @@ class Projector(object):
             y = np.tile(y, [1, 1, self.up_sampling, 1, 1, self.up_sampling])
             y = np.reshape(y, (-1, self.img_size_us[-2], self.camera.get_number_of_subaperture_images(), self.img_size_us[-1]))
 
-        for p in self.psf:
-            psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
-            if psf_on_subpixel:
-                y = p.apply_psf_direct(y)
+        self._apply_psf_to_subpixel(y, is_direct=False)
 
         vol_geom_size = (len(self.Ws), self.vol_size[0], self.vol_size[1])
 
-        if self.mode == 'range':
+        if self.mode.lower() == 'range':
             x = self.Ws[0].BP(np.squeeze(y))
-        elif self.mode == 'simultaneous':
+        elif self.mode.lower() == 'simultaneous':
             x = np.empty(vol_geom_size, y.dtype)
             for ii, W in enumerate(self.Ws):
                 x[ii, :, :] = W.BP(np.squeeze(y))
