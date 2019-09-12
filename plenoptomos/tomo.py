@@ -26,8 +26,8 @@ class Projector(object):
     """
 
     def __init__(
-            self, camera : lightfield.Camera, zs, flat=None,
-            beam_geometry='cone', domain='object', psf_d=[],
+            self, camera : lightfield.Camera, zs, mask=None, vignetting_int=None,
+            beam_geometry='cone', domain='object', psf_d=None,
             up_sampling=1, super_sampling=1,
             mode='independent', shifts_vu=(None, None), gpu_index=-1):
         self.mode = mode # can be: {'independent' | 'simultaneous' | 'range'}
@@ -45,15 +45,24 @@ class Projector(object):
         self.img_size_us = np.concatenate((camera.data_size_vu, np.array(camera.data_size_ts) * self.up_sampling))
         self.photo_size_2D = np.array(camera.data_size_vu) * np.array(camera.data_size_ts)
 
-        self.flat = flat
-        if self.flat is not None:
-            self.flat = np.reshape(flat, np.concatenate(((-1, ), self.img_size)))
+        self.mask = mask
+        if self.mask is not None:
+            self.mask = np.reshape(mask, np.concatenate(((-1, ), self.img_size)))
+        if vignetting_int is not None:
+            self.vignetting_int = np.reshape(vignetting_int, np.concatenate(((-1, ), self.img_size)))
+            if self.mask is not None:
+                self.vignetting_int *= self.mask
+        else:
+            self.vignetting_int = self.mask
 
         self.shifts_vu = shifts_vu
 
+        if psf_d is None:
+            psf_d = []
         self.psf = psf_d
 
         self._initialize_geometry(zs)
+        self._init_psf_mask_correction()
 
     def __enter__(self):
         self._initialize_projectors()
@@ -159,6 +168,29 @@ class Projector(object):
         else:
             raise ValueError("Beam shape: '%s' not allowed! Possible choices are: 'parallel' | 'cone'" % self.beam_geometry)
 
+    def _init_psf_mask_correction(self):
+        self.mask_psf_renorm = [None] * len(self.psf)
+        if self.mask is not None:
+            for ii, p in enumerate(self.psf):
+                psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
+                if not psf_on_subpixel:
+                    psf_on_raw = p.data_format is not None and p.data_format.lower() == 'raw'
+                    if psf_on_raw:
+                        # handle 2D flattening
+                        y = np.transpose(self.mask, (0, 3, 1, 4, 2))
+                        img_size_det = y.shape
+                        y = np.reshape(y, np.concatenate(((-1, ), self.photo_size_2D)))
+                    else:
+                        y = self.mask
+
+                    y = p.apply_psf_direct(y)
+
+                    if psf_on_raw:
+                        y = np.reshape(y, img_size_det)
+                        y = np.transpose(y, (0, 2, 4, 1, 3))
+
+                    self.mask_psf_renorm[ii] = 1 / (y + (np.abs(y) < 1e-5))
+
     def reset(self):
         for p in self.projectors:
             astra.projector.delete(p)
@@ -184,12 +216,15 @@ class Projector(object):
         :returns: The projected light-field
         :rtype: numpy.array_like
         """
-        proj_stack_size = (len(self.Ws), self.img_size_us[-2], self.camera.get_number_of_subaperture_images(), self.img_size_us[-1])
+        proj_stack_shape = (
+                len(self.Ws), self.img_size_us[-2],
+                self.camera.get_number_of_subaperture_images(),
+                self.img_size_us[-1])
 
         if self.mode == 'range':
             y = self.Ws[0].FP(np.squeeze(x))
         elif self.mode in ('simultaneous', 'independent'):
-            y = np.empty(proj_stack_size, x.dtype)
+            y = np.empty(proj_stack_shape, x.dtype)
             for ii, W in enumerate(self.Ws):
                 temp = x[ii, :, :]
                 temp = W.FP(temp[np.newaxis, ...])
@@ -207,14 +242,13 @@ class Projector(object):
 
         y = np.reshape(y, np.concatenate(((-1, ), self.img_size)))
 
-        if self.flat is not None:
-            y *= self.flat
+        if self.vignetting_int is not None:
+            y *= self.vignetting_int
 
         if self.mode == 'simultaneous':
-            y = np.sum(y, axis=0)
-            y = np.reshape(y, np.concatenate(((-1, ), self.img_size)))
+            y = np.sum(y, axis=0, keepdims=True)
 
-        for p in self.psf:
+        for ii, p in enumerate(self.psf):
             psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
             if not psf_on_subpixel:
                 psf_on_raw = p.data_format is not None and p.data_format.lower() == 'raw'
@@ -230,6 +264,9 @@ class Projector(object):
                     y = np.reshape(y, img_size_det)
                     y = np.transpose(y, (0, 2, 4, 1, 3))
 
+                if self.mask_psf_renorm[ii] is not None:
+                    y *= self.mask_psf_renorm[ii]
+
         return y
 
     def BP(self, y):
@@ -242,7 +279,7 @@ class Projector(object):
         """
         y = np.reshape(y, np.concatenate(((-1, ), self.img_size)))
 
-        for p in reversed(self.psf):
+        for ii, p in enumerate(self.psf):
             psf_on_subpixel = p.data_format is not None and p.data_format.lower() == 'subpixel'
             if not psf_on_subpixel:
                 psf_on_raw = p.data_format is not None and p.data_format.lower() == 'raw'
@@ -258,11 +295,14 @@ class Projector(object):
                     y = np.reshape(y, img_size_det)
                     y = np.transpose(y, (0, 2, 4, 1, 3))
 
-        if self.flat is not None:
-            y *= self.flat
+                if self.mask_psf_renorm[ii] is not None:
+                    y *= self.mask_psf_renorm[ii]
 
-        proj_stack_size = np.concatenate(((-1, self.camera.get_number_of_subaperture_images()), self.camera.data_size_ts))
-        y = np.reshape(y, proj_stack_size)
+        if self.vignetting_int is not None:
+            y *= self.vignetting_int
+
+        proj_stack_shape = np.concatenate(((-1, self.camera.get_number_of_subaperture_images()), self.camera.data_size_ts))
+        y = np.reshape(y, proj_stack_shape)
         y = np.transpose(y, (0, 2, 1, 3))
 
         if self.up_sampling > 1:
@@ -354,11 +394,16 @@ def compute_refocus_backprojection(
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
 
+    if lf_sa.mask is not None:
+        lf_sa.data *= lf_sa.mask
+        if lf_sa.flat is not None:
+            lf_sa.flat *= lf_sa.mask
+
     paddings_ts = np.array((border, border))
     lf_sa.pad((0, 0, paddings_ts[0], paddings_ts[1]), method=border_padding)
 
     with Projector(
-            lf_sa.camera, zs, flat=lf_sa.flat, mode='range',
+            lf_sa.camera, zs, mask=lf_sa.mask, mode='range',
             beam_geometry=beam_geometry, domain=domain,
             up_sampling=up_sampling,
             super_sampling=super_sampling, shifts_vu=lf_sa.shifts_vu,
@@ -430,12 +475,23 @@ def compute_refocus_iterative(
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
 
-    (paddings_ts_lower, paddings_ts_upper) = _get_paddings(lf_sa.camera.data_size_ts, border, up_sampling, algorithm)
-    lf_sa.pad(
-            ((0, 0), (0, 0), (paddings_ts_lower[0], paddings_ts_upper[0]), (paddings_ts_lower[1], paddings_ts_upper[1])),
-            method=border_padding)
+    if lf_sa.mask is not None:
+        lf_sa.data *= lf_sa.mask
+        if lf_sa.flat is not None:
+            lf_sa.flat *= lf_sa.mask
 
-    imgs = np.empty((num_dists, lf_sa.camera.data_size_ts[0] * up_sampling, lf_sa.camera.data_size_ts[1] * up_sampling), dtype=lf_sa.data.dtype)
+    (paddings_ts_lower, paddings_ts_upper) = _get_paddings(
+            lf_sa.camera.data_size_ts, border, up_sampling, algorithm)
+    padding_vuts = (
+            (0, 0), (0, 0),
+            (paddings_ts_lower[0], paddings_ts_upper[0]),
+            (paddings_ts_lower[1], paddings_ts_upper[1]))
+    lf_sa.pad(padding_vuts, method=border_padding)
+
+    imgs_shape = (
+            num_dists, lf_sa.camera.data_size_ts[0] * up_sampling,
+            lf_sa.camera.data_size_ts[1] * up_sampling )
+    imgs = np.empty(imgs_shape, dtype=lf_sa.data.dtype)
 
     c_init = tm.time()
 
@@ -445,7 +501,7 @@ def compute_refocus_iterative(
 
         sel_zs = zs[ii_z:ii_z+chunks_zs]
         with Projector(
-                lf_sa.camera, sel_zs, flat=lf_sa.flat, psf_d=psf,
+                lf_sa.camera, sel_zs, mask=lf_sa.mask, psf_d=psf,
                 shifts_vu=lf_sa.shifts_vu, mode='independent',
                 up_sampling=up_sampling,
                 super_sampling=super_sampling, gpu_index=gpu_index,
@@ -513,13 +569,21 @@ def compute_refocus_iterative_multiple(
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
 
-    (paddings_ts_lower, paddings_ts_upper) = _get_paddings(lf_sa.camera.data_size_ts, border, up_sampling, algorithm)
-    lf_sa.pad(
-            ((0, 0), (0, 0), (paddings_ts_lower[0], paddings_ts_upper[0]), (paddings_ts_lower[1], paddings_ts_upper[1])),
-            method=border_padding)
+    if lf_sa.mask is not None:
+        lf_sa.data *= lf_sa.mask
+        if lf_sa.flat is not None:
+            lf_sa.flat *= lf_sa.mask
+
+    (paddings_ts_lower, paddings_ts_upper) = _get_paddings(
+            lf_sa.camera.data_size_ts, border, up_sampling, algorithm)
+    padding_vuts = (
+            (0, 0), (0, 0),
+            (paddings_ts_lower[0], paddings_ts_upper[0]),
+            (paddings_ts_lower[1], paddings_ts_upper[1]))
+    lf_sa.pad(padding_vuts, method=border_padding)
 
     with Projector(
-            lf_sa.camera, zs, flat=lf_sa.flat, psf_d=psf,
+            lf_sa.camera, zs, mask=lf_sa.mask, psf_d=psf,
             shifts_vu=lf_sa.shifts_vu, mode='simultaneous',
             up_sampling=up_sampling, super_sampling=super_sampling,
             gpu_index=gpu_index, beam_shape=beam_geometry, domain=domain) as p:

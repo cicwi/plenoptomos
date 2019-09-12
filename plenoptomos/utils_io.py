@@ -63,6 +63,8 @@ def save_lightfield(filename, lf : lightfield.Lightfield):
         f.create_dataset('data', data=lf.data, compression="gzip")
         if lf.flat is not None:
             f.create_dataset('flat', data=lf.flat, compression="gzip")
+        if lf.mask is not None:
+            f.create_dataset('mask', data=lf.flat, compression="gzip")
         if lf.shifts_vu is not None and isinstance(lf.shifts_vu, (tuple, list)) \
                 and lf.shifts_vu[0] is not None and lf.shifts_vu[1] is not None:
             f.create_dataset('shifts_vu', data=lf.shifts_vu, compression="gzip")
@@ -78,6 +80,8 @@ def load_lightfield(filename):
         lf.data = f['data'][()]
         if '/flat' in f:
             lf.flat = f['flat'][()]
+        if '/mask' in f:
+            lf.mask = f['mask'][()]
         if '/shifts_vu' in f:
             lf.shifts_vu = f['shifts_vu'][()]
         return lf

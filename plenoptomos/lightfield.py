@@ -444,13 +444,15 @@ class Lightfield(object):
 
     available_modes = ('micro-image', 'sub-aperture', 'epipolar_s', 'epipolar_t')
 
-    def __init__(self, camera_type : Camera, data=None, flat=None, \
-                 mode='micro-image', dtype=np.float32, shifts_vu=(None, None)):
+    def __init__(
+            self, camera_type : Camera, data=None, flat=None, mask=None,
+            mode='micro-image', dtype=np.float32, shifts_vu=(None, None)):
         """Initializes the Lightfield class
 
         :param camera_type: The Camera class that stores the metadata about the light-field (Camera)
         :param data: The actual light-field data in 4D format (numpy.array_like, default: None)
-        :param flat: The flat field (numpy.array_like, default: None)
+        :param flat: The flat field, usually encoding vignetting (numpy.array_like, default: None)
+        :param mask: A mask indicating the pixels to use (numpy.array_like, default: None)
         :param mode: Mode of the data (string, default: 'micro-image')
         :param dtype: Data type of the light-field data (numpy.dtype, default: np.float32)
         """
@@ -460,6 +462,7 @@ class Lightfield(object):
         self.mode = mode.lower()
         self.data = data
         self.flat = flat
+        self.mask = mask
         self.pixel_effective_size = camera_type.pixel_size_yx
         self.shifts_vu = shifts_vu
 
@@ -513,6 +516,8 @@ class Lightfield(object):
         self.data = np.transpose(self.data, perm_op)
         if self.flat is not None:
             self.flat = np.transpose(self.flat, perm_op)
+        if self.mask is not None:
+            self.mask = np.transpose(self.mask, perm_op)
 
     def set_mode_epipolar_t(self):
         """Set the 'epipolar_t' mode"""
@@ -530,6 +535,8 @@ class Lightfield(object):
         self.data = np.transpose(self.data, perm_op)
         if self.flat is not None:
             self.flat = np.transpose(self.flat, perm_op)
+        if self.mask is not None:
+            self.mask = np.transpose(self.mask, perm_op)
 
     def set_mode_microimage(self):
         """Set the 'micro-image' mode"""
@@ -547,6 +554,8 @@ class Lightfield(object):
         self.data = np.transpose(self.data, perm_op)
         if self.flat is not None:
             self.flat = np.transpose(self.flat, perm_op)
+        if self.mask is not None:
+            self.mask = np.transpose(self.mask, perm_op)
 
     def set_mode_subaperture(self):
         """Set the 'sub-aperture' image mode"""
@@ -564,6 +573,8 @@ class Lightfield(object):
         self.data = np.transpose(self.data, perm_op)
         if self.flat is not None:
             self.flat = np.transpose(self.flat, perm_op)
+        if self.mask is not None:
+            self.mask = np.transpose(self.mask, perm_op)
 
     def get_raw_detector_picture(self, image='data'):
         """Returns the detector data, or the flat image in the raw detector format
@@ -583,8 +594,12 @@ class Lightfield(object):
 
         if image.lower() == 'data':
             data_raw = np.transpose(self.data, perm_op)
-        else:
+        elif image.lower() == 'flat':
             data_raw = np.transpose(self.flat, perm_op)
+        elif image.lower() == 'mask':
+            data_raw = np.transpose(self.mask, perm_op)
+        else:
+            raise ValueError('Unknown image type: %s' % image)
         return np.reshape(data_raw, self.camera.get_raw_detector_size())
 
     def set_raw_detector_picture(self, data_raw, image='data'):
@@ -609,8 +624,12 @@ class Lightfield(object):
 
         if image.lower() == 'data':
             self.data = np.transpose(data_raw, perm_op)
-        else:
+        elif image.lower() == 'flat':
             self.flat = np.transpose(data_raw, perm_op)
+        elif image.lower() == 'mask':
+            self.mask = np.transpose(data_raw, perm_op)
+        else:
+            raise ValueError('Unknown image type: %s' % image)
 
     def get_sub_aperture_image(self, v, u, image='data'):
         """Returns a chosen sub-aperture image from either detector data, or
@@ -638,8 +657,12 @@ class Lightfield(object):
 
         if image.lower() == 'data':
             return self.data[slice_op]
-        else:
+        elif image.lower() == 'flat':
             return self.flat[slice_op]
+        elif image.lower() == 'mask':
+            return self.mask[slice_op]
+        else:
+            raise ValueError('Unknown image type: %s' % image)
 
     def get_sub_aperture_images(self, image='data'):
         """Returns all the sub-aperture images from either detector data, or
@@ -660,8 +683,12 @@ class Lightfield(object):
 
         if image.lower() == 'data':
             data_raw = np.transpose(self.data, perm_op)
-        else:
+        elif image.lower() == 'flat':
             data_raw = np.transpose(self.flat, perm_op)
+        elif image.lower() == 'mask':
+            data_raw = np.transpose(self.mask, perm_op)
+        else:
+            raise ValueError('Unknown image type: %s' % image)
         photo_size_2D = np.array([
                 np.array(self.camera.data_size_vu[0]) * np.array(self.camera.data_size_ts[0]),
                 np.array(self.camera.data_size_vu[1]) * np.array(self.camera.data_size_ts[1]) ])
@@ -683,8 +710,12 @@ class Lightfield(object):
 
         if image.lower() == 'data':
             photo = np.sum(lf_sa.data, axis=(0, 1))
-        else:
+        elif image.lower() == 'flat':
             photo = np.sum(lf_sa.flat, axis=(0, 1))
+        elif image.lower() == 'mask':
+            photo = np.sum(lf_sa.mask, axis=(0, 1))
+        else:
+            raise ValueError('Unknown image type: %s' % image)
         return photo / np.prod(self.camera.data_size_vu)
 
     def pad(self, paddings, method='constant', pad_value=(0,)):
@@ -705,10 +736,14 @@ class Lightfield(object):
             self.data = np.pad(self.data, pad_width=paddings, mode=method)
             if self.flat is not None:
                 self.flat = np.pad(self.flat, pad_width=paddings, mode=method)
+            if self.mask is not None:
+                self.mask = np.pad(self.mask, pad_width=paddings, mode=method)
         else:
             self.data = np.pad(self.data, pad_width=paddings, mode=method, constant_values=pad_value)
             if self.flat is not None:
                 self.flat = np.pad(self.flat, pad_width=paddings, mode=method, constant_values=pad_value)
+            if self.mask is not None:
+                self.mask = np.pad(self.mask, pad_width=paddings, mode=method, constant_values=pad_value)
 
         self.camera.data_size_ts = np.array(self.data.shape[2:4]).astype(np.int)
         self.camera.data_size_vu = np.array(self.data.shape[0:2]).astype(np.int)
@@ -739,17 +774,31 @@ class Lightfield(object):
             if self.flat is not None:
                 interp_flat = sp.interpolate.RegularGridInterpolator(base_grid, self.flat, bounds_error=False, fill_value=0)
                 self.flat = interp_flat(new_grid)
+            if self.mask is not None:
+                interp_mask = sp.interpolate.RegularGridInterpolator(base_grid, self.mask, bounds_error=False, fill_value=0)
+                self.mask = interp_mask(new_grid)
 
             self.set_mode(old_mode)
         elif regrid_mode.lower() == 'copy':
             old_mode = self.mode
             self.set_mode_subaperture()
 
-            copied_data = np.reshape(self.data, [self.camera.data_size_vu[0], 1, self.camera.data_size_vu[1], 1, self.camera.data_size_ts[0], 1, self.camera.data_size_ts[1], 1])
-            copied_data = np.tile(copied_data, [1, regrid_size[0], 1, regrid_size[1], 1, regrid_size[2], 1, regrid_size[3]])
+            temp_shape = [
+                    self.camera.data_size_vu[0], 1,
+                    self.camera.data_size_vu[1], 1,
+                    self.camera.data_size_ts[0], 1,
+                    self.camera.data_size_ts[1], 1]
+            tile_size = [
+                    1, regrid_size[0], 1, regrid_size[1],
+                    1, regrid_size[2], 1, regrid_size[3]]
+            copied_data = np.reshape(self.data, temp_shape)
+            copied_data = np.tile(copied_data, tile_size)
             if self.flat is not None:
-                copied_flat = np.reshape(self.flat, [self.camera.data_size_vu[0], 1, self.camera.data_size_vu[1], 1, self.camera.data_size_ts[0], 1, self.camera.data_size_ts[1], 1])
-                copied_flat = np.tile(copied_flat, [1, regrid_size[0], 1, regrid_size[1], 1, regrid_size[2], 1, regrid_size[3]])
+                copied_flat = np.reshape(self.flat, temp_shape)
+                copied_flat = np.tile(copied_flat, tile_size)
+            if self.mask is not None:
+                copied_mask = np.reshape(self.mask, temp_shape)
+                copied_mask = np.tile(copied_mask, tile_size)
 
             self.camera.data_size_vu = (np.array(self.camera.data_size_vu) * regrid_size[0:2]).astype(np.intp)
             self.camera.data_size_ts = (np.array(self.camera.data_size_ts) * regrid_size[2:4]).astype(np.intp)
@@ -760,6 +809,8 @@ class Lightfield(object):
             self.data = np.reshape(copied_data, np.concatenate((self.camera.data_size_vu, self.camera.data_size_ts)))
             if self.flat is not None:
                 self.flat = np.reshape(copied_flat, np.concatenate((self.camera.data_size_vu, self.camera.data_size_ts)))
+            if self.mask is not None:
+                self.mask = np.reshape(copied_mask, np.concatenate((self.camera.data_size_vu, self.camera.data_size_ts)))
 
             self.set_mode(old_mode)
         elif regrid_mode.lower() == 'bin':
@@ -786,6 +837,9 @@ class Lightfield(object):
             if self.flat is not None:
                 self.flat = np.reshape(self.flat, new_data_size)
                 self.flat = np.sum(self.flat, axis=(1, 3, 5, 7)) / np.prod(regrid_size)
+            if self.mask is not None:
+                self.mask = np.reshape(self.mask, new_data_size)
+                self.mask = np.sum(self.mask, axis=(1, 3, 5, 7)) / np.prod(regrid_size)
 
             self.set_mode(old_mode)
 
@@ -795,6 +849,7 @@ class Lightfield(object):
         :param crop_size_ts: Either new size in the (t, s) coordinates or a ROI (<2x1> or <4x1> numpy.array_like)
         :param crop_size_vu: Either new size in the (v, u) coordinates or a ROI (<2x1> or <4x1> numpy.array_like)
         """
+
         old_mode = self.mode
         self.set_mode_subaperture()
 
@@ -814,6 +869,8 @@ class Lightfield(object):
             self.data = self.data[..., crop_roi_ts[0]:crop_roi_ts[2], crop_roi_ts[1]:crop_roi_ts[3]]
             if self.flat is not None:
                 self.flat = self.flat[..., crop_roi_ts[0]:crop_roi_ts[2], crop_roi_ts[1]:crop_roi_ts[3]]
+            if self.mask is not None:
+                self.mask = self.mask[..., crop_roi_ts[0]:crop_roi_ts[2], crop_roi_ts[1]:crop_roi_ts[3]]
 
         if crop_size_vu is not None:
             crop_size_vu = np.array(crop_size_vu)
@@ -831,6 +888,8 @@ class Lightfield(object):
             self.data = self.data[crop_roi_vu[0]:crop_roi_vu[2], crop_roi_vu[1]:crop_roi_vu[3], ...]
             if self.flat is not None:
                 self.flat = self.flat[crop_roi_vu[0]:crop_roi_vu[2], crop_roi_vu[1]:crop_roi_vu[3], ...]
+            if self.mask is not None:
+                self.mask = self.mask[crop_roi_vu[0]:crop_roi_vu[2], crop_roi_vu[1]:crop_roi_vu[3], ...]
 
         self.camera.crop(crop_size_ts=crop_size_ts, crop_size_vu=crop_size_vu)
 
@@ -857,6 +916,8 @@ class Lightfield(object):
                 lf.data = self.data[v_lower:v_upper, u_lower:u_upper, ...]
                 if self.flat is not None:
                     lf.flat = self.flat[v_lower:v_upper, u_lower:u_upper, ...]
+                if self.mask is not None:
+                    lf.mask = self.mask[v_lower:v_upper, u_lower:u_upper, ...]
                 u_lfs.append(lf)
             lfs.append(u_lfs)
 
@@ -884,6 +945,9 @@ class Lightfield(object):
         if self.flat is not None:
             lf.flat = self.flat[v_lower:v_upper, u_lower:u_upper, ...]
             lf.flat = np.reshape(lf.flat, data_size)
+        if self.mask is not None:
+            lf.mask = self.mask[v_lower:v_upper, u_lower:u_upper, ...]
+            lf.mask = np.reshape(lf.mask, data_size)
 
         self.set_mode(current_mode)
         return lf

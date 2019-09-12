@@ -151,7 +151,7 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
               camera.data_size_vu[1], np.prod(camera.data_size_vu), tm.time()-c))
 
         lf_img = np.transpose(lf_img, axes=(2, 3, 0, 1, 4))
-        lf_flat = np.ones(lf_img.shape[0:4], dtype=data_type)
+        lf_mask = None
 
         print('Dealing with colors (mode=%s)..' % mode, end='', flush=True)
         c = tm.time()
@@ -175,8 +175,8 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
         print('Dealing with colors (mode=%s)..' % mode, end='', flush=True)
         c = tm.time()
         (raw_im, raw_flat) = colors.deal_with_channels(raw_im2D, mode=mode, rgb2gs_mode=rgb2gs_mode)
-        (lf_flat, lf_shape_tsvu) = data_format.raw_to_microimage_exact(raw_flat, array_offsets, lenslet_raw_size)
-        lf_flat = data_format.transform_2D_to_4D(lf_flat, lf_shape_tsvu)
+        (lf_mask, lf_shape_tsvu) = data_format.raw_to_microimage_exact(raw_flat, array_offsets, lenslet_raw_size)
+        lf_mask = data_format.transform_2D_to_4D(lf_mask, lf_shape_tsvu)
         print('\b\b: Done in %g seconds.' % (tm.time()-c))
 
         camera.data_size_ts = lf_shape_tsvu[0:2]
@@ -197,12 +197,12 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
         print('\b\b: Done in %g seconds.' % (tm.time()-c))
 
     if mode.lower() == 'grayscale':
-        return lightfield.Lightfield(camera_type=camera, data=lf_img, flat=lf_flat)
+        return lightfield.Lightfield(camera_type=camera, data=lf_img, mask=lf_mask)
 
     elif mode.lower() == 'rgb':
-        lf_r = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_r, flat=lf_flat)
-        lf_g = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_g, flat=lf_flat)
-        lf_b = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_b, flat=lf_flat)
+        lf_r = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_r, mask=lf_mask)
+        lf_g = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_g, mask=lf_mask)
+        lf_b = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_b, mask=lf_mask)
 
         (lf_r.camera.wavelength_range, \
          lf_g.camera.wavelength_range, \
@@ -300,19 +300,17 @@ def from_stanford_archive(dataset_path, mode='grayscale', rgb2gs_mode='luma', bi
     shifts_vu = (shifts_v, shifts_u)
 
     lf_img = np.transpose(lf_img, axes=(2, 3, 0, 1, 4))
-    lf_flat = np.ones(lf_img.shape[0:4], dtype=data_type)
-#    lf_flat = camera.get_theo_flatfield_raw(data_type=data_type)
 
     if mode.lower() == 'grayscale':
         (lf_img, _) = colors.deal_with_channels(lf_img, mode=mode, rgb2gs_mode=rgb2gs_mode)
-        return lightfield.Lightfield(camera_type=camera, data=lf_img, flat=lf_flat, shifts_vu=shifts_vu)
+        return lightfield.Lightfield(camera_type=camera, data=lf_img, shifts_vu=shifts_vu)
 
     elif mode.lower() == 'rgb':
         ((lf_img_r, lf_img_g, lf_img_b), _) = colors.deal_with_channels(lf_img, mode=mode)
 
-        lf_r = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_r, flat=lf_flat, shifts_vu=shifts_vu)
-        lf_g = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_g, flat=lf_flat, shifts_vu=shifts_vu)
-        lf_b = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_b, flat=lf_flat, shifts_vu=shifts_vu)
+        lf_r = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_r, shifts_vu=shifts_vu)
+        lf_g = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_g, shifts_vu=shifts_vu)
+        lf_b = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_b, shifts_vu=shifts_vu)
 
         (lf_r.camera.wavelength_range, \
          lf_g.camera.wavelength_range, \
@@ -569,4 +567,4 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
         print('Done in %g seconds.' % (tm.time() - c))
 
     lf_img = np.transpose(lf_img, axes=(2, 3, 0, 1))
-    return lightfield.Lightfield(camera_type=camera, data=lf_img, flat=None)
+    return lightfield.Lightfield(camera_type=camera, data=lf_img)

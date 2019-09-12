@@ -58,6 +58,11 @@ def compute_refocus_integration(lf : lightfield.Lightfield, zs, \
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
 
+    if lf_sa.mask is not None:
+        lf_sa.data *= lf_sa.mask
+        if lf_sa.flat is not None:
+            lf_sa.flat *= lf_sa.mask
+
     if lf.flat is None:
         renorm_sa_images = np.prod(lf.camera.data_size_vu)
     else:
@@ -151,6 +156,11 @@ def compute_refocus_fourier(lf : lightfield.Lightfield, zs, method='slice', \
 
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
+
+    if lf_sa.mask is not None:
+        lf_sa.data *= lf_sa.mask
+        if lf_sa.flat is not None:
+            lf_sa.flat *= lf_sa.mask
 
     if lf.flat is None:
         renorm_sa_images = np.prod(lf.camera.data_size_vu)
