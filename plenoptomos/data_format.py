@@ -469,6 +469,13 @@ def load(vox_file):
             else:
                 white = None
 
+            if '/data/dark' in f:
+                dark = f['/data/dark'][()]
+                lf_data -= dark
+                lf_data = np.fmax(lf_data, 0)
+                white -= dark
+                white = np.fmax(white, 0)
+
         camera.aperture_f1 = f['/instrument/camera/main_lens/aperture'][()]
         camera.aperture_f2 = f['/instrument/camera/micro_lens/aperture'][()]
         camera.f1 = f['/instrument/camera/main_lens/f1'][()]
