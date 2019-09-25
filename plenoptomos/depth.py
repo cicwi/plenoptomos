@@ -16,17 +16,13 @@ import scipy.signal as sps
 
 from . import lightfield
 from . import solvers
+from . import utils_proc as proc
 
 from .tomo import Projector
 
 import time as tm
 
 import warnings
-
-import matplotlib.pyplot as plt
-# Do not remove the following import: it is used somehow by the plotting
-# functionality in the PSF creation
-from mpl_toolkits.mplot3d import Axes3D
 
 try:
     import pywt
@@ -89,34 +85,9 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
 
     num_zs = zs.size
 
-    if window_shape.lower() == 'tri':
-        window_filter = sps.triang(window_size[0]) * np.reshape(sps.triang(window_size[1]), [1, -1])
-    elif window_shape.lower() == 'circ':
-        tt = np.linspace(-(window_size[0] - 1) / 2, (window_size[0] - 1) / 2, window_size[0])
-        ss = np.linspace(-(window_size[1] - 1) / 2, (window_size[1] - 1) / 2, window_size[1])
-        [tt, ss] = np.meshgrid(tt, ss, indexing='ij')
-        window_filter = np.sqrt(tt ** 2 + ss ** 2) <= (window_size[1] - 1) / 2
-    elif window_shape.lower() == 'gauss':
-        tt = np.linspace(-(window_size[0] - 1) / 2, (window_size[0] - 1) / 2, window_size[0])
-        ss = np.linspace(-(window_size[1] - 1) / 2, (window_size[1] - 1) / 2, window_size[1])
-        [tt, ss] = np.meshgrid(tt, ss, indexing='ij')
-        window_filter = np.exp(- ((2 * tt) ** 2 / window_size[0] + (2 * ss) ** 2 / window_size[1]))
-    elif window_shape.lower() == 'rect':
-        window_filter = np.ones(window_size)
-    else:
-        raise ValueError('Unknown filter: %s' % window_shape)
-    renorm_window = 1 / np.sum(window_filter)
-
-    if plot_filter:
-        tt = np.linspace(-(window_size[0] - 1) / 2, (window_size[0] - 1) / 2, window_size[0])
-        ss = np.linspace(-(window_size[1] - 1) / 2, (window_size[1] - 1) / 2, window_size[1])
-        [tt, ss] = np.meshgrid(tt, ss, indexing='ij')
-
-        f = plt.figure()
-        ax = f.add_subplot(1, 1, 1, projection='3d')
-        ax.plot_surface(tt, ss, window_filter)
-        ax.view_init(12, -7.5)
-        plt.show()
+    window_filter = proc.get_smoothing_filter(
+            window_size=window_size, window_shape=window_shape,
+            plot_filter=plot_filter)
 
     final_image_shape = lf_sa.camera.data_size_ts * up_sampling
     responses_shape = np.concatenate(((num_zs, ), final_image_shape))

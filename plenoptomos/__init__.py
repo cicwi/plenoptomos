@@ -21,5 +21,6 @@ from . import import_lf
 from . import data_format
 
 from . import solvers
+from . import utils_proc
 
 from . import colors
