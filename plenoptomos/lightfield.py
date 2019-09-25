@@ -895,6 +895,30 @@ class Lightfield(object):
 
         self.set_mode(old_mode)
 
+    def get_central_subaperture(self, origin_vu=None):
+        center_vu = (np.array(self.camera.data_size_vu, dtype=np.float) - 1) / 2
+        if origin_vu is None:
+            origin_vu = np.array((0., 0.))
+        if np.any(np.abs(origin_vu) > center_vu):
+            raise ValueError('Origin VU (%f, %f) outside of bounds' % (origin_vu[0], origin_vu[1]))
+
+        origin_vu = center_vu + np.array(origin_vu)
+        lower_ind = np.floor(origin_vu).astype(np.int)
+        upper_ind = lower_ind + 1
+        lower_c = upper_ind - origin_vu
+        upper_c = 1 - lower_c
+        out_img = np.zeros(self.camera.data_size_ts)
+        eps = np.finfo(np.float32).eps
+        if lower_c[0] > eps and lower_c[1] > eps:
+            out_img += lower_c[0] * lower_c[1] * self.get_sub_aperture_image(lower_ind[0], lower_ind[1], image='data')
+        if upper_c[0] > eps and lower_c[1] > eps:
+            out_img += upper_c[0] * lower_c[1] * self.get_sub_aperture_image(upper_ind[0], lower_ind[1], image='data')
+        if lower_c[0] > eps and upper_c[1] > eps:
+            out_img += lower_c[0] * upper_c[1] * self.get_sub_aperture_image(lower_ind[0], upper_ind[1], image='data')
+        if upper_c[0] > eps and upper_c[1] > eps:
+            out_img += upper_c[0] * upper_c[1] * self.get_sub_aperture_image(upper_ind[0], upper_ind[1], image='data')
+        return out_img
+
     def get_sub_lightfields(self, sub_aperture_size=5):
         v_lower_range = range(self.camera.data_size_vu[0] - sub_aperture_size + 1)
         v_upper_range = range(sub_aperture_size, self.camera.data_size_vu[0] + 1)
