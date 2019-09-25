@@ -34,16 +34,14 @@ except ImportError:
     use_swtn = False
     print('WARNING - pywt was not found')
 
-def compute_depth_cues(lf : lightfield.Lightfield, zs, \
-                       beam_geometry='parallel', domain='object', \
-                       compute_defocus=True, compute_correspondence=True, \
-                       compute_emergence=None, subtract_profile_blur=None, \
-                       window_size=(9, 9), window_shape='gauss', \
-                       up_sampling=1, super_sampling=1, \
-                       algorithm='bpj', iterations=5, psf=None, \
-                       corresp_method='bpj', iterations_corresp=5, \
-                       confidence_method="integral", peak_range = 3, \
-                       plot_filter=False):
+
+def compute_depth_cues(
+        lf : lightfield.Lightfield, zs, compute_defocus=True,
+        compute_correspondence=True, compute_emergence=False,
+        beam_geometry='parallel', domain='object', psf=None,
+        up_sampling=1, super_sampling=1, algorithm='bpj', iterations=5,
+        confidence_method="integral", peak_range = 3,
+        window_size=(9, 9), window_shape='gauss', plot_filter=False):
     """Computes depth cues, needed to create a depth map.
 
     These depth cues are created following the procedure from:
@@ -114,6 +112,8 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
     lf_sa.pad([0, 0, paddings_ts[0], paddings_ts[1]], method='edge')
     paddings_ts *= up_sampling
 
+    b = lf_sa.data[np.newaxis, ...]
+
     print('Computing responses for each alpha value: ', end='', flush=True)
     c = tm.time()
     # Computing the changes of base, and integrating (for each alpha)
@@ -121,35 +121,12 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
         prnt_str = '%03d/%03d' % (ii_a, num_zs)
         print(prnt_str, end='', flush=True)
 
-        with Projector(lf_sa.camera, np.array((z0, )), flat=lf_sa.flat, \
-                          mode='independent', up_sampling=up_sampling, \
-                          beam_geometry=beam_geometry, domain=domain, \
-                          super_sampling=super_sampling) as p:
-            A_nopsf = lambda x: p.FP(x)
-            At_nopsf = lambda y: p.BP(y)
-            b = np.reshape(lf_sa.data, np.concatenate(((1, ), p.img_size)))
-
-            if corresp_method.lower() == 'sirt':
-                algo = solvers.Sirt()
-            elif corresp_method.lower() == 'cp_ls':
-                algo = solvers.CP_uc()
-            elif corresp_method.lower() == 'cp_tv':
-                algo = solvers.CP_tv(axes=(-2, -1), lambda_tv=0.1)
-            elif corresp_method.lower() == 'cp_wl':
-                algo = solvers.CP_wl(axes=(-2, -1), wl_type='db1', decomp_lvl=3, lambda_wl=1e-1)
-            elif corresp_method.lower() == 'bpj':
-                algo = solvers.BPJ()
-            else:
-                raise ValueError('Unrecognized algorithm: %s' % algorithm.lower())
-            A_tilde_1_corr = lambda y : algo(A_nopsf, y, num_iter=iterations_corresp, At=At_nopsf, lower_limit=0)[0]
-
-        with Projector(lf_sa.camera, np.array((z0, )), flat=lf_sa.flat, \
-                          mode='independent', up_sampling=up_sampling, \
-                          beam_geometry=beam_geometry, domain=domain, \
-                          super_sampling=super_sampling, psf_d=psf) as p:
+        with Projector(
+                lf_sa.camera, np.array((z0, )), mask=lf_sa.mask, mode='independent',
+                up_sampling=up_sampling, beam_geometry=beam_geometry,
+                domain=domain, super_sampling=super_sampling, psf_d=psf) as p:
             A = lambda x: p.FP(x)
             At = lambda y: p.BP(y)
-            b = np.reshape(lf_sa.data, np.concatenate(((1, ), p.img_size)))
 
             if algorithm.lower() == 'sirt':
                 algo = solvers.Sirt()
@@ -165,48 +142,40 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
                 raise ValueError('Unrecognized algorithm: %s' % algorithm.lower())
             A_tilde_1 = lambda y : algo(A, y, num_iter=iterations, At=At, lower_limit=0)[0]
 
-        l_alpha_intuv = A_tilde_1(b)
+            l_alpha_intuv = A_tilde_1(b)
 
-        if subtract_profile_blur is not None or compute_emergence is not None:
-            blur_win = np.ones((subtract_profile_blur, subtract_profile_blur)) / subtract_profile_blur ** 2
-            cent_pad = _get_central_subaperture(lf_sa)
-            cent_pad = spimg.convolve(cent_pad, blur_win, mode='nearest')
-            l_alpha_intuv_d = cent_pad - l_alpha_intuv
+            if compute_defocus:
+                l = _laplacian2(np.squeeze(l_alpha_intuv))
+                l = np.abs(l)
 
-        if compute_defocus:
-            if subtract_profile_blur is not None:
-                l_alpha_intuv_dn = l_alpha_intuv_d - 0
-                l_alpha_intuv_dn[l_alpha_intuv_d < 0] = 0
-            else:
-                l_alpha_intuv_dn = l_alpha_intuv
-            l = _laplacian2(np.squeeze(l_alpha_intuv_dn))
-            l = np.abs(l)
+                depth_defocus = spimg.convolve(l, window_filter, mode='constant', cval=0.0)
+                depth_cues['defocus'][ii_a, :, :] = depth_defocus[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
-            depth_defocus = spimg.convolve(l, window_filter, mode='constant', cval=0.0)
-            depth_defocus = depth_defocus * renorm_window
-            depth_cues['defocus'][ii_a, :, :] = depth_defocus[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
+            if compute_emergence:
+                depth_emergence = spimg.convolve(np.squeeze(l_alpha_intuv), window_filter, mode='constant', cval=0.0)
+                depth_cues['emergence'][ii_a, :, :] = depth_emergence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
-        if compute_emergence is not None:
-            emergence = np.squeeze(l_alpha_intuv_d)
-            if compute_emergence.lower() == 'negative':
-                emergence = -emergence
+            if compute_correspondence:
+                reprojected_l_alpha_intuv = A(l_alpha_intuv)
+                variances = (reprojected_l_alpha_intuv - b) ** 2
 
-            depth_emergence = spimg.convolve(emergence, window_filter, mode='constant', cval=0.0)
-            depth_emergence = depth_emergence * renorm_window
-            depth_cues['emergence'][ii_a, :, :] = depth_emergence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
+                with Projector(
+                        lf_sa.camera, np.array((z0, )), mask=lf_sa.mask, mode='independent',
+                        up_sampling=up_sampling, beam_geometry=beam_geometry,
+                        domain=domain, super_sampling=super_sampling) as p:
+                    A = lambda x: p.FP(x)
+                    At = lambda y: p.BP(y)
 
-        if compute_correspondence:
-            reprojected_l_alpha_intuv = A(l_alpha_intuv)
+                    algo = solvers.BPJ()
+                    A_tilde_1_corr = lambda y : algo(A, y, At=At, lower_limit=0)[0]
 
-            variances = (reprojected_l_alpha_intuv - b) ** 2
-            bpj_variances = A_tilde_1_corr(variances)
-            std_devs = np.sqrt(bpj_variances)
+                    bpj_variances = A_tilde_1_corr(variances)
 
-            std_devs = np.squeeze(std_devs)
+                std_devs = np.sqrt(bpj_variances)
+                std_devs = np.squeeze(std_devs)
 
-            depth_correspondence = spimg.convolve(std_devs, window_filter, mode='constant', cval=0.0)
-            depth_correspondence = depth_correspondence * renorm_window
-            depth_cues['correspondence'][ii_a, :, :] = depth_correspondence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
+                depth_correspondence = spimg.convolve(std_devs, window_filter, mode='constant', cval=0.0)
+                depth_cues['correspondence'][ii_a, :, :] = depth_correspondence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
         print(('\b') * len(prnt_str), end='', flush=True)
 
@@ -253,26 +222,21 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
     if compute_emergence is not None:
         print('Computing depth estimations for emergence:\n - Preparing response..', end='', flush=True)
         c = tm.time()
-        depth_cues['emergence'] -= np.mean(depth_cues['emergence'], axis=0)
-        depth_cues['emergence'][depth_cues['emergence'] > 0] = 0
-
         emergence_map_size = depth_cues['emergence'].shape[1:]
 
         depth_emergence = np.reshape(depth_cues['emergence'], (num_zs, -1))
 
         num_pixels = depth_emergence.shape[1]
 
-        pk_vals = np.min(depth_emergence, axis=0)
-        pk_locs = np.argmin(depth_emergence, axis=0)
+        pk_vals = np.max(depth_emergence, axis=0)
+        pk_locs = np.argmax(depth_emergence, axis=0)
 
         depth_cues['depth_emergence'][:] = np.reshape(pk_locs, emergence_map_size)
 
         if confidence_method.lower() == 'integral':
-            bckground = np.max(depth_emergence, axis=0)
+            bckground = np.min(depth_emergence, axis=0)
             pk_vals -= bckground
             depth_emergence -= bckground
-            pk_vals = np.abs(pk_vals)
-            depth_emergence = np.abs(depth_emergence)
             integral_conf = np.sum(depth_emergence, axis=0) - pk_vals
 
             depth_cues['confidence_emergence'][:] = np.reshape(integral_conf / (pk_vals * (num_zs-1)), emergence_map_size)
@@ -296,9 +260,6 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
     if compute_correspondence:
         print('Computing depth estimations for correspondence:\n - Preparing response..', end='', flush=True)
         c = tm.time()
-        if subtract_profile_blur is not None:
-            depth_cues['correspondence'] -= np.mean(depth_cues['correspondence'], axis=0)
-            depth_cues['correspondence'][depth_cues['correspondence'] > 0] = 0
 
         correspondence_map_size = depth_cues['correspondence'].shape[1:]
 
@@ -340,7 +301,9 @@ def compute_depth_cues(lf : lightfield.Lightfield, zs, \
     return depth_cues
 
 
-def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_d2=0.05, lambda_wl=None, use_defocus=1.0, use_correspondence=1.0):
+def compute_depth_map(
+        depth_cues, iterations=500, lambda_tv=2.0, lambda_d2=0.05,
+        lambda_wl=None, use_defocus=1.0, use_correspondence=1.0, use_emergence=False):
     """Computes a depth map from the given depth cues.
 
     This depth map is created following the procedure from:
@@ -351,6 +314,7 @@ def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_d2=0.05,
     :param iterations: Number of iterations (int)
     :param lambda_tv: Lambda value of the TV term (float, default: 2.0)
     :param lambda_d2: Lambda value of the smoothing term (float, default: 0.05)
+    :param lambda_wl: Lambda value of the wavelet term (float, default: None)
     :param use_defocus: Weight for defocus cues (float, default: 1.0)
     :param use_correspondence: Weight for corresponence cues (float, default: 1.0)
 
@@ -361,8 +325,12 @@ def compute_depth_map(depth_cues, iterations=500, lambda_tv=2.0, lambda_d2=0.05,
     W_d = depth_cues['confidence_defocus']
     a_d = depth_cues['depth_defocus']
 
-    W_c = depth_cues['confidence_correspondence']
-    a_c = depth_cues['depth_correspondence']
+    if use_emergence:
+        W_c = depth_cues['confidence_emergence']
+        a_c = depth_cues['depth_emergence']
+    else:
+        W_c = depth_cues['confidence_correspondence']
+        a_c = depth_cues['depth_correspondence']
 
     use_defocus = np.fmax(use_defocus, 0.0)
     use_defocus = np.fmin(use_defocus, 1.0)
@@ -467,31 +435,6 @@ def get_distances(dm, zs):
     dm = np.fmax(dm, 0)
     interp_dists = sp.interpolate.interp1d(np.arange(zs.size), zs)
     return np.reshape(interp_dists(dm.flatten()), dm.shape)
-
-
-def _get_central_subaperture(lf_sa, origin_vu=None):
-    center_vu = (np.array(lf_sa.camera.data_size_vu, dtype=np.float) - 1) / 2
-    if origin_vu is None:
-        origin_vu = np.array((0., 0.))
-    if np.any(np.abs(origin_vu) > center_vu):
-        raise ValueError('Origin VU (%f, %f) outside of bounds' % (origin_vu[0], origin_vu[1]))
-
-    origin_vu = center_vu + np.array(origin_vu)
-    lower_ind = np.floor(origin_vu)
-    upper_ind = lower_ind + 1
-    lower_c = upper_ind - origin_vu
-    upper_c = 1 - lower_c
-    out_img = np.zeros(lf_sa.camera.data_size_ts)
-    eps = np.finfo(np.float32).eps
-    if lower_c[0] > eps and lower_c[1] > eps:
-        out_img += lower_c[0] * lower_c[1] * lf_sa.get_sub_aperture_image(lower_ind[0], lower_ind[1], image='data')
-    if upper_c[0] > eps and lower_c[1] > eps:
-        out_img += upper_c[0] * lower_c[1] * lf_sa.get_sub_aperture_image(upper_ind[0], lower_ind[1], image='data')
-    if lower_c[0] > eps and upper_c[1] > eps:
-        out_img += lower_c[0] * upper_c[1] * lf_sa.get_sub_aperture_image(lower_ind[0], upper_ind[1], image='data')
-    if upper_c[0] > eps and upper_c[1] > eps:
-        out_img += upper_c[0] * upper_c[1] * lf_sa.get_sub_aperture_image(upper_ind[0], upper_ind[1], image='data')
-    return out_img
 
 
 def _laplacian2(x):
