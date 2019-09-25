@@ -72,7 +72,8 @@ class BPJ(Solver):
         self.weight_det = weight_det
 
     def __call__(
-            self, A, b, num_iter, At=None, upper_limit=None, lower_limit=None):
+            self, A, b, num_iter=None, At=None, upper_limit=None,
+            lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
