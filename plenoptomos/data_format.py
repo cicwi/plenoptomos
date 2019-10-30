@@ -56,7 +56,9 @@ def _assign_optional_attr(obj, conf, label):
         pass
 
 
-def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=None, raw_det_dark=None):
+def create_vox_from_raw(
+        raw_det_file, conf_file, out_file=None, raw_det_white=None,
+        raw_det_dark=None, raw_det_mask=None):
     """ Creates a .vox light-field file, from a raw detector image and metadata.
 
     :param raw_det_file: the raw image file path (string)
@@ -64,6 +66,7 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
     :param out_file: the uncalibrated light-field file path (string)
     :param raw_det_white: the flat-field image file path (string, default: None)
     :param raw_det_dark: the dark-field image file path (string, default: None)
+    :param raw_det_mask: the light-field mask image file path (string, default: None)
     """
     config = configparser.ConfigParser()
     config.read(conf_file)
@@ -72,33 +75,112 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
     if out_file is None:
         out_file = "%s.vox" % file_base
 
-    im = _load_raw_sensor_image(raw_det_file, file_ext)
+    data = _load_raw_sensor_image(raw_det_file, file_ext)
+    white = dark = mask = None
     if raw_det_white is not None:
         (_, file_ext_w) = os.path.splitext(raw_det_white)
         white = _load_raw_sensor_image(raw_det_white, file_ext_w)
     if raw_det_dark is not None:
         (_, file_ext_d) = os.path.splitext(raw_det_dark)
         dark = _load_raw_sensor_image(raw_det_dark, file_ext_d)
+    if raw_det_mask is not None:
+        (_, file_ext_d) = os.path.splitext(raw_det_mask)
+        mask = _load_raw_sensor_image(raw_det_mask, file_ext_d)
+
+    create_vox_from_dict(data, config, out_file, white=white, dark=dark, mask=mask)
+
+
+def create_vox_from_lf(lf : lightfield.Lightfield, out_file):
+    """ Creates a .vox light-field file, from the light-field data class.
+
+    :param lf: the light-field data class (lightfield.LightField)
+    :param out_file: the uncalibrated light-field file path (string)
+    """
+    conf_cam = dict(manufacturer='', model=lf.camera.model)
+
+    conf_ml = dict(
+            size_y=lf.camera.data_size_vu[0], size_x=lf.camera.data_size_vu[1],
+            physical_size_t=lf.camera.pixel_size_ts[0],
+            physical_size_s=lf.camera.pixel_size_ts[1],
+            micro_image_size_y=0.0, micro_image_size_x=0.0,
+            f2=lf.camera.f2, aperture=lf.camera.aperture_f2)
+
+    if lf.camera.is_focused():
+        z_mla = lf.camera.z1 + lf.camera.a
+        z_sensor = lf.camera.z1 + lf.camera.a + lf.camera.b
+    else:
+        z_mla = lf.camera.z1
+        z_sensor = lf.camera.z1 + lf.camera.f2
+
+    conf_mla = dict(
+            size_t=lf.camera.data_size_ts[0], size_s=lf.camera.data_size_ts[1],
+            x=0.0, y=0.0, z=z_mla)
+
+    conf_Ml = dict(
+            pixel_size_v=lf.camera.pixel_size_vu[0],
+            pixel_size_u=lf.camera.pixel_size_vu[1],
+            f1=lf.camera.f1, aperture=lf.camera.aperture_f1)
+
+    conf_s = dict(
+            size_y=lf.camera.data_size_ts[0]*lf.camera.data_size_vu[0],
+            size_x=lf.camera.data_size_ts[1]*lf.camera.data_size_vu[1],
+            pixel_size_y=lf.camera.pixel_size_yx[0],
+            pixel_size_x=lf.camera.pixel_size_yx[1],
+            x=0.0, y=0.0, z=z_sensor)
+
+    config = dict(
+            camera=conf_cam, micro_lens=conf_ml, micro_lenses_array=conf_mla,
+            main_lens=conf_Ml, sensor=conf_s )
+
+    data = lf.get_raw_detector_picture(image='data')
+    if lf.flat is not None:
+        flat = lf.get_raw_detector_picture(image='flat')
+    else:
+        flat = None
+    if lf.mask is not None:
+        mask = lf.get_raw_detector_picture(image='mask')
+    else:
+        mask = None
+    create_vox_from_dict(data, config, out_file, white=flat, mask=mask)
+
+
+def create_vox_from_dict(data, config, out_file, white=None, dark=None, mask=None):
+    """ Creates a .vox light-field file, from a raw detector image and a
+    dictionary containing metadata.
+
+    :param data: the raw image (numpy.array_like)
+    :param config: the dictionary containing metadata (numpy.array_like)
+    :param out_file: the uncalibrated light-field file path (string)
+    :param white: the flat-field image (numpy.array_like, default: None)
+    :param dark: the dark-field image (numpy.array_like, default: None)
+    :param mask: the light-field mask image (numpy.array_like, default: None)
+    """
 
     with h5py.File(out_file, 'w') as f:
         f.attrs['description'] = 'VoxelDataFormat'
         f.attrs['version'] = 'v0'
 
-        data = f.create_group('data')
+        data_g = f.create_group('data')
 
-        data_im = data.create_dataset('image', data=im, compression="gzip", compression_opts=9)
+        data_im = data_g.create_dataset('image', data=data, compression="gzip", compression_opts=9)
         data_im.attrs['units'] = 'counts'
         data_im.attrs['axes'] = 'tau:sigma'
         data_im.attrs['mode'] = 'raw'
 
-        if raw_det_white is not None:
-            data_im = data.create_dataset('white', data=white, compression="gzip", compression_opts=9)
+        if white is not None:
+            data_im = data_g.create_dataset('white', data=white, compression="gzip", compression_opts=9)
             data_im.attrs['units'] = 'counts'
             data_im.attrs['axes'] = 'tau:sigma'
             data_im.attrs['mode'] = 'raw'
 
-        if raw_det_dark is not None:
-            data_im = data.create_dataset('dark', data=dark, compression="gzip", compression_opts=9)
+        if dark is not None:
+            data_im = data_g.create_dataset('dark', data=dark, compression="gzip", compression_opts=9)
+            data_im.attrs['units'] = 'counts'
+            data_im.attrs['axes'] = 'tau:sigma'
+            data_im.attrs['mode'] = 'raw'
+
+        if mask is not None:
+            data_im = data_g.create_dataset('mask', data=mask, compression="gzip", compression_opts=9)
             data_im.attrs['units'] = 'counts'
             data_im.attrs['axes'] = 'tau:sigma'
             data_im.attrs['mode'] = 'raw'
@@ -107,97 +189,98 @@ def create_vox_from_raw(raw_det_file, conf_file, out_file=None, raw_det_white=No
         instrument = f.create_group('instrument')
 
         # Creating CAMERA group
-        camera = instrument.create_group('camera')
+        camera_g = instrument.create_group('camera')
         try:
             conf_cam = config['camera']
 
-            _assign_optional_attr(camera, conf_cam, 'manufacturer')
-            _assign_optional_attr(camera, conf_cam, 'model')
+            _assign_optional_attr(camera_g, conf_cam, 'manufacturer')
+            _assign_optional_attr(camera_g, conf_cam, 'model')
         except:
             pass
 
         # Creating MICRO_LENS group
         conf_ml = config['micro_lens']
-        ml = camera.create_group('micro_lens')
+        ml_g = camera_g.create_group('micro_lens')
 
-        ml_size = ml.create_dataset('size', (2, ), dtype='i')
+        ml_size = ml_g.create_dataset('size', (2, ), dtype='i')
         ml_size[:] = np.array((int(conf_ml['size_y']), int(conf_ml['size_x'])))
         ml_size.attrs['axes'] = 'tau:sigma'
         ml_size.attrs['units'] = 'pixels'
 
-        ml_psize = ml.create_dataset('physical_size', (2, ), dtype='f')
+        ml_psize = ml_g.create_dataset('physical_size', (2, ), dtype='f')
         ml_psize[:] = np.array((float(conf_ml['physical_size_t']), float(conf_ml['physical_size_s'])))
         ml_psize.attrs['axes'] = 't:s'
         ml_psize.attrs['units'] = 'mm'
 
-        ml_mi_size = ml.create_dataset('micro_image_size', (2, ), dtype='f')
+        ml_mi_size = ml_g.create_dataset('micro_image_size', (2, ), dtype='f')
         ml_mi_size[:] = np.array((float(conf_ml['micro_image_size_y']), float(conf_ml['micro_image_size_x'])))
         ml_mi_size.attrs['axes'] = 'tau:sigma'
         ml_mi_size.attrs['units'] = 'mm'
 
-        ml_f2 = ml.create_dataset('f2', data=float(conf_ml['f2']))
+        ml_f2 = ml_g.create_dataset('f2', data=float(conf_ml['f2']))
         ml_f2.attrs['units'] = 'mm'
 
-        ml_a = ml.create_dataset('aperture', data=float(conf_ml['aperture']))
+        ml_a = ml_g.create_dataset('aperture', data=float(conf_ml['aperture']))
         ml_a.attrs['units'] = 'mm'
 
         # Creating MICRO_LENSES_ARRAY group
         conf_mla = config['micro_lenses_array']
-        mla = camera.create_group('micro_lenses_array')
+        mla_g = camera_g.create_group('micro_lenses_array')
 
-        _assign_optional_attr(mla, conf_mla, 'manufacturer')
-        _assign_optional_attr(mla, conf_mla, 'model')
+        _assign_optional_attr(mla_g, conf_mla, 'manufacturer')
+        _assign_optional_attr(mla_g, conf_mla, 'model')
 
-        mla_size = mla.create_dataset('size', (2, ), dtype='i')
+        mla_size = mla_g.create_dataset('size', (2, ), dtype='i')
         mla_size[:] = np.array((int(conf_mla['size_t']), int(conf_mla['size_s'])))
         mla_size.attrs['axes'] = 'tau:sigma'
 
-        mla_pos = mla.create_dataset('position', (3, ), dtype='f')
+        mla_pos = mla_g.create_dataset('position', (3, ), dtype='f')
         mla_pos[:] = np.array((float(conf_mla['x']), float(conf_mla['y']), float(conf_mla['z'])))
         mla_pos.attrs['axes'] = 'x:y:z'
         mla_pos.attrs['units'] = 'mm'
 
         # Creating MAIN_LENS group
         conf_Ml = config['main_lens']
-        Ml = camera.create_group('main_lens')
+        Ml_g = camera_g.create_group('main_lens')
 
-        _assign_optional_attr(Ml, conf_Ml, 'manufacturer')
-        _assign_optional_attr(Ml, conf_Ml, 'model')
+        _assign_optional_attr(Ml_g, conf_Ml, 'manufacturer')
+        _assign_optional_attr(Ml_g, conf_Ml, 'model')
 
-        Ml_psize = Ml.create_dataset('pixel_size', (2, ), dtype='f')
+        Ml_psize = Ml_g.create_dataset('pixel_size', (2, ), dtype='f')
         Ml_psize[:] = np.array((float(conf_Ml['pixel_size_v']), float(conf_Ml['pixel_size_u'])))
         Ml_psize.attrs['axes'] = 'v:u'
         Ml_psize.attrs['units'] = 'mm'
 
-        Ml_f1 = Ml.create_dataset('f1', data=float(conf_Ml['f1']))
+        Ml_f1 = Ml_g.create_dataset('f1', data=float(conf_Ml['f1']))
         Ml_f1.attrs['units'] = 'mm'
 
-        Ml_a = Ml.create_dataset('aperture', data=float(conf_Ml['aperture']))
+        Ml_a = Ml_g.create_dataset('aperture', data=float(conf_Ml['aperture']))
         Ml_a.attrs['units'] = 'mm'
 
         # Creating SENSOR group
         conf_s = config['sensor']
-        s = camera.create_group('sensor')
+        s_g = camera_g.create_group('sensor')
 
-        _assign_optional_attr(s, conf_s, 'manufacturer')
-        _assign_optional_attr(s, conf_s, 'model')
+        _assign_optional_attr(s_g, conf_s, 'manufacturer')
+        _assign_optional_attr(s_g, conf_s, 'model')
 
-        s_size = s.create_dataset('size', (2, ), dtype='i')
+        s_size = s_g.create_dataset('size', (2, ), dtype='i')
         s_size[:] = np.array((int(conf_s['size_y']), int(conf_s['size_x'])))
         s_size.attrs['axes'] = 'tau:sigma'
+        s_size.attrs['units'] = 'pixels'
 
-        s_p_size = s.create_dataset('pixel_size', (2, ), dtype='f')
+        s_p_size = s_g.create_dataset('pixel_size', (2, ), dtype='f')
         s_p_size[:] = np.array((float(conf_s['pixel_size_y']), float(conf_s['pixel_size_x'])))
         s_p_size.attrs['axes'] = 'tau:sigma'
         s_p_size.attrs['units'] = 'mm'
 
-        s_pos = s.create_dataset('position', (3, ), dtype='f')
+        s_pos = s_g.create_dataset('position', (3, ), dtype='f')
         s_pos[:] = np.array((float(conf_s['x']), float(conf_s['y']), float(conf_s['z'])))
         s_pos.attrs['axes'] = 'x:y:z'
         s_pos.attrs['units'] = 'mm'
 
         # And now we should check a couple of things to see if they are
-        # consistent, like: like the main lens pixel size -> (u, v) resolutions
+        # consistent, like: the main lens pixel size -> (u, v) resolutions
         if np.any(Ml_psize[:] == 0):
             Ml_psize[:] = s_p_size[:] / (s_pos[2] - mla_pos[2]) * mla_pos[2]
 
@@ -388,47 +471,47 @@ def transform_2D_to_4D(data, out_shape_tsvu):
 
 def _load_raw_image(f):
     im = f['/data/image']
-    if im.attrs['mode'] == 'raw':
-        if not _has_fields_for_raw_to_microimage(f):
-            raise ValueError('You should calibrate your images first!')
-        else:
-            mla_xy = f['/instrument/camera/micro_lenses_array/position'][0:2]
-            sensor_xy = f['/instrument/camera/sensor/position'][0:2]
-            sensor_pixel_size = f['/instrument/camera/sensor/pixel_size']
-            offsets = (sensor_xy - mla_xy) / sensor_pixel_size
-            pitch_in = f['/instrument/camera/micro_lens/physical_size'][()] / sensor_pixel_size
-            pitch_out = f['/instrument/camera/micro_lens/size'][()]
-
-        offsets = np.array(offsets)
-        pitch_in = np.array(pitch_in)
-        pitch_out = np.array(pitch_out)
-        if np.any(pitch_out == 0):
-            pitch_out = np.ceil(pitch_in - 0.1)
-
-        pitch_diff = np.abs(pitch_in - pitch_out)
-        offset_diff = np.abs(offsets - np.round(offsets))
-
-        if np.all(pitch_diff < np.finfo(np.float16).eps) \
-                and np.all(offset_diff < np.finfo(np.float16).eps):
-            pitch_in = np.round(pitch_in).astype(np.intp)
-            offsets = np.round(offsets).astype(np.intp)
-
-            extract = lambda x : raw_to_microimage_exact(x, offsets, pitch_in)
-        else:
-            extract = lambda x : raw_to_microimage_interp(x, offsets, pitch_in, pitch_out)
-
-        (data, lf_shape) = extract(im[()])
-        data_out = [data]
-        if '/data/white' in f:
-            im_w = f['/data/white']
-            (white, _) = extract(im_w[()])
-            data_out.append(white)
-        if '/data/dark' in f:
-            im_d = f['/data/dark']
-            (dark, _) = extract(im_d[()])
-            data_out.append(dark)
-    else:
+    if not im.attrs['mode'] == 'raw':
         raise ValueError('This function loads VOX data in raw detector format')
+    if not _has_fields_for_raw_to_microimage(f):
+        raise ValueError('You should calibrate your images first!')
+
+    mla_xy = f['/instrument/camera/micro_lenses_array/position'][0:2]
+    sensor_xy = f['/instrument/camera/sensor/position'][0:2]
+    sensor_pixel_size = f['/instrument/camera/sensor/pixel_size'][()]
+    offsets = (sensor_xy - mla_xy) / sensor_pixel_size
+    pixel_size_ts = f['/instrument/camera/micro_lens/physical_size'][()]
+    pitch_in = pixel_size_ts / sensor_pixel_size
+    pitch_out = f['/instrument/camera/micro_lens/size'][()]
+
+    offsets = np.array(offsets)
+    pitch_in = np.array(pitch_in)
+    pitch_out = np.array(pitch_out)
+    if np.any(pitch_out == 0):
+        pitch_out = np.ceil(pitch_in - 0.1)
+
+    pitch_diff = np.abs(pitch_in - pitch_out)
+    offset_diff = np.abs(offsets - np.round(offsets))
+
+    if np.all(pitch_diff < np.finfo(np.float16).eps) \
+            and np.all(offset_diff < np.finfo(np.float16).eps):
+        pitch_in = np.round(pitch_in).astype(np.intp)
+        offsets = np.round(offsets).astype(np.intp)
+
+        extract = lambda x : raw_to_microimage_exact(x, offsets, pitch_in)
+    else:
+        extract = lambda x : raw_to_microimage_interp(x, offsets, pitch_in, pitch_out)
+
+    (data, lf_shape) = extract(im[()])
+    data_out = [data]
+    if '/data/white' in f:
+        im_w = f['/data/white']
+        (white, _) = extract(im_w[()])
+        data_out.append(white)
+    if '/data/dark' in f:
+        im_d = f['/data/dark']
+        (dark, _) = extract(im_d[()])
+        data_out.append(dark)
 
     for ii in range(len(data_out)):
         data_out[ii] = transform_2D_to_4D(data_out[ii], lf_shape)

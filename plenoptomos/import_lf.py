@@ -421,19 +421,21 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
 #    script_path = os.path.join(dset_path, '%s.txt' % script_name[1])
     script_path = os.path.join(dset_path, 'script_executed.txt')
     (positions_tube, positions_det, num_phases, binnings, rois, grid_size, det_is_fixed) = _flexray_parse_source_det_positions(script_path)
-    res_uv = np.abs(np.array((positions_tube[0, 1, 0] - positions_tube[0, 0, 0], positions_tube[1, 0, 1] - positions_tube[0, 0, 1])))
+    res_uv = np.abs(np.array((
+            positions_tube[0, 1, 0] - positions_tube[0, 0, 0],
+            positions_tube[1, 0, 1] - positions_tube[0, 0, 1])))
 
     camera = lightfield.get_camera('flexray', down_sampling_st=binnings[-1])
     camera.data_size_vu = np.array(grid_size, dtype=np.intp)
     camera.data_size_ts = ((rois[-1][2:] - rois[-1][0:2] + 1) / binnings[-1]).astype(np.intp)
     camera.data_size_ts = np.array([camera.data_size_ts[1], camera.data_size_ts[0]])
     camera.pixel_size_vu = res_uv
-    camera.pixel_size_yx = camera.pixel_size_ts / camera.data_size_vu
 
     so_dist = float(config['Settings']['source_object_distance'])
     sd_dist = float(config['Settings']['source_detector_distance'])
-    camera.z1 = sd_dist
-    camera.pixel_size_ts = camera.pixel_size_ts * (so_dist / sd_dist)
+    camera.z1 = so_dist
+    camera.pixel_size_ts *= (so_dist / sd_dist)
+    camera.pixel_size_yx = camera.pixel_size_ts / camera.data_size_vu
 
     camera.f1 = camera.get_f1(so_dist)
     camera.f2 = camera.z1 * np.mean(camera.pixel_size_yx / camera.data_size_vu)
@@ -446,7 +448,8 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     c = tm.time()
     for ii_v in range(camera.data_size_vu[0]):
         for ii_u in range(camera.data_size_vu[1]):
-            prnt_str = 'v %02d/%02d, u %02d/%02d' % (ii_v, camera.data_size_vu[0], ii_u, camera.data_size_vu[1])
+            prnt_str = 'v %02d/%02d, u %02d/%02d' % (
+                    ii_v, camera.data_size_vu[0], ii_u, camera.data_size_vu[1])
             print(prnt_str, end='', flush=True)
 
             filename = os.path.join(dset_path, 'scan_%02d_%02d.tif' % (ii_v, ii_u))
@@ -470,7 +473,8 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
             flat_imgs = np.empty(np.concatenate(((3, 3), d0.shape)), dtype=data_type)
             for ii_v in range(3):
                 for ii_u in range(3):
-                    filename = os.path.join(dset_path, 'flat_%02d_%02d.tif' % (ii_v * mult[0], ii_u * mult[1]))
+                    filename = os.path.join(dset_path, 'flat_%02d_%02d.tif' % (
+                            ii_v * mult[0], ii_u * mult[1]))
                     flat_imgs[ii_v, ii_u, ...] = mim.imread(filename)
 
             # This procedure is less performing (on a theoretical level), but due
@@ -537,25 +541,31 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
         lf_crop_size = np.concatenate((camera.data_size_vu, final_size_ts)).astype(np.intp)
         lf_img_crop = np.zeros(lf_crop_size, dtype=data_type)
 
-        base_grid_t = np.linspace(-half_size_ts[0], half_size_ts[0], camera.data_size_ts[0])
-        base_grid_s = np.linspace(-half_size_ts[1], half_size_ts[1], camera.data_size_ts[1])
+        base_grid_t = np.linspace(
+                -half_size_ts[0], half_size_ts[0], camera.data_size_ts[0])
+        base_grid_s = np.linspace(
+                -half_size_ts[1], half_size_ts[1], camera.data_size_ts[1])
 
         for ii_v in range(camera.data_size_vu[0]):
             for ii_u in range(camera.data_size_vu[1]):
-                prnt_str = 'v %02d/%02d, u %02d/%02d' % (ii_v, camera.data_size_vu[0], ii_u, camera.data_size_vu[1])
+                prnt_str = 'v %02d/%02d, u %02d/%02d' % (
+                        ii_v, camera.data_size_vu[0], ii_u, camera.data_size_vu[1])
                 print(prnt_str, end='', flush=True)
 
                 shift_vu = np.array([ii_v, ii_u]).astype(np.float32) - half_size_vu
                 shift_ts = compute_shift(shift_vu)
-                base_int_t = np.linspace(-half_final_size_ts[0] + shift_ts[0], \
-                                         half_final_size_ts[0] + shift_ts[0], final_size_ts[0])
-                base_int_s = np.linspace(-half_final_size_ts[1] + shift_ts[1], \
-                                         half_final_size_ts[1] + shift_ts[1], final_size_ts[1])
+                base_int_t = np.linspace(
+                        -half_final_size_ts[0] + shift_ts[0],
+                        half_final_size_ts[0] + shift_ts[0], final_size_ts[0])
+                base_int_s = np.linspace(
+                        -half_final_size_ts[1] + shift_ts[1],
+                        half_final_size_ts[1] + shift_ts[1], final_size_ts[1])
                 base_int_ts = np.meshgrid(base_int_t, base_int_s, indexing='ij')
                 base_int_ts = np.transpose(np.array(base_int_ts), axes=(1, 2, 0))
 
-                interp_obj = spinterp.RegularGridInterpolator((base_grid_t, base_grid_s), lf_img[ii_v, ii_u, ...], \
-                                                              bounds_error=False, fill_value=0.0)
+                interp_obj = spinterp.RegularGridInterpolator(
+                        (base_grid_t, base_grid_s), lf_img[ii_v, ii_u, ...],
+                        bounds_error=False, fill_value=0.0)
 
                 lf_img_crop[ii_v, ii_u, ...] = interp_obj(base_int_ts)
 
@@ -563,7 +573,6 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
 
         lf_img = lf_img_crop
         camera.data_size_ts = final_size_ts.astype(np.intp)
-        camera.pixel_size_vu /= (so_dist / sd_dist)
         print('Done in %g seconds.' % (tm.time() - c))
 
     lf_img = np.transpose(lf_img, axes=(2, 3, 0, 1))
