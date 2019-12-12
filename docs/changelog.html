@@ -85,13 +85,13 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples description</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#unreleased">Unreleased</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.1.1 - 2019-12-12</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.1.0 - 2019-03-25</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Added</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.1.0 - 2019-03-25</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -165,8 +165,12 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<div class="section" id="unreleased">
-<h2><a class="reference external" href="https://www.github.com/cicwi/plenoptomos/compare/v0.1.0...develop">Unreleased</a><a class="headerlink" href="#unreleased" title="Permalink to this headline">¶</a></h2>
+<!--
+## [Unreleased]
+### Added
+### Fixed
+--><div class="section" id="id1">
+<h2>0.1.1 - 2019-12-12<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="added">
 <h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -182,15 +186,28 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Try using ImageIO for TIFF images before matplotlib</p></li>
 <li><p>Fixed renormalization in traditional integration algorithm for upsampled cases</p></li>
 <li><p>Small fixes to PSF deconvolution</p></li>
+<li><p>Fixed padding in refocus, when using wavelet regularization</p></li>
 </ul>
 </div>
 </div>
-<div class="section" id="id1">
-<h2>0.1.0 - 2019-03-25<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id2">
-<h3>Added<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h2>0.1.0 - 2019-03-25<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Initial release.</p></li>
+</ul>
+<div class="section" id="id3">
+<h3>Added<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>support for a few types of datasets and formats (including the .vox format).</p></li>
+<li><p>support for refocusing using standard algorithms like the integration and Fourier methods.</p></li>
+<li><p>support for GPU accelerated tomography based refocusing, including the following algorithms:</p>
+<ul>
+<li><p>unfiltered back-projection</p></li>
+<li><p>SIRT</p></li>
+<li><p>Chambolle-Pock (Least-square, TV)</p></li>
+</ul>
+</li>
+<li><p>support for depth estimation</p></li>
 </ul>
 </div>
 </div>
