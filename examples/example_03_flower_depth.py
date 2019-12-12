@@ -51,7 +51,7 @@ print('Computing depth cues..')
 dc = pleno.depth.compute_depth_cues(lf, z0s)
 
 print('Using depth cues to generate a depth-map..')
-dm = pleno.depth.compute_depth_map(dc, lambda_tv=1.0, lambda_smooth=None)
+dm = pleno.depth.compute_depth_map(dc, lambda_tv=1.0, lambda_d2=None)
 
 (f, axs) = plt.subplots(3, 3, sharex=True, sharey=True)
 axs[0, 0].imshow(dc['depth_defocus'], vmin=0, vmax=len(z0s)-1)
