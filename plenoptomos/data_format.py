@@ -14,7 +14,8 @@ Convetions:
 Rationale behind version 0:
 - Single light-field per file
 - Contains all the necessary metadata for interpretation of the light-field
-- Based on [HDF5](https://www.hdfgroup.org/solutions/hdf5/) and vaguely inspired by [DataExchange](https://github.com/data-exchange/dxchange)
+- Based on [HDF5](https://www.hdfgroup.org/solutions/hdf5/) and vaguely
+inspired by [DataExchange](https://github.com/data-exchange/dxchange)
 
 The updated structure can be found at: https://cicwi.github.io/plenoptomos
 """
@@ -51,9 +52,11 @@ def _load_raw_sensor_image(raw_file, file_ext):
 
 def _assign_optional_attr(obj, conf, label):
     try:
-        obj.attrs[label] = conf[label]
-    except:
-        pass
+        val = conf[label]
+    except KeyError:
+        return
+
+    obj.attrs[label] = val
 
 
 def create_vox_from_raw(
@@ -90,7 +93,7 @@ def create_vox_from_raw(
     create_vox_from_dict(data, config, out_file, white=white, dark=dark, mask=mask)
 
 
-def create_vox_from_lf(lf : lightfield.Lightfield, out_file):
+def create_vox_from_lf(lf: lightfield.Lightfield, out_file):
     """ Creates a .vox light-field file, from the light-field data class.
 
     :param lf: the light-field data class (lightfield.LightField)
@@ -130,7 +133,7 @@ def create_vox_from_lf(lf : lightfield.Lightfield, out_file):
 
     config = dict(
             camera=conf_cam, micro_lens=conf_ml, micro_lenses_array=conf_mla,
-            main_lens=conf_Ml, sensor=conf_s )
+            main_lens=conf_Ml, sensor=conf_s)
 
     data = lf.get_raw_detector_picture(image='data')
     if lf.flat is not None:
@@ -195,7 +198,7 @@ def create_vox_from_dict(data, config, out_file, white=None, dark=None, mask=Non
 
             _assign_optional_attr(camera_g, conf_cam, 'manufacturer')
             _assign_optional_attr(camera_g, conf_cam, 'model')
-        except:
+        except KeyError:
             pass
 
         # Creating MICRO_LENS group
@@ -286,9 +289,11 @@ def create_vox_from_dict(data, config, out_file, white=None, dark=None, mask=Non
 
 ###############################################################################
 
-def _find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None, None), \
-                           peak_skip_front=(None, None), peak_skip_back=(None, None), \
-                           verbose=False, interactive=False, cwt_size=np.arange(1, 25)):
+
+def _find_offsets_and_pitch(
+        w_im, peak_rm_front=(None, None), peak_rm_back=(None, None),
+        peak_skip_front=(None, None), peak_skip_back=(None, None),
+        verbose=False, interactive=False, cwt_size=np.arange(1, 25)):
 
     win = spsig.general_gaussian(15, p=0.5, sig=2)
     win /= np.sum(win)
@@ -313,7 +318,8 @@ def _find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None
         summed_micro_imgs_filt = spsig.convolve(summed_micro_imgs, win, mode='same')
 
         peak_pos = spsig.find_peaks_cwt(summed_micro_imgs_filt, cwt_size)
-        if verbose: print(peak_pos)
+        if verbose:
+            print(peak_pos)
 
         max_peaks = np.max(summed_micro_imgs)
         if verbose or interactive:
@@ -336,7 +342,8 @@ def _find_offsets_and_pitch(w_im, peak_rm_front=(None, None), peak_rm_back=(None
             peak_pos = peak_pos[:-peak_rm_back[ii_d]]
 
         if interactive:
-            print('Dimension %d, please indicate the misidentified peaks to not consider for averange and offset, in the front and back:' % ii_d)
+            print('Dimension %d, ' % ii_d, end='', flush=True)
+            print('please indicate the misidentified peaks to not consider for averange and offset, in the front and back:')
             peak_skip_front[ii_d] = int(input(' - front? '))
             peak_skip_back[ii_d] = int(input(' - back? '))
 
@@ -405,9 +412,11 @@ def calibrate_raw_image(vox_file_in, vox_file_out=None, pitch=None, offset=None)
 
 ###############################################################################
 
+
 def _has_fields_for_raw_to_microimage(vox_file):
-    return not (np.any(vox_file['/instrument/camera/main_lens/pixel_size'][()] == 0) \
-                or np.any(vox_file['/instrument/camera/micro_lens/physical_size'][()] == 0))
+    return not (
+        np.any(vox_file['/instrument/camera/main_lens/pixel_size'][()] == 0)
+        or np.any(vox_file['/instrument/camera/micro_lens/physical_size'][()] == 0))
 
 
 def raw_to_microimage_exact(data, offsets, pitch):
@@ -498,9 +507,9 @@ def _load_raw_image(f):
         pitch_in = np.round(pitch_in).astype(np.intp)
         offsets = np.round(offsets).astype(np.intp)
 
-        extract = lambda x : raw_to_microimage_exact(x, offsets, pitch_in)
+        extract = lambda x: raw_to_microimage_exact(x, offsets, pitch_in)
     else:
-        extract = lambda x : raw_to_microimage_interp(x, offsets, pitch_in, pitch_out)
+        extract = lambda x: raw_to_microimage_interp(x, offsets, pitch_in, pitch_out)
 
     (data, lf_shape) = extract(im[()])
     data_out = [data]
@@ -580,4 +589,3 @@ def load(vox_file):
             camera.pixel_size_vu = (camera.a + camera.z1) / camera.b * camera.pixel_size_yx
 
     return lightfield.Lightfield(camera, data=lf_data, mode=lf_mode, flat=white)
-

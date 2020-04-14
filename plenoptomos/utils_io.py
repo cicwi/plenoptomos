@@ -39,6 +39,7 @@ def save_field_toh5(filename, dset_name, data, verbose=False, append=False, comp
     if verbose:
         print('Saved dataset "%s" to file: %s' % (dset_name, filename))
 
+
 def load_field_fromh5(filename, dset, verbose=False):
     mode = 'r'
     with h5py.File(filename, mode) as f:
@@ -54,7 +55,7 @@ def save_refocused_stack(refocus_stack, filename, verbose=False, zs=None):
         save_field_toh5(filename, 'zs', zs, append=True)
 
 
-def save_lightfield(filename, lf : lightfield.Lightfield):
+def save_lightfield(filename, lf: lightfield.Lightfield):
     with h5py.File(filename, 'w') as f:
         c = lf.camera.__dict__
         for k, v in c.items():
@@ -68,6 +69,7 @@ def save_lightfield(filename, lf : lightfield.Lightfield):
         if lf.shifts_vu is not None and isinstance(lf.shifts_vu, (tuple, list)) \
                 and lf.shifts_vu[0] is not None and lf.shifts_vu[1] is not None:
             f.create_dataset('shifts_vu', data=lf.shifts_vu, compression="gzip")
+
 
 def load_lightfield(filename):
     with h5py.File(filename, 'r') as f:
@@ -85,5 +87,3 @@ def load_lightfield(filename):
         if '/shifts_vu' in f:
             lf.shifts_vu = f['shifts_vu'][()]
         return lf
-
-

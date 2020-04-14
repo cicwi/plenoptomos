@@ -17,7 +17,8 @@ data_dir = 'examples/data/'
 dpath = os.path.join(data_dir, 'flowers_plants_30_eslf.png')
 jpath = os.path.join(data_dir, 'flowers_plants_30.json')
 
-error_msg_lf_files = 'Please download the following files from the Stanford light-field archive and put them in %s:\n - %s\n - %s'
+error_msg_lf_files = \
+    'Please download the following files from the Stanford light-field archive and put them in %s:\n - %s\n - %s'
 
 if not os.path.exists(dpath):
     print('Example files: "%s" and "%s" do not exist.' % (dpath, jpath))
@@ -73,4 +74,3 @@ for ii, d in enumerate(dists):
 
 plt.tight_layout()
 plt.show()
-

@@ -26,11 +26,11 @@ class Projector(object):
     """
 
     def __init__(
-            self, camera : lightfield.Camera, zs, mask=None, vignetting_int=None,
+            self, camera: lightfield.Camera, zs, mask=None, vignetting_int=None,
             beam_geometry='cone', domain='object', psf_d=None,
             up_sampling=1, super_sampling=1,
             mode='independent', shifts_vu=(None, None), gpu_index=-1):
-        self.mode = mode # can be: {'independent' | 'simultaneous' | 'range'}
+        self.mode = mode  # can be: {'independent' | 'simultaneous' | 'range'}
         self.up_sampling = up_sampling
         self.super_sampling = super_sampling
         self.gpu_index = gpu_index
@@ -106,8 +106,8 @@ class Projector(object):
         voxel_size_obj_space_ts = camera_pixel_size_ts_us * M
 
         num_imgs = self.camera.get_number_of_subaperture_images()
-        imgs_pixel_size_s = np.zeros( (num_imgs, 3) )
-        imgs_pixel_size_t = np.zeros( (num_imgs, 3) )
+        imgs_pixel_size_s = np.zeros((num_imgs, 3))
+        imgs_pixel_size_t = np.zeros((num_imgs, 3))
         imgs_pixel_size_s[:, 0] = voxel_size_obj_space_ts[1] / renorm_resolution_factor
         imgs_pixel_size_t[:, 1] = voxel_size_obj_space_ts[0] / renorm_resolution_factor
 
@@ -138,13 +138,17 @@ class Projector(object):
         elif self.mode == 'range':
             self.vol_size = np.concatenate((up_sampled_array_size, (num_dists, )))
         else:
-            raise ValueError("Mode: '%s' not allowed! Possible choices are: 'independent' | 'simultaneous' | 'range'" % self.mode)
+            raise ValueError(
+                "Mode: '%s' not allowed! Possible choices are: 'independent' | 'simultaneous' | 'range'" % self.mode)
 
         if self.mode in ('independent', 'simultaneous'):
             self.vol_geom = []
             for d in zs_n:
                 lims_z = d + np.array([-1., 1.]) / 2
-                self.vol_geom.append(astra.create_vol_geom(self.vol_size[0], self.vol_size[1], self.vol_size[2], lims_s[0], lims_s[1], lims_t[0], lims_t[1], lims_z[0], lims_z[1]))
+                self.vol_geom.append(
+                    astra.create_vol_geom(
+                        self.vol_size[0], self.vol_size[1], self.vol_size[2],
+                        lims_s[0], lims_s[1], lims_t[0], lims_t[1], lims_z[0], lims_z[1]))
         elif self.mode == 'range':
             if num_dists > 1:
                 lims_z = (zs_n[0], zs_n[-1])
@@ -152,7 +156,10 @@ class Projector(object):
                 lims_z = lims_z + np.array([-1., 1.]) * delta / 2
             else:
                 lims_z = zs_n + np.array([-1., 1.]) / 2
-            self.vol_geom = [astra.create_vol_geom(self.vol_size[0], self.vol_size[1], self.vol_size[2], lims_s[0], lims_s[1], lims_t[0], lims_t[1], lims_z[0], lims_z[1])]
+            self.vol_geom = [
+                astra.create_vol_geom(
+                    self.vol_size[0], self.vol_size[1], self.vol_size[2],
+                    lims_s[0], lims_s[1], lims_t[0], lims_t[1], lims_z[0], lims_z[1])]
 
         if self.beam_geometry.lower() == 'cone':
             det_geometry = np.hstack([ph_imgs_vu, acq_sa_imgs_ts, imgs_pixel_size_s, imgs_pixel_size_t])
@@ -268,7 +275,9 @@ class Projector(object):
         self._apply_psf_to_subpixel(y, is_direct=True)
 
         if self.up_sampling > 1:
-            y = np.reshape(y, (-1, self.camera.get_number_of_subaperture_images(), self.img_size[-2], self.up_sampling, self.img_size[-1], self.up_sampling))
+            y = np.reshape(y, (
+                -1, self.camera.get_number_of_subaperture_images(),
+                self.img_size[-2], self.up_sampling, self.img_size[-1], self.up_sampling))
             y = np.sum(y, axis=(-3, -1)) / (self.up_sampling ** 2)
 
         y = np.reshape(y, np.concatenate(((-1, ), self.img_size)))
@@ -303,7 +312,7 @@ class Projector(object):
         y = np.transpose(y, (0, 2, 1, 3))
 
         if self.up_sampling > 1:
-            y = np.reshape(y, (-1, self.img_size[-2], 1, self.camera.get_number_of_subaperture_images(), self.img_size[-1], 1) )
+            y = np.reshape(y, (-1, self.img_size[-2], 1, self.camera.get_number_of_subaperture_images(), self.img_size[-1], 1))
             y = np.tile(y, [1, 1, self.up_sampling, 1, 1, self.up_sampling])
             y = np.reshape(y, (-1, self.img_size_us[-2], self.camera.get_number_of_subaperture_images(), self.img_size_us[-1]))
 
@@ -326,7 +335,7 @@ class Projector(object):
 
 
 def compute_forwardprojection(
-        camera : lightfield.Camera, zs, vols, masks, reflective_geom=True,
+        camera: lightfield.Camera, zs, vols, masks, reflective_geom=True,
         up_sampling=1, super_sampling=1, border=5, border_padding='edge',
         gpu_index=-1):
 
@@ -340,19 +349,17 @@ def compute_forwardprojection(
             dist = np.array((z, ))
             temp_vol = np.expand_dims(vols[ii, :, :], 0)
             temp_mask = np.expand_dims(masks[ii, :, :], 0)
-            with Projector(camera, dist, mode='simultaneous', \
-                              up_sampling=up_sampling, \
-                              super_sampling=super_sampling, \
-                              gpu_index=gpu_index) as p:
+            with Projector(
+                    camera, dist, mode='simultaneous', up_sampling=up_sampling,
+                    super_sampling=super_sampling, gpu_index=gpu_index) as p:
                 pvol = p.FP(temp_vol)
                 pmask = p.FP(temp_mask)
                 lf.data *= np.squeeze(1 - pmask)
                 lf.data += np.squeeze(pvol)
     else:
-        with Projector(camera, zs, mode='simultaneous', \
-                          up_sampling=up_sampling, \
-                          super_sampling=super_sampling, \
-                          gpu_index=gpu_index) as p:
+        with Projector(
+                camera, zs, mode='simultaneous', up_sampling=up_sampling,
+                super_sampling=super_sampling, gpu_index=gpu_index) as p:
             lf.data = p.FP(vols)
 
     c_out = tm.time()
@@ -361,8 +368,9 @@ def compute_forwardprojection(
     # Return the stack of refocused images:
     return lf
 
+
 def compute_refocus_backprojection(
-        lf : lightfield.Lightfield, zs, border=4, border_padding='edge',
+        lf: lightfield.Lightfield, zs, border=4, border_padding='edge',
         up_sampling=1, super_sampling=1,
         beam_geometry='cone', domain='object', gpu_index=-1):
     """Compute refocusing of the input lightfield image at the input distances by
@@ -438,7 +446,7 @@ def _get_paddings(data_size_ts, border, up_sampling, algorithm):
 
 
 def compute_refocus_iterative(
-        lf : lightfield.Lightfield, zs, iterations=10, algorithm='sirt',
+        lf: lightfield.Lightfield, zs, iterations=10, algorithm='sirt',
         up_sampling=1, super_sampling=1,
         border_padding='edge', beam_geometry='cone', domain='object',
         psf=None, border=4, gpu_index=-1, verbose=False, chunks_zs=1):
@@ -484,14 +492,15 @@ def compute_refocus_iterative(
 
     imgs_shape = (
             num_dists, lf_sa.camera.data_size_ts[0] * up_sampling,
-            lf_sa.camera.data_size_ts[1] * up_sampling )
+            lf_sa.camera.data_size_ts[1] * up_sampling)
     imgs = np.empty(imgs_shape, dtype=lf_sa.data.dtype)
 
     c_init = tm.time()
 
     print(" * Init: %g seconds" % (c_init - c_in))
     for ii_z in range(0, num_dists, chunks_zs):
-        print(" * Refocusing chunk of %03d-%03d (avg: %g seconds)" % (ii_z, ii_z+chunks_zs-1, (tm.time() - c_init) / np.fmax(ii_z, 1)))
+        print(" * Refocusing chunk of %03d-%03d (avg: %g seconds)" % (
+            ii_z, ii_z+chunks_zs-1, (tm.time() - c_init) / np.fmax(ii_z, 1)))
 
         sel_zs = zs[ii_z:ii_z+chunks_zs]
         with Projector(
@@ -532,8 +541,9 @@ def compute_refocus_iterative(
     # Return the stack of refocused images:
     return imgs
 
+
 def compute_refocus_iterative_multiple(
-        lf : lightfield.Lightfield, zs, iterations=10, algorithm='sirt',
+        lf: lightfield.Lightfield, zs, iterations=10, algorithm='sirt',
         up_sampling=1, super_sampling=1, border=4, border_padding='edge',
         beam_geometry='cone', domain='object', psf=None, gpu_index=-1,
         verbose=False):

@@ -21,13 +21,14 @@ from scipy import fftpack
 import matplotlib.pyplot as plt
 # Do not remove the following import: it is used somehow by the plotting
 # functionality in the PSF creation
-from mpl_toolkits.mplot3d import Axes3D # noqa: F401 unused import
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
 from collections import namedtuple
 
 from . import solvers
 
 import time as tm
+
 
 class PSF(object):
     """Data class that allows to store n-dimensional PSFs, and their
@@ -89,15 +90,13 @@ class PSF(object):
         else:
             defocus_size = 0
 
-        Conf = namedtuple('Conf', ('airy_rings', 'over_sampling', \
-                                   'beam_coherence',
-                                   'wavelength_intensity', 'pixels_defocus', \
-                                   'guarantee_pixel_multiple', 'data_type'))
-        conf = Conf(airy_rings, over_sampling, beam_coherence, \
-                    wavelength_intensity, defocus_size, 1, data_type)
+        Conf = namedtuple('Conf', (
+            'airy_rings', 'over_sampling', 'beam_coherence', 'wavelength_intensity',
+            'pixels_defocus', 'guarantee_pixel_multiple', 'data_type'))
+        conf = Conf(airy_rings, over_sampling, beam_coherence, wavelength_intensity, defocus_size, 1, data_type)
 
-        print("- Creating Theoretical PSFs for (%s, %s) coordinates (defocus size: %g).." \
-              % (coordinates[0], coordinates[1], defocus_size), end='', flush=True)
+        print("- Creating Theoretical PSFs for (%s, %s) coordinates (defocus size: %g).." % (
+            coordinates[0], coordinates[1], defocus_size), end='', flush=True)
         c_in = tm.time()
 
         if coordinates.lower() in ('uv', 'vu'):
@@ -140,7 +139,7 @@ class PSF(object):
 
     @staticmethod
     def compute_fraunhofer_psf(conf, d, z, pixel_size, ls):
-        #computing real pixel_distance of first zero
+        # Computing real pixel_distance of first zero
         disk_d = np.mean(z * np.arcsin(1.22 * ls / d)) / np.mean(pixel_size)
         pixels_distance = np.ceil(disk_d * conf.airy_rings).astype(np.int)
         base_block_size = 2 * pixels_distance + 1
@@ -163,7 +162,7 @@ class PSF(object):
         ls = np.reshape(ls, (-1, 1, 1))
         h = np.pi * d * r / (ls * z)
         J10 = spspecial.jv(1, h)
-        h[:, data_center, data_center] = 1 # avoid warning abou NaN
+        h[:, data_center, data_center] = 1  # avoid warning abou NaN
         h = 2 * J10 / h
         # Setting central pixel to 1 (otherwise it would be NaN or 0)
         h[:, data_center, data_center] = 1
@@ -223,6 +222,7 @@ class PSF(object):
             h = h.astype(conf.data_type)
 
         return h
+
 
 class PSFApply(object):
     """Class PSFApply handles all PSF/OTF applications
@@ -332,7 +332,7 @@ class PSFApply(object):
         :returns: The convolution between the images and the adjoint of the PSF
         :rtype: numpy.array_like
         """
-        self._check_incoming_images(imgs);
+        self._check_incoming_images(imgs)
 
         if self.use_otf is True:
             return self._apply_otf(imgs, False)
@@ -346,8 +346,10 @@ class PSFApply(object):
 
         :param imgs: The incoming images (numpy.array_like)
         :param iterations: The number of reconstruciton iterations (int, default: 100)
-        :param lambda_wl: Weight factor for the wavelet deconvolution. If None is passed, the SIRT algorithm will be used instead (float, default: None)
-        :param lambda_tv: Weight factor for the TV term. If None is passed, the SIRT algorithm will be used instead (float, default: None)
+        :param lambda_wl: Weight factor for the wavelet deconvolution.
+        If None is passed, the SIRT algorithm will be used instead (float, default: None)
+        :param lambda_tv: Weight factor for the TV term.
+        If None is passed, the SIRT algorithm will be used instead (float, default: None)
         :param data_term: Data consistency term used by the wl recosntruction. Options: 'l2' | 'kl' (string, default: 'l2')
         :param lower_limit: Lower clipping value (float, default: None)
         :param upper_limit: Upper clipping value (float, default: None)
@@ -387,8 +389,10 @@ class PSFApply(object):
 
         crops = []
         for b in border:
-            if b == 0: crops.append(slice(None))
-            else: crops.append(slice(b, -b))
+            if b == 0:
+                crops.append(slice(None))
+            else:
+                crops.append(slice(b, -b))
         return imgs_dec[crops]
 
     def _get_psf_datashape(self):
@@ -424,8 +428,8 @@ class PSFApply(object):
             self.otf_adjoint = None
             self.image_size = img_size
         elif not np.all(self.image_size == img_size):
-            print("WARNING: OTFs computed for the wrong image size ([%s] instead of [%s]). Recomputing them..." \
-                  % (", ".join((str(x) for x in self.image_size)), ", ".join((str(x) for x in img_size))))
+            print("WARNING: OTFs computed for the wrong image size ([%s] instead of [%s]). Recomputing them..." % (
+                ", ".join((str(x) for x in self.image_size)), ", ".join((str(x) for x in img_size))))
             self.otf_direct = None
             self.otf_adjoint = None
             self.image_size = img_size
@@ -518,8 +522,11 @@ class PSFApply4D(PSFApply):
 
     def _check_incoming_psf(self, psf_d):
         if len(psf_d) == 0 or not len(psf_d.shape) == 4:
-            raise ValueError('PSFs should be in the form of 4D images  with dimensions [0] == [1] and [2] == [3], with odd edges')
+            raise ValueError(
+                'PSFs should be in the form of 4D images  with dimensions [0] == [1] and [2] == [3], with odd edges')
         elif not psf_d.shape[0] == psf_d.shape[1] or not psf_d.shape[2] == psf_d.shape[3]:
-            raise ValueError('PSFs should be in the form of 4D images  with _dimensions [0] == [1] and [2] == [3]_, with odd edges')
+            raise ValueError(
+                'PSFs should be in the form of 4D images  with _dimensions [0] == [1] and [2] == [3]_, with odd edges')
         elif np.mod(psf_d.shape[0], 2) == 0 or np.mod(psf_d.shape[2], 2) == 0:
-            raise ValueError('PSFs should be in the form of 4D images  with dimensions [0] == [1] and [2] == [3], with _odd edges_')
+            raise ValueError(
+                'PSFs should be in the form of 4D images  with dimensions [0] == [1] and [2] == [3], with _odd edges_')

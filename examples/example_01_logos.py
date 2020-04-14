@@ -43,7 +43,7 @@ print('Setting up the camera structure (containing light-field metadata)..')
 camera = pleno.lightfield.get_camera('synthetic')
 
 z0 = camera.get_focused_distance()
-z0s_ph = z0 * alphas_ph # The layer positions in the phantom
+z0s_ph = z0 * alphas_ph  # The layer positions in the phantom
 
 # adding some border to avoid the single images falling out of the sub-aperture images
 border = 40
@@ -84,12 +84,9 @@ z1s_con = camera.z1 * alphas_z1_con
 alphas_z0_par = 2 - 1 / alphas_z0_con
 z0s_par = z0 * alphas_z0_par
 
-print('Cone beam / object space position of one of the CWI logo. Alphas:', \
-      alphas_z0_con, 'Distances:', z0s_con)
-print('Cone beam / image space position of one of the CWI logos. Alphas:', \
-      alphas_z1_con, 'Distances:', z1s_con)
-print('Parallel beam / object space position of one of the CWI logos. Alphas:', \
-      alphas_z0_par, 'Distances:', z0s_par)
+print('Cone beam / object space position of one of the CWI logo. Alphas:', alphas_z0_con, 'Distances:', z0s_con)
+print('Cone beam / image space position of one of the CWI logos. Alphas:', alphas_z1_con, 'Distances:', z1s_con)
+print('Parallel beam / object space position of one of the CWI logos. Alphas:', alphas_z0_par, 'Distances:', z0s_par)
 
 print('\nIntegration refocusing example (Cone beam, object space)...\n')
 refocused_int_r = pleno.refocus.compute_refocus_integration(lf_r, z0s_con, beam_geometry='cone', domain='object')
@@ -121,4 +118,3 @@ ax[0, 1].imshow(np.squeeze(refocused_bpj_co))
 ax[1, 0].imshow(np.squeeze(refocused_bpj_ci))
 ax[1, 1].imshow(np.squeeze(refocused_bpj_po))
 plt.show()
-

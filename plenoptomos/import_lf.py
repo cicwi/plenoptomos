@@ -122,7 +122,8 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
         base_name = glob.glob(os.path.join(data_path, '*.lfp'))
         base_name = os.path.basename(base_name[0])[:-4]
 
-        (camera.data_size_ts, binning_shape, extra_cols, extra_rows) = _compute_shape_multiple(camera.data_size_ts, binning=binning)
+        (camera.data_size_ts, binning_shape, extra_cols, extra_rows) = _compute_shape_multiple(
+            camera.data_size_ts, binning=binning)
 
         lf_img_size = np.concatenate((camera.data_size_vu, camera.data_size_ts, (4, )))
         lf_img = np.empty(lf_img_size, dtype=data_type)
@@ -147,8 +148,8 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
                 lf_img[ii_v, ii_u, :, :, :] = img_rgb
 
                 print(('\b') * len(prnt_str), end='', flush=True)
-        print('Done (%d, %d) = %d in %g seconds.\n' % (camera.data_size_vu[0], \
-              camera.data_size_vu[1], np.prod(camera.data_size_vu), tm.time()-c))
+        print('Done (%d, %d) = %d in %g seconds.\n' % (
+            camera.data_size_vu[0], camera.data_size_vu[1], np.prod(camera.data_size_vu), tm.time()-c))
 
         lf_img = np.transpose(lf_img, axes=(2, 3, 0, 1, 4))
         lf_mask = None
@@ -204,8 +205,8 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
         lf_g = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_g, mask=lf_mask)
         lf_b = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_b, mask=lf_mask)
 
-        (lf_r.camera.wavelength_range, \
-         lf_g.camera.wavelength_range, \
+        (lf_r.camera.wavelength_range,
+         lf_g.camera.wavelength_range,
          lf_b.camera.wavelength_range) = colors.get_rgb_wavelengths()
 
         return (lf_r, lf_g, lf_b)
@@ -273,8 +274,8 @@ def from_stanford_archive(dataset_path, mode='grayscale', rgb2gs_mode='luma', bi
             lf_img[ii_v, ii_u, :, :, :] = img_rgb
 
             print(('\b') * len(prnt_str), end='', flush=True)
-    print('Done (%d, %d) = %d in %g seconds.\n' % (camera.data_size_vu[0], \
-          camera.data_size_vu[1], np.prod(camera.data_size_vu), tm.time()-c))
+    print('Done (%d, %d) = %d in %g seconds.\n' % (
+        camera.data_size_vu[0], camera.data_size_vu[1], np.prod(camera.data_size_vu), tm.time()-c))
 
     # recentering shifts
     shifts_v -= np.sum(shifts_v) / shifts_v.size
@@ -312,8 +313,8 @@ def from_stanford_archive(dataset_path, mode='grayscale', rgb2gs_mode='luma', bi
         lf_g = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_g, shifts_vu=shifts_vu)
         lf_b = lightfield.Lightfield(camera_type=camera.clone(), data=lf_img_b, shifts_vu=shifts_vu)
 
-        (lf_r.camera.wavelength_range, \
-         lf_g.camera.wavelength_range, \
+        (lf_r.camera.wavelength_range,
+         lf_g.camera.wavelength_range,
          lf_b.camera.wavelength_range) = colors.get_rgb_wavelengths()
 
         return (lf_r, lf_g, lf_b)
@@ -361,10 +362,11 @@ def _flexray_parse_source_det_positions(script_path):
 
     print('\nFound %d acquisitons phases:' % num_phases)
     for ii_p in range(num_phases):
-        print(' %d) Phase has: binning %d, ROI [%d, %d, %d, %d], [%d, %d = %d x %d] source positions and [%d, %d] detector positions' \
-              % (ii_p, binnings[ii_p], rois[ii_p][0], rois[ii_p][1], rois[ii_p][2], rois[ii_p][3], \
-                 tube_grid_size[ii_p, 0], tube_grid_size[ii_p, 1], \
-                 tube_grid_size[ii_p, 1]/tube_grid_size[ii_p, 0], tube_grid_size[ii_p, 0], \
+        print(' %d) Phase has: ' % ii_p, end='', flush=True)
+        print('binning %d, ROI [%d, %d, %d, %d], [%d, %d = %d x %d] source positions and [%d, %d] detector positions'
+              % (binnings[ii_p], rois[ii_p][0], rois[ii_p][1], rois[ii_p][2], rois[ii_p][3],
+                 tube_grid_size[ii_p, 0], tube_grid_size[ii_p, 1],
+                 tube_grid_size[ii_p, 1] / tube_grid_size[ii_p, 0], tube_grid_size[ii_p, 0],
                  det_grid_size[ii_p, 0], det_grid_size[ii_p, 1]))
 
     det_is_fixed = np.any(det_grid_size == 0)
@@ -418,9 +420,12 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     script_name = os.path.split(dset_path)
     if script_name[1] == '':
         script_name = os.path.split(script_name[0])
-#    script_path = os.path.join(dset_path, '%s.txt' % script_name[1])
+    # script_path = os.path.join(dset_path, '%s.txt' % script_name[1])
     script_path = os.path.join(dset_path, 'script_executed.txt')
-    (positions_tube, positions_det, num_phases, binnings, rois, grid_size, det_is_fixed) = _flexray_parse_source_det_positions(script_path)
+
+    (positions_tube, positions_det, num_phases, binnings, rois, grid_size,
+     det_is_fixed) = _flexray_parse_source_det_positions(script_path)
+
     res_uv = np.abs(np.array((
             positions_tube[0, 1, 0] - positions_tube[0, 0, 0],
             positions_tube[1, 0, 1] - positions_tube[0, 0, 1])))
@@ -456,8 +461,8 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
             lf_img[ii_v, ii_u, :, :] = mim.imread(filename).astype(data_type)
 
             print(('\b') * len(prnt_str), end='', flush=True)
-    print('Done (%d, %d) = %d in %g seconds.\n' % (camera.data_size_vu[0], \
-          camera.data_size_vu[1], np.prod(camera.data_size_vu), tm.time()-c))
+    print('Done (%d, %d) = %d in %g seconds.\n' % (
+        camera.data_size_vu[0], camera.data_size_vu[1], np.prod(camera.data_size_vu), tm.time()-c))
 
     print('Loading dark and bright-field..', end='', flush=True)
     if num_phases > 1:
@@ -479,8 +484,8 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
 
             # This procedure is less performing (on a theoretical level), but due
             # to the crappy implementation of scipy it saves a ton of memory
-            (out_v_points, out_u_points) = ( \
-                np.linspace(0, 2, camera.data_size_vu[0]), \
+            (out_v_points, out_u_points) = (
+                np.linspace(0, 2, camera.data_size_vu[0]),
                 np.linspace(0, 2, camera.data_size_vu[1]))
             for ii_v in range(out_v_points.size):
                 ind_v_low = np.floor(out_v_points[ii_v]).astype(np.intp)
@@ -523,7 +528,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     if det_is_fixed and crop_fixed_det:
         sd_so_diff = sd_dist - so_dist
         camera_physical_pixsize = camera.pixel_size_ts * (sd_dist / so_dist)
-        compute_shift = lambda pos_vu : pos_vu * camera.pixel_size_vu / camera_physical_pixsize  * sd_so_diff / so_dist
+        compute_shift = lambda pos_vu: pos_vu * camera.pixel_size_vu / camera_physical_pixsize * sd_so_diff / so_dist
 
         half_size_vu = (camera.data_size_vu.astype(np.float32) - 1) / 2
         max_shift_ts = compute_shift(half_size_vu)
@@ -533,8 +538,8 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
         final_size_ts = camera.data_size_ts - 2 * max_shift_ts
         half_final_size_ts = (final_size_ts - 1) / 2
 
-        print('Cropping images:\n- cropped size (t, s): [%g, %g]\n- maximum shifts (t, s): [%g, %g]\n- processing: ' % \
-              (final_size_ts[0], final_size_ts[1], max_shift_ts[0], max_shift_ts[1]), end='', flush=True)
+        print('Cropping images:\n- cropped size (t, s): [%g, %g]\n- maximum shifts (t, s): [%g, %g]\n- processing: ' % (
+            final_size_ts[0], final_size_ts[1], max_shift_ts[0], max_shift_ts[1]), end='', flush=True)
         c = tm.time()
 
         final_size_ts = np.floor(final_size_ts)

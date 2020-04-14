@@ -13,21 +13,25 @@ import os
 
 import plenoptomos as pleno
 
+
 data_dir = 'examples/data/'
 dpath = os.path.join(data_dir, 'flowers_plants_30_eslf.png')
 jpath = os.path.join(data_dir, 'flowers_plants_30.json')
 
-error_msg_lf_files = 'Please download the following files from the Stanford light-field archive and put them in %s:\n - %s\n - %s'
+error_msg_lf_files = \
+    'Please download the following files from the Stanford light-field archive and put them in %s:\n - %s\n - %s'
+
 
 class TestPlenoptomos(unittest.TestCase):
     """Tests for `plenoptomos` package."""
 
     def setUp(self):
         """Set up test fixtures, if any."""
-        if not os.path.exists(dpath):
-            print('Test image file: "%s" does not exist.' % (dpath))
-            dpath_url = 'http://lightfields.stanford.edu/images/flowers_plants/raw/flowers_plants_30_eslf.png'
-            jpath_url = 'http://lightfields.stanford.edu/images/flowers_plants/metadata/flowers_plants_30.json'
+        if not (os.path.exists(dpath) and os.path.exists(jpath)):
+            print('Test image file or metadata do not exist.')
+            base_url = 'http://lightfields.stanford.edu/images/flowers_plants/'
+            dpath_url = base_url + 'raw/flowers_plants_30_eslf.png'
+            jpath_url = base_url + 'metadata/flowers_plants_30.json'
             try:
                 import urllib.request as ur
 
@@ -38,7 +42,6 @@ class TestPlenoptomos(unittest.TestCase):
             except ImportError:
                 raise ValueError(error_msg_lf_files % (data_dir, dpath_url, jpath_url))
 
-#        (self.lf_r ,self.lf_g, self.lf_b) = pleno.import_lf.from_lytro(dpath, jpath, source='eslf', mode='rgb')
         self.lf = pleno.import_lf.from_lytro(dpath, jpath, source='eslf')
 
     def tearDown(self):

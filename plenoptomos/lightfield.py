@@ -17,6 +17,7 @@ import scipy as sp
 
 import matplotlib.pyplot as plt
 
+
 def get_camera(model_name, down_sampling_st=1, down_sampling_uv=1):
     camera = Camera(model=model_name)
     if model_name.lower() == "lytro_illum":
@@ -49,6 +50,7 @@ def get_camera(model_name, down_sampling_st=1, down_sampling_uv=1):
         raise ValueError("Camera '%s' is not supported!" % model_name)
     return camera
 
+
 class Camera(object):
     """Class that holds the metadata needed to interpret light-field data"""
 
@@ -66,7 +68,7 @@ class Camera(object):
         self.aperture_f2 = 0.0
         self.a = 0.0
         self.b = 0.0
-        self.wavelength_range = np.array((0.4, 0.7)) # For polychromatic visible light
+        self.wavelength_range = np.array((0.4, 0.7))  # For polychromatic visible light
         self.wavelength_unit = 'um'
 
     def clone(self):
@@ -183,7 +185,8 @@ class Camera(object):
 
         return (samp_tau, samp_sigma)
 
-    def get_sheared_coords(self, alpha, space='direct', beam_geometry='parallel', domain='object', transformation='shear', oversampling=1):
+    def get_sheared_coords(
+            self, alpha, space='direct', beam_geometry='parallel', domain='object', transformation='shear', oversampling=1):
         (samp_v, samp_u, samp_t, samp_s) = self.get_grid_points(space=space, domain=domain, oversampling=oversampling)
 
         # We are multiplying the equations by alpha because we don't need
@@ -281,15 +284,20 @@ class Camera(object):
 
     def get_filter(self, alpha, bandwidth=0.04, beam_geometry='parallel', domain='object', oversampling=1):
         (scale_t, scale_s, scale_v, scale_u) = self.get_scales(space='direct', domain=domain)
-        shear_grid = self.get_sheared_coords(alpha, space='fourier', \
-                                             beam_geometry=beam_geometry, domain=domain, \
-                                             transformation='filter', oversampling=oversampling)
-        base_grid = self.get_sheared_coords(np.array((1, )), space='fourier', \
-                                            beam_geometry=beam_geometry, domain=domain, \
-                                            transformation='filter', oversampling=oversampling)
+
+        shear_grid = self.get_sheared_coords(
+            alpha, space='fourier', beam_geometry=beam_geometry, domain=domain,
+            transformation='filter', oversampling=oversampling)
+
+        base_grid = self.get_sheared_coords(
+            np.array((1, )), space='fourier', beam_geometry=beam_geometry, domain=domain,
+            transformation='filter', oversampling=oversampling)
+
         (vv_s, uu_s, tt_s, ss_s) = (shear_grid[..., 0], shear_grid[..., 1], shear_grid[..., 2], shear_grid[..., 3])
         (vv_b, uu_b, tt_b, ss_b) = (base_grid[..., 0], base_grid[..., 1], base_grid[..., 2], base_grid[..., 3])
+
         d = (tt_s - tt_b) ** 2 + (ss_s - ss_b) ** 2
+
         bandwidth = bandwidth ** 2 / np.log(np.sqrt(2))
         return np.exp(-d / bandwidth)
 
@@ -355,8 +363,9 @@ class Camera(object):
 
         elif regrid_mode.lower() == 'bin':
             if np.any(np.mod(self.data.shape, regrid_size) > 0):
-                raise ValueError("When rebinning, the bins size should be a divisor of the image size. Size was: [%s], data size: [%s]" \
-                                 % (", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data.shape))))
+                raise ValueError(
+                    "When rebinning, the bins size should be a divisor of the image size. Size was: [%s], data size: [%s]" % (
+                        ", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data.shape))))
 
             self.data_size_vu = (self.data_size_vu / regrid_size[0:2]).astype(np.intp)
             self.data_size_ts = (self.data_size_ts / regrid_size[2:4]).astype(np.intp)
@@ -394,7 +403,7 @@ class Camera(object):
             samp_delta_det = np.linspace(-grid_abs.shape[1]/2, grid_abs.shape[1]/2, grid_abs.shape[1])
             grid_abs += samp_delta_det * self.a / self.b * det_psize_abscissa
 
-        cm2inch = lambda x : np.array(x) / 2.54
+        cm2inch = lambda x: np.array(x) / 2.54
         f_size = cm2inch([24, 18])
         f = plt.figure(None, figsize=f_size)
 
@@ -445,7 +454,7 @@ class Lightfield(object):
     available_modes = ('micro-image', 'sub-aperture', 'epipolar_s', 'epipolar_t')
 
     def __init__(
-            self, camera_type : Camera, data=None, flat=None, mask=None,
+            self, camera_type: Camera, data=None, flat=None, mask=None,
             mode='micro-image', dtype=np.float32, shifts_vu=(None, None)):
         """Initializes the Lightfield class
 
@@ -472,9 +481,13 @@ class Lightfield(object):
             elif self.mode.lower() == 'sub-aperture':
                 data_size = np.concatenate((self.camera.data_size_vu, self.camera.data_size_ts))
             elif self.mode.lower() == 'epipolar_s':
-                data_size = np.array((self.camera.data_size_ts[1], self.camera.data_size_vu[0], self.camera.data_size_vu[1], self.camera.data_size_ts[0]))
+                data_size = np.array(
+                    (self.camera.data_size_ts[1], self.camera.data_size_vu[0],
+                     self.camera.data_size_vu[1], self.camera.data_size_ts[0]))
             elif self.mode.lower() == 'epipolar_t':
-                data_size = np.array((self.camera.data_size_vu[1], self.camera.data_size_ts[0], self.camera.data_size_ts[1], self.camera.data_size_vu[0]))
+                data_size = np.array(
+                    (self.camera.data_size_vu[1], self.camera.data_size_ts[0],
+                     self.camera.data_size_ts[1], self.camera.data_size_vu[0]))
             else:
                 raise ValueError("No light-field mode called: '%s'" % self.mode)
             self.data = np.zeros(data_size, dtype)
@@ -609,8 +622,9 @@ class Lightfield(object):
         :param data_raw: The new detector image (numpy.array_like)
         :param image: Selects whether we want the detector data, or the flat image (string)
         """
-        in_size = (self.camera.data_size_ts[0], self.camera.data_size_vu[0], \
-                   self.camera.data_size_ts[1], self.camera.data_size_vu[1])
+        in_size = (
+            self.camera.data_size_ts[0], self.camera.data_size_vu[0],
+            self.camera.data_size_ts[1], self.camera.data_size_vu[1])
         data_raw = np.reshape(data_raw, in_size)
 
         if self.mode.lower() == 'micro-image':
@@ -691,7 +705,7 @@ class Lightfield(object):
             raise ValueError('Unknown image type: %s' % image)
         photo_size_2D = np.array([
                 np.array(self.camera.data_size_vu[0]) * np.array(self.camera.data_size_ts[0]),
-                np.array(self.camera.data_size_vu[1]) * np.array(self.camera.data_size_ts[1]) ])
+                np.array(self.camera.data_size_vu[1]) * np.array(self.camera.data_size_ts[1])])
         return np.reshape(data_raw, photo_size_2D)
 
     def get_photograph(self, image='data'):
@@ -815,8 +829,9 @@ class Lightfield(object):
             self.set_mode(old_mode)
         elif regrid_mode.lower() == 'bin':
             if np.any(np.mod(self.data.shape, regrid_size) > 0):
-                raise ValueError("When rebinning, the bins size should be a divisor of the image size. Size was: [%s], data size: [%s]" \
-                                 % (", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data.shape))))
+                raise ValueError(
+                    "When rebinning, the bins size should be a divisor of the image size. Size was: [%s], data size: [%s]" % (
+                        ", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data.shape))))
 
             old_mode = self.mode
             self.set_mode_subaperture()
@@ -827,10 +842,11 @@ class Lightfield(object):
             self.camera.pixel_size_vu = self.camera.pixel_size_vu * regrid_size[0:2].astype(np.float32)
             self.camera.pixel_size_ts = self.camera.pixel_size_ts * regrid_size[2:4].astype(np.float32)
 
-            new_data_size = np.array((self.camera.data_size_vu[0], regrid_size[0], \
-                                      self.camera.data_size_vu[1], regrid_size[1], \
-                                      self.camera.data_size_ts[0], regrid_size[2], \
-                                      self.camera.data_size_ts[1], regrid_size[3]), dtype= np.intp)
+            new_data_size = np.array(
+                (self.camera.data_size_vu[0], regrid_size[0],
+                 self.camera.data_size_vu[1], regrid_size[1],
+                 self.camera.data_size_ts[0], regrid_size[2],
+                 self.camera.data_size_ts[1], regrid_size[3]), dtype=np.intp)
 
             self.data = np.reshape(self.data, new_data_size)
             self.data = np.sum(self.data, axis=(1, 3, 5, 7)) / np.prod(regrid_size)
@@ -975,4 +991,3 @@ class Lightfield(object):
 
         self.set_mode(current_mode)
         return lf
-

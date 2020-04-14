@@ -26,6 +26,7 @@ except ImportError:
     use_swtn = False
     print('WARNING - pywt was not found')
 
+
 class Solver(object):
 
     def __init__(self, verbose=False, dump_file=None, tol=1e-5):
@@ -182,6 +183,7 @@ class Sirt(Solver):
             utils_io.save_field_toh5(self.dump_file, 'iterations', out_x)
 
         return (x, rel_res_norms)
+
 
 class CP_uc(Solver):
 
@@ -394,7 +396,8 @@ class CP_tv(Solver, Operations):
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s-TV iterations (init: %g seconds): " % (self.data_term, (c_init - c_in)), end='', flush=True)
+            print("- Performing CP-%s-TV iterations (init: %g seconds): " % (self.data_term, (c_init - c_in)),
+                  end='', flush=True)
         for ii in range(num_iter):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, num_iter, (tm.time() - c_init) / np.fmax(ii, 1))
@@ -451,6 +454,7 @@ class CP_tv(Solver, Operations):
             utils_io.save_field_toh5(self.dump_file, 'iterations', out_x)
 
         return (x, rel_res_norms)
+
 
 class CP_smooth(Solver, Operations):
 
@@ -516,7 +520,8 @@ class CP_smooth(Solver, Operations):
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s-TV iterations (init: %g seconds): " % (self.data_term, (c_init - c_in)), end='', flush=True)
+            print("- Performing CP-%s-TV iterations (init: %g seconds): " % (self.data_term, (c_init - c_in)),
+                  end='', flush=True)
         for ii in range(num_iter):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, num_iter, (tm.time() - c_init) / np.fmax(ii, 1))
@@ -541,7 +546,6 @@ class CP_smooth(Solver, Operations):
                     p *= sigma1
                 else:
                     raise ValueError("Unknown data term: %s" % self.data_term)
-
 
             q_g += self.laplacian(x_ehn) / (4 * len(self.axes))
             q_g /= np.fmax(1, np.abs(q_g))
@@ -572,6 +576,7 @@ class CP_smooth(Solver, Operations):
 
         return (x, rel_res_norms)
 
+
 class CP_wl(Solver):
 
     def __init__(
@@ -591,22 +596,20 @@ class CP_wl(Solver):
 
     def initialize_wl_operators(self):
         if self.use_decimated:
-            H = lambda x : pywt.wavedecn(x, wavelet=self.wl_type, axes=self.axes, level=self.decomp_lvl)
-            Ht = lambda x : pywt.waverecn(x, wavelet=self.wl_type, axes=self.axes)
+            H = lambda x: pywt.wavedecn(x, wavelet=self.wl_type, axes=self.axes, level=self.decomp_lvl)
+            Ht = lambda x: pywt.waverecn(x, wavelet=self.wl_type, axes=self.axes)
         else:
             if use_swtn:
-                H = lambda x : pywt.swtn(x, wavelet=self.wl_type, axes=self.axes, level=self.decomp_lvl)
-                Ht = lambda x : pywt.iswtn(x, wavelet=self.wl_type, axes=self.axes)
+                H = lambda x: pywt.swtn(x, wavelet=self.wl_type, axes=self.axes, level=self.decomp_lvl)
+                Ht = lambda x: pywt.iswtn(x, wavelet=self.wl_type, axes=self.axes)
             else:
-                H = lambda x : pywt.swt2(np.squeeze(x), wavelet=self.wl_type, axes=self.axes, level=self.decomp_lvl)
+                H = lambda x: pywt.swt2(np.squeeze(x), wavelet=self.wl_type, axes=self.axes, level=self.decomp_lvl)
 #                Ht = lambda x : pywt.iswt2(x, wavelet=self.wl_type)
-                Ht = lambda x : pywt.iswt2(x, wavelet=self.wl_type)[np.newaxis, ...]
+                Ht = lambda x: pywt.iswt2(x, wavelet=self.wl_type)[np.newaxis, ...]
         return (H, Ht)
 
-
     def __call__(
-            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
-            lower_limit=None):
+            self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
         """ChambollePock implementization of wavelet regularized minimization.
         """
         if not has_pywt:
@@ -781,7 +784,8 @@ class Segment(Solver, Operations):
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s iterations (init: %g seconds): " % (data_term.lower(), (c_init - c_in)), end='', flush=True)
+            print("- Performing CP-%s iterations (init: %g seconds): " % (data_term.lower(), (c_init - c_in)),
+                  end='', flush=True)
         for ii in range(iterations):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, iterations, (tm.time() - c_init) / np.fmax(ii, 1))
@@ -834,4 +838,3 @@ class Segment(Solver, Operations):
         for ii, t in enumerate(thr):
             x[vol > t] = pos[ii+1]
         return x
-
