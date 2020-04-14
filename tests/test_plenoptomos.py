@@ -11,6 +11,8 @@ import numpy as np
 
 import os
 
+import copy as cp
+
 import plenoptomos as pleno
 
 
@@ -47,30 +49,26 @@ class TestPlenoptomos(unittest.TestCase):
     def tearDown(self):
         """Tear down test fixtures, if any."""
 
-    def test_001_psf_useotf(self):
-        """Test the correctness of the use_otf=True option."""
-        psf_ml_raw = pleno.psf.PSF.create_theo_psf(self.lf.camera, coordinates='vu', airy_rings=2)
 
-        psf_ml_no = pleno.psf.PSFApply2D(psf_d=psf_ml_raw, use_otf=False)
-        psf_ml_yo = pleno.psf.PSFApply2D(psf_d=psf_ml_raw, use_otf=True)
+class TestPsf(TestPlenoptomos):
+    """Tests for `plenoptomos.psf` package."""
 
-        raw_img = self.lf.get_raw_detector_picture()
+    def setUp(self):
+        """Set up test fixtures, if any."""
+        super().setUp()
 
-        print('Testing direct PSF application..')
-        conv_no = psf_ml_no.apply_psf_direct(raw_img)
-        conv_yo = psf_ml_yo.apply_psf_direct(raw_img)
+        self.psf_ml_raw = pleno.psf.PSF.create_theo_psf(self.lf.camera, coordinates='vu', airy_rings=2)
 
-#        (ff, axf) = plt.subplots(1, 3, sharex=True, sharey=True)
-#        axf[0].imshow(conv_no)
-#        axf[1].imshow(conv_yo)
-#        axf[2].imshow(conv_no - conv_yo)
-#        plt.show()
+        self.psf_ml_no = pleno.psf.PSFApply2D(psf_d=self.psf_ml_raw, use_otf=False)
+        self.psf_ml_yo = pleno.psf.PSFApply2D(psf_d=self.psf_ml_raw, use_otf=True)
 
-        self.assertTrue(np.all((conv_no - conv_yo) == 0))
+        self.raw_img = self.lf.get_raw_detector_picture()
 
-        print('Testing adjoint PSF application..')
-        conv_no = psf_ml_no.apply_psf_adjoint(raw_img)
-        conv_yo = psf_ml_yo.apply_psf_adjoint(raw_img)
+    def test_001_useotf_direct(self):
+        """Test PSF direct with use_otf=True."""
+
+        conv_no = self.psf_ml_no.apply_psf_direct(cp.deepcopy(self.raw_img))
+        conv_yo = self.psf_ml_yo.apply_psf_direct(cp.deepcopy(self.raw_img))
 
 #        (ff, axf) = plt.subplots(1, 3, sharex=True, sharey=True)
 #        axf[0].imshow(conv_no)
@@ -78,14 +76,31 @@ class TestPlenoptomos(unittest.TestCase):
 #        axf[2].imshow(conv_no - conv_yo)
 #        plt.show()
 
-        self.assertTrue(np.all((conv_no - conv_yo) == 0))
+        assert np.all(np.isclose(conv_no, conv_yo))
 
-        print('Testing direct PSF application on extended shapes..')
-        raw_img = raw_img[np.newaxis, ...]
-        conv_no = psf_ml_no.apply_psf_direct(raw_img)
-        conv_yo = psf_ml_yo.apply_psf_direct(raw_img)
+    def test_002_useotf_adjoint(self):
+        """Test PSF adjoint with use_otf=True."""
 
-        self.assertTrue(np.all((conv_no - conv_yo) == 0))
+        conv_no = self.psf_ml_no.apply_psf_adjoint(cp.deepcopy(self.raw_img))
+        conv_yo = self.psf_ml_yo.apply_psf_adjoint(cp.deepcopy(self.raw_img))
+
+#        (ff, axf) = plt.subplots(1, 3, sharex=True, sharey=True)
+#        axf[0].imshow(conv_no)
+#        axf[1].imshow(conv_yo)
+#        axf[2].imshow(conv_no - conv_yo)
+#        plt.show()
+
+        assert np.all(np.isclose(conv_no, conv_yo))
+
+    def test_003_useotf_direct_extended(self):
+        """Test PSF direct on extended shapes with use_otf=True."""
+
+        self.raw_img = self.raw_img[np.newaxis, ...]
+        conv_no = self.psf_ml_no.apply_psf_direct(cp.deepcopy(self.raw_img))
+        conv_yo = self.psf_ml_yo.apply_psf_direct(cp.deepcopy(self.raw_img))
+
+        assert np.all(np.isclose(conv_no, conv_yo))
+
 
 if __name__ == '__main__':
     unittest.main()
