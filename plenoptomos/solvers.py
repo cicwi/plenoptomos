@@ -40,7 +40,7 @@ class Solver(object):
         """
         if data_shape is None:
             data_shape = x.shape
-        return np.reshape(M * x.flatten(), data_shape)
+        return np.reshape(np.dot(M, x.flatten()), data_shape)
 
     def initialize_data_operators(self, A, At):
         if At is None:
@@ -49,7 +49,7 @@ class Solver(object):
             elif isinstance(A, sps.dia_matrix):
                 At = A.transpose()
             else:
-                At = lambda x: A.T * x
+                At = lambda x: np.dot(A.T, x)
         if isinstance(At, np.ndarray) or isinstance(At, sps.dia_matrix):
             At_m = At
             At = lambda x: self.mult_matrix(At_m, x)
