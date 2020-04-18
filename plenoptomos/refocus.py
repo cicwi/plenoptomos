@@ -37,7 +37,6 @@ def compute_refocus_integration(
     :returns: Stack of 2D refocused images.
     :rtype: numpy.array_like
     """
-
     zs = np.array(zs)
     if len(zs.shape) == 0:
         zs = np.expand_dims(zs, 0)
@@ -64,16 +63,16 @@ def compute_refocus_integration(
         if lf_sa.flat is not None:
             lf_sa.flat *= lf_sa.mask
 
-    if lf.flat is None:
-        renorm_sa_images = np.prod(lf.camera.data_size_vu)
+    if lf_sa.flat is None:
+        renorm_sa_images = np.prod(lf_sa.camera.data_size_vu)
     else:
         lf_sa.data *= lf_sa.flat
-        renorm_sa_images = lf.get_photograph(image='flat') * np.prod(lf.camera.data_size_vu)
+        renorm_sa_images = lf_sa.get_photograph(image='flat') * np.prod(lf_sa.camera.data_size_vu)
 
     camera_sheared = lf_sa.camera.clone()
     if up_sampling > 1:
         camera_sheared.regrid(regrid_size=(1, 1, up_sampling, up_sampling))
-        if lf.flat is not None:
+        if lf_sa.flat is not None:
             tt = np.linspace(0.5, lf_sa.camera.data_size_ts[0]-0.5, lf_sa.camera.data_size_ts[0])
             ss = np.linspace(0.5, lf_sa.camera.data_size_ts[1]-0.5, lf_sa.camera.data_size_ts[1])
 
@@ -81,15 +80,18 @@ def compute_refocus_integration(
                 tt, ss, renorm_sa_images, bounds_error=False, fill_value=np.mean(renorm_sa_images))
 
             tt = np.linspace(
-                0.5 / up_sampling, lf_sa.camera.data_size_ts[0] - 0.5 / up_sampling, lf_sa.camera.data_size_ts[0] * up_sampling)
+                0.5 / up_sampling, lf_sa.camera.data_size_ts[0] - 0.5 / up_sampling,
+                lf_sa.camera.data_size_ts[0] * up_sampling)
             ss = np.linspace(
-                0.5 / up_sampling, lf_sa.camera.data_size_ts[1] - 0.5 / up_sampling, lf_sa.camera.data_size_ts[1] * up_sampling)
+                0.5 / up_sampling, lf_sa.camera.data_size_ts[1] - 0.5 / up_sampling,
+                lf_sa.camera.data_size_ts[1] * up_sampling)
+
             renorm_sa_images = interp_renorm(tt, ss)
 
     imgs_size = (num_alphas, camera_sheared.data_size_ts[0], camera_sheared.data_size_ts[1])
 
     # Pad image:
-    lf_sa.pad((0, 0, border*up_sampling, border*up_sampling), method=border_padding)
+    lf_sa.pad((0, 0, border * up_sampling, border * up_sampling), method=border_padding)
     lf_sa.pad(1)
 
     imgs = np.empty(imgs_size, lf_sa.data.dtype)
