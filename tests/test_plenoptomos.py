@@ -57,6 +57,35 @@ class TestPlenoptomos(unittest.TestCase):
         """Tear down test fixtures, if any."""
 
 
+class TestRefocus(TestPlenoptomos):
+    """Tests for `plenoptomos.psf` package."""
+
+    def setUp(self):
+        """Set up test fixtures, if any."""
+        super().setUp()
+
+        self.ref_img_z0 = lf.get_photograph()
+
+    def test_001_refocus_integration(self):
+        """Test Integration refocus."""
+
+        z0 = lf.camera.get_focused_distance()
+        img_z0 = pleno.refocus.compute_refocus_integration(lf, z0)
+
+        success = np.all(np.isclose(self.ref_img_z0, img_z0, atol=atol))
+        if not success:
+            print('Max absolute deviation is: {}. '.format(np.max(np.abs(self.ref_img_z0 - img_z0))),
+                  end='', flush=True)
+            # (ff, axf) = plt.subplots(2, 2, sharex=True, sharey=True)
+            # axf[0, 0].imshow(self.ref_img_z0)
+            # axf[0, 1].imshow(img_z0)
+            # axf[1, 0].imshow(self.ref_img_z0 - img_z0)
+            # axf[1, 1].imshow((self.ref_img_z0 - img_z0) > atol)
+            # plt.show()
+
+        assert success
+
+
 class TestPsf(TestPlenoptomos):
     """Tests for `plenoptomos.psf` package."""
 
