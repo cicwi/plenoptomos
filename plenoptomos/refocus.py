@@ -212,9 +212,13 @@ def compute_refocus_fourier(
     imgs_size = (num_alphas, camera_sheared.data_size_ts[0] * oversampling, camera_sheared.data_size_ts[1] * oversampling)
 
     imgs = np.empty(imgs_size, data_fft4.dtype)
+    corr = np.empty(imgs_size, data_fft4.dtype)
 
     c_cre = tm.time()
     print("\b\b: Done in %g seconds.\n- Performing 2D interpolation: " % (c_cre - c_fft), end='', flush=True)
+
+    (scale_t, scale_s, scale_v, scale_u) = np.array(lf_sa.camera.get_scales(space='fourier', domain=domain))
+    scales = np.array((scale_v, scale_u, scale_t, scale_s))[None, None, :]
 
     # Computing the changes of base, and integrating (for each alpha):
     if method.lower() == 'slice':
@@ -226,6 +230,9 @@ def compute_refocus_fourier(
             sheared_coords = camera_sheared.get_sheared_coords(
                 alphas[ii], space='fourier_slice', beam_geometry=beam_geometry, domain=domain, oversampling=oversampling)
             imgs[ii, ...] = interp_lf4D(sheared_coords)
+
+            dists = 1 - np.abs(sheared_coords) / scales
+            corr[ii, ...] = np.prod(dists, axis=2) * np.all(dists > 0, axis=2)
 
             print(('\b') * len(prnt_str), end='', flush=True)
 
@@ -258,6 +265,15 @@ def compute_refocus_fourier(
     imgs = fft.ifftn(imgs, axes=(1, 2))
     imgs = np.real(imgs).astype(lf_sa.data.dtype)
     imgs = fft.fftshift(imgs, axes=(1, 2))
+
+    # Correcting roll-off
+    corr = fft.ifftshift(corr, axes=(1, 2))
+    corr = fft.ifftn(corr, axes=(1, 2))
+    corr = np.real(corr).astype(lf_sa.data.dtype)
+    corr = fft.fftshift(corr, axes=(1, 2))
+    corr /= corr.max()
+
+    imgs /= corr + (corr == 0)
 
     if oversampling > 1:
         borders_os = (np.array(imgs.shape[1:]) - camera_sheared.data_size_ts) / 2
