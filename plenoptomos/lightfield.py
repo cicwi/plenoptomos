@@ -378,6 +378,16 @@ class Camera(object):
 
             self.pixel_size_vu = self.pixel_size_vu * regrid_size[0:2].astype(np.float32)
             self.pixel_size_ts = self.pixel_size_ts * regrid_size[2:4].astype(np.float32)
+        elif regrid_mode.lower() == 'warp':
+            if np.any(np.mod(self.data_size_vu, regrid_size) > 0):
+                raise ValueError(
+                    "When warping, the warp size should be a divisor of the image size."
+                    + " Size was: [%s], data size: [%s]" % (
+                        ", ".join(("%d" % x for x in regrid_size)),
+                        ", ".join(("%d" % x for x in self.data_size_vu))))
+
+            self.data_size_vu = (self.data_size_vu / regrid_size).astype(np.intp)
+            self.data_size_ts = (self.data_size_ts * regrid_size).astype(np.intp)
 
     def crop(self, crop_size_ts=None, crop_size_vu=None):
         if crop_size_vu is not None:
@@ -866,6 +876,52 @@ class Lightfield(object):
             if self.mask is not None:
                 self.mask = np.reshape(self.mask, new_data_size)
                 self.mask = np.sum(self.mask, axis=(1, 3, 5, 7)) / np.prod(regrid_size)
+
+            self.set_mode(old_mode)
+        elif regrid_mode.lower() == 'warp':
+            if np.any(np.mod(self.camera.data_size_vu, regrid_size) > 0):
+                raise ValueError(
+                    "When warping, the warp size should be a divisor of the image size."
+                    + " Size was: [%s], data size: [%s]" % (
+                        ", ".join(("%d" % x for x in regrid_size)),
+                        ", ".join(("%d" % x for x in self.camera.data_size_vu))))
+
+            old_mode = self.mode
+            self.set_mode_subaperture()
+
+            self.camera.pixel_size_vu = self.camera.pixel_size_vu * regrid_size.astype(np.float32)
+            self.camera.pixel_size_ts = self.camera.pixel_size_ts / regrid_size.astype(np.float32)
+
+            self.camera.data_size_vu = (self.camera.data_size_vu / regrid_size).astype(np.intp)
+
+            tmp_data_size = np.array((
+                self.camera.data_size_vu[0], regrid_size[0],
+                self.camera.data_size_vu[1], regrid_size[1],
+                self.camera.data_size_ts[0],
+                self.camera.data_size_ts[1]), dtype=np.intp)
+
+            self.camera.data_size_ts = (self.camera.data_size_ts * regrid_size).astype(np.intp)
+
+            new_data_size = np.array((
+                self.camera.data_size_vu[0],
+                self.camera.data_size_vu[1],
+                self.camera.data_size_ts[0],
+                self.camera.data_size_ts[1]), dtype=np.intp)
+
+            self.data = np.reshape(self.data, tmp_data_size)
+            self.data = np.flip(self.data, axis=(1, 3))
+            self.data = np.transpose(self.data, [0, 2, 4, 1, 5, 3])
+            self.data = np.reshape(self.data, new_data_size)
+            if self.flat is not None:
+                self.flat = np.reshape(self.flat, tmp_data_size)
+                self.flat = np.flip(self.flat, axis=(1, 3))
+                self.flat = np.transpose(self.flat, [0, 2, 4, 1, 5, 3])
+                self.flat = np.reshape(self.flat, new_data_size)
+            if self.mask is not None:
+                self.mask = np.reshape(self.mask, tmp_data_size)
+                self.mask = np.flip(self.mask, axis=(1, 3))
+                self.mask = np.transpose(self.mask, [0, 2, 4, 1, 5, 3])
+                self.mask = np.reshape(self.mask, new_data_size)
 
             self.set_mode(old_mode)
 
