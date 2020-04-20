@@ -33,7 +33,8 @@ def lytro_create_warps(file_path):
 
     :param file_path: The path to the .lfp file (string)
     """
-    lytro_uv = lambda i: np.round((i % 14.0 + 0.5) / 14.0 - 0.5, 3)
+    def lytro_uv(i):
+        return np.round((i % 14.0 + 0.5) / 14.0 - 0.5, 3)
 
     vv = lytro_uv(np.arange(14))
     uu = lytro_uv(np.arange(14))
@@ -141,7 +142,8 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
 
                 img_rgb = mim.imread(filename).astype(data_type)
 
-                img_rgb = np.pad(img_rgb, ((extra_cols[0], extra_cols[1]), (extra_rows[0], extra_rows[1]), (0, 0)), mode='edge')
+                img_rgb = np.pad(
+                    img_rgb, ((extra_cols[0], extra_cols[1]), (extra_rows[0], extra_rows[1]), (0, 0)), mode='edge')
                 img_rgb = np.reshape(img_rgb, binning_shape)
                 img_rgb = np.sum(img_rgb, axis=(1, 3)) / (binning ** 2)
 

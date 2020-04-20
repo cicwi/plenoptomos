@@ -18,6 +18,10 @@ import scipy as sp
 import matplotlib.pyplot as plt
 
 
+def cm2inch(x):
+    return np.array(x) / 2.54
+
+
 def get_camera(model_name, down_sampling_st=1, down_sampling_uv=1):
     camera = Camera(model=model_name)
     if model_name.lower() == "lytro_illum":
@@ -364,8 +368,10 @@ class Camera(object):
         elif regrid_mode.lower() == 'bin':
             if np.any(np.mod(self.data.shape, regrid_size) > 0):
                 raise ValueError(
-                    "When rebinning, the bins size should be a divisor of the image size. Size was: [%s], data size: [%s]" % (
-                        ", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data.shape))))
+                    "When rebinning, the bins size should be a divisor of the image size."
+                    + " Size was: [%s], data size: [%s]" % (
+                        ", ".join(("%d" % x for x in regrid_size)),
+                        ", ".join(("%d" % x for x in self.data.shape))))
 
             self.data_size_vu = (self.data_size_vu / regrid_size[0:2]).astype(np.intp)
             self.data_size_ts = (self.data_size_ts / regrid_size[2:4]).astype(np.intp)
@@ -403,7 +409,6 @@ class Camera(object):
             samp_delta_det = np.linspace(-grid_abs.shape[1]/2, grid_abs.shape[1]/2, grid_abs.shape[1])
             grid_abs += samp_delta_det * self.a / self.b * det_psize_abscissa
 
-        cm2inch = lambda x: np.array(x) / 2.54
         f_size = cm2inch([24, 18])
         f = plt.figure(None, figsize=f_size)
 
@@ -783,13 +788,16 @@ class Lightfield(object):
             new_grid = np.array(new_grid)
             new_grid = np.transpose(new_grid, axes=(1, 2, 3, 4, 0))
 
-            interp_data = sp.interpolate.RegularGridInterpolator(base_grid, self.data, bounds_error=False, fill_value=0)
+            interp_data = sp.interpolate.RegularGridInterpolator(
+                base_grid, self.data, bounds_error=False, fill_value=0)
             self.data = interp_data(new_grid)
             if self.flat is not None:
-                interp_flat = sp.interpolate.RegularGridInterpolator(base_grid, self.flat, bounds_error=False, fill_value=0)
+                interp_flat = sp.interpolate.RegularGridInterpolator(
+                    base_grid, self.flat, bounds_error=False, fill_value=0)
                 self.flat = interp_flat(new_grid)
             if self.mask is not None:
-                interp_mask = sp.interpolate.RegularGridInterpolator(base_grid, self.mask, bounds_error=False, fill_value=0)
+                interp_mask = sp.interpolate.RegularGridInterpolator(
+                    base_grid, self.mask, bounds_error=False, fill_value=0)
                 self.mask = interp_mask(new_grid)
 
             self.set_mode(old_mode)
@@ -830,8 +838,10 @@ class Lightfield(object):
         elif regrid_mode.lower() == 'bin':
             if np.any(np.mod(self.data.shape, regrid_size) > 0):
                 raise ValueError(
-                    "When rebinning, the bins size should be a divisor of the image size. Size was: [%s], data size: [%s]" % (
-                        ", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data.shape))))
+                    "When rebinning, the bins size should be a divisor of the image size."
+                    + " Size was: [%s], data size: [%s]" % (
+                        ", ".join(("%d" % x for x in regrid_size)),
+                        ", ".join(("%d" % x for x in self.data.shape))))
 
             old_mode = self.mode
             self.set_mode_subaperture()
