@@ -41,7 +41,7 @@ def compute_depth_cues(
         beam_geometry='parallel', domain='object', psf=None,
         up_sampling=1, super_sampling=1, algorithm='bpj', iterations=5,
         confidence_method="integral", peak_range = 3,
-        window_size=(9, 9), window_shape='gauss', plot_filter=False):
+        window_size=(9, 9), window_shape='gauss', mask=None, plot_filter=False):
     """Computes depth cues, needed to create a depth map.
 
     These depth cues are created following the procedure from:
@@ -112,6 +112,11 @@ def compute_depth_cues(
     lf_sa.pad([0, 0, paddings_ts[0], paddings_ts[1]], method='edge')
     paddings_ts *= up_sampling
 
+    if mask is not None:
+        mask = np.pad(mask, ((paddings_ts[0], ), (paddings_ts[1], )), mode='edge')
+        mask_renorm = spimg.convolve(mask, window_filter, mode='constant', cval=0.0)
+        mask_renorm[mask_renorm == 0] = 1
+
     b = lf_sa.data[np.newaxis, ...]
 
     print('Computing responses for each alpha value: ', end='', flush=True)
@@ -148,11 +153,19 @@ def compute_depth_cues(
                 l = _laplacian2(np.squeeze(l_alpha_intuv))
                 l = np.abs(l)
 
-                depth_defocus = spimg.convolve(l, window_filter, mode='constant', cval=0.0)
+                if mask is not None:
+                    depth_defocus = spimg.convolve(l * mask, window_filter, mode='constant', cval=0.0)
+                    depth_defocus /= mask_renorm
+                else:
+                    depth_defocus = spimg.convolve(l, window_filter, mode='constant', cval=0.0)
                 depth_cues['defocus'][ii_a, :, :] = depth_defocus[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
             if compute_emergence:
-                depth_emergence = spimg.convolve(np.squeeze(l_alpha_intuv), window_filter, mode='constant', cval=0.0)
+                if mask is not None:
+                    depth_emergence = spimg.convolve(np.squeeze(l_alpha_intuv) * mask, window_filter, mode='constant', cval=0.0)
+                    depth_emergence /= mask_renorm
+                else:
+                    depth_emergence = spimg.convolve(np.squeeze(l_alpha_intuv), window_filter, mode='constant', cval=0.0)
                 depth_cues['emergence'][ii_a, :, :] = depth_emergence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
             if compute_correspondence:
@@ -174,7 +187,11 @@ def compute_depth_cues(
                 std_devs = np.sqrt(bpj_variances)
                 std_devs = np.squeeze(std_devs)
 
-                depth_correspondence = spimg.convolve(std_devs, window_filter, mode='constant', cval=0.0)
+                if mask is not None:
+                    depth_correspondence = spimg.convolve(std_devs * mask, window_filter, mode='constant', cval=0.0)
+                    depth_correspondence /= mask_renorm
+                else:
+                    depth_correspondence = spimg.convolve(std_devs, window_filter, mode='constant', cval=0.0)
                 depth_cues['correspondence'][ii_a, :, :] = depth_correspondence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
         print(('\b') * len(prnt_str), end='', flush=True)
