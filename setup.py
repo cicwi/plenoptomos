@@ -12,7 +12,7 @@ with open('README.md') as readme_file:
 with open('CHANGELOG.md') as history_file:
     history = history_file.read()
 
-with open(os.path.join('plenoptomos','VERSION')) as version_file:
+with open(os.path.join('plenoptomos', 'VERSION')) as version_file:
     version = version_file.read().strip()
 
 requirements = [
@@ -27,9 +27,9 @@ requirements = [
     'imageio',
 ]
 
-setup_requirements = [ ]
+setup_requirements = []
 
-test_requirements = [ ]
+test_requirements = []
 
 dev_requirements = [
     'autopep8',
@@ -48,7 +48,6 @@ dev_requirements = [
     # Other
     'watchdog',
     'coverage',
-    
     ]
 
 setup(
@@ -62,6 +61,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     description="Plenoptic imaging reconstruction tools",
     install_requires=requirements,
@@ -74,7 +74,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    extras_require={ 'dev': dev_requirements },
+    extras_require={'dev': dev_requirements},
     url='https://github.com/cicwi/plenoptomos',
     version=version,
     zip_safe=False,
