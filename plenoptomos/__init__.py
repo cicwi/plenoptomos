@@ -24,6 +24,7 @@ __version__ = __get_version()
 from . import lightfield  # noqa: F401, F402
 
 from . import refocus  # noqa: F401, F402
+from . import psf  # noqa: F401, F402
 try:
     from . import tomo  # noqa: F401, F402
     from . import depth  # noqa: F401, F402
