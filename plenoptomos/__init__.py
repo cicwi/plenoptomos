@@ -39,3 +39,4 @@ from . import solvers  # noqa: F401, F402
 from . import utils_proc  # noqa: F401, F402
 
 from . import colors  # noqa: F401, F402
+from . import utils_plot  # noqa: F401, F402
