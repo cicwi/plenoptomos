@@ -85,6 +85,51 @@ class TestRefocus(TestPlenoptomos):
 
         assert success
 
+    # def test_002_refocus_fourier_ones(self):
+    #     """Test Integration refocus."""
+
+    #     z0 = lf.camera.get_focused_distance()
+
+    #     lf_ones = lf.clone()
+    #     lf_ones.crop(crop_size_vu=[8, 8])
+    #     lf_ones.data = np.ones_like(lf_ones.data)
+
+    #     ref_img_ones_z0 = lf_ones.get_photograph()
+
+    #     img_z0 = pleno.refocus.compute_refocus_fourier(lf_ones, z0)
+
+    #     success = np.all(np.isclose(ref_img_ones_z0, img_z0, atol=1e-3))
+    #     if not success:
+    #         print('Max absolute deviation is: {}. '.format(np.max(np.abs(ref_img_ones_z0 - img_z0))),
+    #               end='', flush=True)
+    #         (ff, axf) = plt.subplots(2, 2, sharex=True, sharey=True)
+    #         axf[0, 0].imshow(np.squeeze(ref_img_ones_z0))
+    #         axf[0, 1].imshow(np.squeeze(img_z0))
+    #         axf[1, 0].imshow(np.squeeze(ref_img_ones_z0 - img_z0))
+    #         axf[1, 1].imshow(np.squeeze(ref_img_ones_z0 - img_z0) > 1e-3)
+    #         plt.show()
+
+    #     assert success
+
+    # def test_003_refocus_fourier_example(self):
+    #     """Test Integration refocus."""
+
+    #     z0 = lf.camera.get_focused_distance()
+    #     img_z0 = pleno.refocus.compute_refocus_fourier(lf, z0)
+
+    #     success = np.all(np.isclose(self.ref_img_z0, img_z0, atol=1e-3))
+    #     if not success:
+    #         print('Max absolute deviation is: {}. '.format(np.max(np.abs(self.ref_img_z0 - img_z0))),
+    #               end='', flush=True)
+    #         (ff, axf) = plt.subplots(2, 2, sharex=True, sharey=True)
+    #         axf[0, 0].imshow(np.squeeze(self.ref_img_z0))
+    #         axf[0, 1].imshow(np.squeeze(img_z0))
+    #         axf[1, 0].imshow(np.squeeze(self.ref_img_z0 - img_z0))
+    #         axf[1, 1].imshow(np.squeeze(self.ref_img_z0 - img_z0) > 1e-3)
+    #         plt.show()
+
+    #     assert success
+
 
 class TestPsf(TestPlenoptomos):
     """Tests for `plenoptomos.psf` package."""
