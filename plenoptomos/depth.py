@@ -3,7 +3,8 @@
 """
 Created on Wed Mar 29 12:34:36 2017
 
-@author: vigano
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
 
 This module implements the depth estimation routines, that allow to compute
 depth-maps from light-fields.

@@ -2,7 +2,8 @@
 """
 Created on Wed Sep 18 17:00:50 2019
 
-@author: VIGANO
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
 """
 
 import numpy as np
@@ -17,7 +18,19 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
 def get_smoothing_filter(
         window_size=(9, 9), window_shape='gauss', plot_filter=False):
-    """
+    """Computes and returns a smoothing filter.
+
+    :param window_size: Filter window size, defaults to (9, 9)
+    :type window_size: tuple(int, int), optional
+    :param window_shape: Filter type, defaults to 'gauss'
+    :type window_shape: str, optional. Options: {'gauss'} | 'tri' | 'circ' | 'rect'.
+    :param plot_filter: Whether to plot the filter or not, defaults to False
+    :type plot_filter: boolean, optional
+
+    :raises ValueError: In case of wrong filter name
+
+    :return: The filter
+    :rtype: `numpy.array_like`
     """
     window_size = np.array(window_size)
 
@@ -54,7 +67,23 @@ def get_smoothing_filter(
 
 def remove_background(
         data, blur_size, blur_func='circ', axes=(0, 1), do_reverse=False, non_negative=False):
-    """
+    """Removes the background.
+
+    :param data: Input data.
+    :type data: `numpy.array_like`
+    :param blur_size: Size of the blur filter
+    :type blur_size: tuple(int, int)
+    :param blur_func: Smoothing blur type, defaults to 'circ'
+    :type blur_func: str, optional. Options are the ones of `get_smoothing_filter`
+    :param axes: Axes where to remove the background, defaults to (0, 1)
+    :type axes: tuple, optional
+    :param do_reverse: Computes the opposite of the input data (minus), defaults to False
+    :type do_reverse: boolean, optional
+    :param non_negative: Truncates the values below zero, defaults to False
+    :type non_negative: boolean, optional
+
+    :return: Background removed data
+    :rtype: `numpy.array_like`
     """
     blur_size = np.array(blur_size, dtype=np.int)
     if blur_size.size == 1:

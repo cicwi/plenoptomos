@@ -3,7 +3,8 @@
 """
 Created on Tue Apr  4 16:01:41 2017
 
-@author: vigano
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
 
 Convenience functions for handling multi-channel datasets.
 They mainly focus on visible light (RGB channels).

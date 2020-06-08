@@ -3,7 +3,8 @@
 """
 Created on Wed Mar  8 11:27:12 2017
 
-@author: vigano
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
 
 This module implements a few different solvers from the tomography reconstruction literature.
 """

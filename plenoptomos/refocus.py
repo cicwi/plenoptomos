@@ -3,7 +3,8 @@
 """
 Created on Thu Mar  2 18:48:28 2017
 
-@author: vigano
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
 
 This module contains the implementation of the traditional reference refocusing algorithms.
 """

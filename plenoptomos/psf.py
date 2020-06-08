@@ -3,7 +3,8 @@
 """
 Created on Tue Oct 10 18:31:14 2017
 
-@author: vigano
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
 
 This module implements the point spread function (PSF) handling routines.
 """

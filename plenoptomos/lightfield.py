@@ -3,7 +3,8 @@
 """
 Created on Wed Mar  1 16:08:17 2017
 
-@author: vigano
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
 
 This module implements two important data containers: the data container
 'Lightfield' and the metadata container 'Camera'.

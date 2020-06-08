@@ -3,7 +3,8 @@
 """
 Created on Mon Feb 18 16:08:43 2019
 
-@author: vigano
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
 
 This module contains the import functions for external light-field data formats.
 """
