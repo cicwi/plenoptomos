@@ -232,7 +232,7 @@ def compute_depth_cues(
 
         print('\b\b: Done (%d) in %g seconds.' % (num_pixels, tm.time() - c))
 
-    if compute_emergence is not None:
+    if compute_emergence:
         print('Computing depth estimations for emergence:\n - Preparing response..', end='', flush=True)
         c = tm.time()
         emergence_map_size = depth_cues['emergence'].shape[1:]
