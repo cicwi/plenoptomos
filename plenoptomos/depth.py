@@ -35,6 +35,14 @@ except ImportError:
     print('WARNING - pywt was not found')
 
 
+def _apply_filter(arr, window_filter, mask=None, mask_renorm=1):
+    if mask is not None:
+        arr = sps.convolve(np.squeeze(arr) * mask, window_filter, mode='same') / mask_renorm
+    else:
+        arr = sps.convolve(np.squeeze(arr), window_filter, mode='same')
+    return arr
+
+
 def compute_depth_cues(
         lf: lightfield.Lightfield, zs, compute_defocus=True,
         compute_correspondence=True, compute_emergence=False,
@@ -150,27 +158,24 @@ def compute_depth_cues(
             l_alpha_intuv = algo(p.FP, b, num_iter=iterations, At=p.BP, lower_limit=0)[0]
 
             if compute_defocus:
-                l = _laplacian2(np.squeeze(l_alpha_intuv))
-                l = np.abs(l)
+                l_alpha_lap = _laplacian2(np.squeeze(l_alpha_intuv))
+                l_alpha_lap = np.abs(l_alpha_lap)
 
-                if mask is not None:
-                    depth_defocus = spimg.convolve(l * mask, window_filter, mode='constant', cval=0.0)
-                    depth_defocus /= mask_renorm
-                else:
-                    depth_defocus = spimg.convolve(l, window_filter, mode='constant', cval=0.0)
-                depth_cues['defocus'][ii_a, :, :] = depth_defocus[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
+                depth_defocus = _apply_filter(l_alpha_lap, window_filter, mask, mask_renorm)
+
+                depth_cues['defocus'][ii_a, :, :] = depth_defocus[
+                    paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
             if compute_emergence:
-                if mask is not None:
-                    depth_emergence = spimg.convolve(np.squeeze(l_alpha_intuv) * mask, window_filter, mode='constant', cval=0.0)
-                    depth_emergence /= mask_renorm
-                else:
-                    depth_emergence = spimg.convolve(np.squeeze(l_alpha_intuv), window_filter, mode='constant', cval=0.0)
-                depth_cues['emergence'][ii_a, :, :] = depth_emergence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
+                # Needs a high pass filter to the data!
+                depth_emergence = _apply_filter(l_alpha_intuv, window_filter, mask, mask_renorm)
+
+                depth_cues['emergence'][ii_a, :, :] = depth_emergence[
+                    paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
             if compute_correspondence:
                 reprojected_l_alpha_intuv = p.FP(l_alpha_intuv)
-                variances = (reprojected_l_alpha_intuv - b) ** 2
+                variances = np.abs(reprojected_l_alpha_intuv - b) ** 2
 
                 with Projector(
                         lf_sa.camera, np.array((z0, )), mask=lf_sa.mask, mode='independent',
@@ -179,14 +184,10 @@ def compute_depth_cues(
                     bpj_variances = solvers.BPJ()(p.FP, variances, At=p.BP, lower_limit=0)[0]
 
                 std_devs = np.sqrt(bpj_variances)
-                std_devs = np.squeeze(std_devs)
+                depth_correspondence = _apply_filter(std_devs, window_filter, mask, mask_renorm)
 
-                if mask is not None:
-                    depth_correspondence = spimg.convolve(std_devs * mask, window_filter, mode='constant', cval=0.0)
-                    depth_correspondence /= mask_renorm
-                else:
-                    depth_correspondence = spimg.convolve(std_devs, window_filter, mode='constant', cval=0.0)
-                depth_cues['correspondence'][ii_a, :, :] = depth_correspondence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
+                depth_cues['correspondence'][ii_a, :, :] = depth_correspondence[
+                    paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
         print(('\b') * len(prnt_str), end='', flush=True)
 
