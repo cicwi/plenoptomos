@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Oct 10 18:31:14 2017
+This module implements the point spread function (PSF) handling routines.
 
 @author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
 and ESRF - The European Synchrotron, Grenoble, France
 
-This module implements the point spread function (PSF) handling routines.
+Created on Tue Oct 10 18:31:14 2017
 """
 
 import copy

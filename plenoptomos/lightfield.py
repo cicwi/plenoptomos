@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar  1 16:08:17 2017
-
-@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
-and ESRF - The European Synchrotron, Grenoble, France
-
 This module implements two important data containers: the data container
 'Lightfield' and the metadata container 'Camera'.
 They are used throughout the entire package for interpreting and performing low
 level manipulation of the raw light-field data.
+
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
+
+Created on Wed Mar  1 16:08:17 2017
 """
 
 import copy

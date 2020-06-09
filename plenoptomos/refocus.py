@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar  2 18:48:28 2017
+This module contains the implementation of the traditional reference refocusing algorithms.
 
 @author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
 and ESRF - The European Synchrotron, Grenoble, France
 
-This module contains the implementation of the traditional reference refocusing algorithms.
+Created on Thu Mar  2 18:48:28 2017
 """
 
 import numpy as np

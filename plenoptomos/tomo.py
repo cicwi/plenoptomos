@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar  8 11:30:00 2017
+This module contains the tomographic refocusing routines.
 
 @author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
 and ESRF - The European Synchrotron, Grenoble, France
 
-This module contains the tomographic refocusing routines.
+Created on Wed Mar  8 11:30:00 2017
 """
 
 import numpy as np

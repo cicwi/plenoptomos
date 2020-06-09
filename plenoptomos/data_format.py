@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Nov 21 23:50:47 2017
-
-@author: Nicola Vigano, Charlotte Herzog, Pablo Martinez
-
 This module implements the handling of the .vox data format.
 It exposes routines that allow to create, calibrate and read vox files.
 
@@ -18,6 +14,10 @@ Rationale behind version 0:
 inspired by [DataExchange](https://github.com/data-exchange/dxchange)
 
 The updated structure can be found at: https://cicwi.github.io/plenoptomos
+
+@author: Nicola Vigano, Charlotte Herzog, Pablo Martinez
+
+Created on Tue Nov 21 23:50:47 2017
 """
 
 import os

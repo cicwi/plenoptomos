@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Sep 18 17:00:50 2019
+This module implements utility functions for image processing.
 
 @author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
 and ESRF - The European Synchrotron, Grenoble, France
+
+Created on Wed Sep 18 17:00:50 2019
 """
 
 import numpy as np

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar  1 16:09:53 2017
+Convenience functions for handling IO with hdf5 files of frequently used data
+structures.
 
 @author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
 and ESRF - The European Synchrotron, Grenoble, France
 
-Convenience functions for handling IO with hdf5 files of frequently used data
-structures.
+Created on Wed Mar  1 16:09:53 2017
 """
 
 import numpy as np

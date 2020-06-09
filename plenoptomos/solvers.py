@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar  8 11:27:12 2017
+This module implements a few different solvers from the tomography reconstruction literature.
 
 @author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
 and ESRF - The European Synchrotron, Grenoble, France
 
-This module implements a few different solvers from the tomography reconstruction literature.
+Created on Wed Mar  8 11:27:12 2017
 """
 
 import numpy as np

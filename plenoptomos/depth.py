@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 29 12:34:36 2017
+This module implements the depth estimation routines, that allow to compute
+depth-maps from light-fields.
 
 @author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
 and ESRF - The European Synchrotron, Grenoble, France
 
-This module implements the depth estimation routines, that allow to compute
-depth-maps from light-fields.
+Created on Wed Mar 29 12:34:36 2017
 """
 
 import numpy as np

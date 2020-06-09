@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb 18 16:08:43 2019
+This module contains the import functions for external light-field data formats.
 
 @author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
 and ESRF - The European Synchrotron, Grenoble, France
 
-This module contains the import functions for external light-field data formats.
+Created on Mon Feb 18 16:08:43 2019
 """
 
 import numpy as np
