@@ -35,12 +35,11 @@ except ImportError:
     print('WARNING - pywt was not found')
 
 
-def _apply_filter(arr, window_filter, mask=None, mask_renorm=1):
+def _apply_smoothing_filter(arr, window_filter, mask=None, mask_renorm=1):
     if mask is not None:
-        arr = sps.convolve(np.squeeze(arr) * mask, window_filter, mode='same') / mask_renorm
+        return sps.convolve(np.squeeze(arr) * mask, window_filter, mode='same') / mask_renorm
     else:
-        arr = sps.convolve(np.squeeze(arr), window_filter, mode='same')
-    return arr
+        return sps.convolve(np.squeeze(arr), window_filter, mode='same')
 
 
 def compute_depth_cues(
@@ -142,6 +141,9 @@ def compute_depth_cues(
         raise ValueError('Unrecognized algorithm: %s' % algorithm.lower())
 
     b = lf_sa.data[np.newaxis, ...]
+    if compute_emergence:
+        highpass_filter = proc.get_highpass_filter(b.shape, 16, 4)
+        b_hp = proc.apply_bandpass_filter(b, highpass_filter)
 
     print('Computing responses for each alpha value: ', end='', flush=True)
     c = tm.time()
@@ -161,14 +163,15 @@ def compute_depth_cues(
                 l_alpha_lap = _laplacian2(np.squeeze(l_alpha_intuv))
                 l_alpha_lap = np.abs(l_alpha_lap)
 
-                depth_defocus = _apply_filter(l_alpha_lap, window_filter, mask, mask_renorm)
+                depth_defocus = _apply_smoothing_filter(l_alpha_lap, window_filter, mask, mask_renorm)
 
                 depth_cues['defocus'][ii_a, :, :] = depth_defocus[
                     paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
             if compute_emergence:
                 # Needs a high pass filter to the data!
-                depth_emergence = _apply_filter(l_alpha_intuv, window_filter, mask, mask_renorm)
+                l_alpha_intuv_hp = algo(p.FP, b_hp, num_iter=iterations, At=p.BP, lower_limit=0)[0]
+                depth_emergence = _apply_smoothing_filter(l_alpha_intuv_hp, window_filter, mask, mask_renorm)
 
                 depth_cues['emergence'][ii_a, :, :] = depth_emergence[
                     paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
@@ -184,7 +187,7 @@ def compute_depth_cues(
                     bpj_variances = solvers.BPJ()(p.FP, variances, At=p.BP, lower_limit=0)[0]
 
                 std_devs = np.sqrt(bpj_variances)
-                depth_correspondence = _apply_filter(std_devs, window_filter, mask, mask_renorm)
+                depth_correspondence = _apply_smoothing_filter(std_devs, window_filter, mask, mask_renorm)
 
                 depth_cues['correspondence'][ii_a, :, :] = depth_correspondence[
                     paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
