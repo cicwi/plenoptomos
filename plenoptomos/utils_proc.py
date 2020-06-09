@@ -8,7 +8,8 @@ and ESRF - The European Synchrotron, Grenoble, France
 
 import numpy as np
 import scipy.ndimage as spimg
-import scipy.signal as sps
+import scipy.signal as spsig
+import scipy.special as spspe
 
 import matplotlib.pyplot as plt
 # Do not remove the following import: it is used somehow by the plotting
@@ -35,7 +36,7 @@ def get_smoothing_filter(
     window_size = np.array(window_size)
 
     if window_shape.lower() == 'tri':
-        window_filter = sps.triang(window_size[0]) * np.reshape(sps.triang(window_size[1]), [1, -1])
+        window_filter = spsig.triang(window_size[0]) * np.reshape(spsig.triang(window_size[1]), [1, -1])
     elif window_shape.lower() == 'circ':
         tt = np.linspace(-(window_size[0] - 1) / 2, (window_size[0] - 1) / 2, window_size[0])
         ss = np.linspace(-(window_size[1] - 1) / 2, (window_size[1] - 1) / 2, window_size[1])
@@ -100,3 +101,75 @@ def remove_background(
     if non_negative:
         data[data < 0] = 0
     return data
+
+
+def get_lowpass_filter(img_shape, cutoff_pix, trans_pix):
+    """Computes a low pass filter with the erfc.
+
+    :param img_shape: Shape of the image
+    :type img_shape: tuple
+    :param cutoff_pix: Position of the cutoff in k-vector, in the fft domain
+    :type cutoff_pix: int or tuple of ints
+    :param trans_pix: Size of the cutoff transition in k-vector, in the fft domain
+    :type trans_pix: int
+
+    :return: The computes filter
+    :rtype: `numpy.array_like`
+    """
+    coords = [np.fft.fftfreq(s, 1/s) for s in img_shape]
+    coords = np.meshgrid(*coords, indexing='ij')
+
+    cutoff_pix = np.reshape(cutoff_pix, [-1] + [1] * len(img_shape))
+    rescale_co_pix = cutoff_pix / cutoff_pix[0]
+    r = np.sqrt(np.sum((coords / rescale_co_pix) ** 2, axis=0))
+    return spspe.erfc((r - cutoff_pix[0]) / trans_pix) / 2
+
+
+def get_highpass_filter(img_shape, cutoff_pix, trans_pix):
+    """Computes a high pass filter with the erf.
+
+    :param img_shape: Shape of the image
+    :type img_shape: tuple
+    :param cutoff_pix: Position of the cutoff in k-vector, in the fft domain
+    :type cutoff_pix: int or tuple of ints
+    :param trans_pix: Size of the cutoff transition in k-vector, in the fft domain
+    :type trans_pix: int
+
+    :return: The computes filter
+    :rtype: `numpy.array_like`
+    """
+    return 1 - get_lowpass_filter(img_shape, cutoff_pix, trans_pix)
+
+
+def get_bandpass_filter(img_shape, cutoff_pix, trans_pix):
+    """Computes a band pass filter with the erf.
+
+    :param img_shape: Shape of the image
+    :type img_shape: tuple
+    :param cutoff_pix: Position of the cutoffs in k-vector, in the fft domain
+    :type cutoff_pix: tuple(int, int)
+    :param trans_pix: Size of the cutoffs transition in k-vector, in the fft domain
+    :type trans_pix: tuple(int, int)
+
+    :return: The computes filter
+    :rtype: `numpy.array_like`
+    """
+    return (
+        get_lowpass_filter(img_shape, cutoff_pix[0], trans_pix[0])
+        * get_highpass_filter(img_shape, cutoff_pix[0], trans_pix[0]))
+
+
+def apply_bandpass_filter(img, filt_fft):
+    """Applies a 2D band pass filter to an image or collection of images.
+
+    :param img: Image to be filtered
+    :type img: `numpy.array_like`
+    :param filt_fft: 2D filter in Fourier domain
+    :type filt_fft: `numpy.array_like`
+
+    :return: The filtered image
+    :rtype: `numpy.array_like`
+    """
+    img_f = np.fft.fft2(img)
+    img_f *= filt_fft
+    return np.real(np.fft.ifft2(img_f))
