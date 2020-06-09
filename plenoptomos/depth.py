@@ -340,20 +340,22 @@ def compute_depth_map(
     :rtype: numpy.array_like
     """
 
-    W_d = depth_cues['confidence_defocus']
-    a_d = depth_cues['depth_defocus']
-
-    if use_emergence:
-        W_c = depth_cues['confidence_emergence']
-        a_c = depth_cues['depth_emergence']
-    else:
-        W_c = depth_cues['confidence_correspondence']
-        a_c = depth_cues['depth_correspondence']
-
     use_defocus = np.fmax(use_defocus, 0.0)
     use_defocus = np.fmin(use_defocus, 1.0)
     use_correspondence = np.fmax(use_correspondence, 0.0)
     use_correspondence = np.fmin(use_correspondence, 1.0)
+    use_emergence = np.fmax(use_emergence, 0.0)
+    use_emergence = np.fmin(use_emergence, 1.0)
+
+    W_d = depth_cues['confidence_defocus']
+    a_d = depth_cues['depth_defocus']
+
+    W_c = depth_cues['confidence_correspondence']
+    a_c = depth_cues['depth_correspondence']
+
+    W_e = depth_cues['confidence_emergence']
+    a_e = depth_cues['depth_emergence']
+
     if use_defocus > 0 and (W_d.size == 0 or a_d.size == 0):
         use_defocus = 0
         warnings.warn('Defocusing parameters were not passed, disabling their use')
@@ -362,14 +364,21 @@ def compute_depth_map(
         use_correspondence = 0
         warnings.warn('Correspondence parameters were not passed, disabling their use')
 
+    if use_emergence > 0 and (W_e.size == 0 or a_e.size == 0):
+        use_emergence = 0
+        warnings.warn('Emergence parameters were not passed, disabling their use')
+
     if use_defocus:
         img_size = a_d.shape
         data_type = a_d.dtype
     elif use_correspondence:
         img_size = a_c.shape
         data_type = a_c.dtype
+    elif use_emergence:
+        img_size = a_e.shape
+        data_type = a_e.dtype
     else:
-        raise ValueError('Cannot proceed if neither Defocus nor Correspondence cues can be used')
+        raise ValueError('Cannot proceed if at least one of Defocus, Correspondence, and Emergence cues can be used')
 
     if lambda_wl is not None and has_pywt is False:
         lambda_wl = None
@@ -389,6 +398,9 @@ def compute_depth_map(
     if use_correspondence > 0:
         q_c = np.zeros(img_size, dtype=data_type)
         tau += W_c
+    if use_emergence > 0:
+        q_e = np.zeros(img_size, dtype=data_type)
+        tau += W_e
     if lambda_wl is not None:
         wl_type = 'sym4'
         wl_lvl = np.fmin(pywt.dwtn_max_level(img_size, wl_type), 2)
@@ -424,6 +436,12 @@ def compute_depth_map(
             q_c /= np.fmax(1, np.abs(q_c))
 
             update += use_correspondence * W_c * q_c
+
+        if use_emergence > 0:
+            q_e += (depth_it - a_c)
+            q_e /= np.fmax(1, np.abs(q_e))
+
+            update += use_emergence * W_e * q_e
 
         if lambda_wl is not None:
             d = pywt.swtn(depth_it, wl_type, wl_lvl)
