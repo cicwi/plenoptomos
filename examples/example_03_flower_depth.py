@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 19 12:29:02 2019
+Example demonstrating refocusing capabilities.
 
-@author: vigano
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
+
+Created on Tue Mar 19 12:29:02 2019
 """
 
 import numpy as np

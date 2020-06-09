@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jan 22 15:42:25 2019
+This example illustrates the concepts discussed in:
 
-@author: vigano
+* N. Viganò, et al., “Tomographic approach for the quantitative scene
+reconstruction from light field images,” Opt. Express, vol. 26, no. 18,
+p. 22574, Sep. 2018.
+
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
+
+Created on Tue Jan 22 15:42:25 2019
 """
 
 import numpy as np

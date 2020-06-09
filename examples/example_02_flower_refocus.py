@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 21 13:26:03 2019
+This example illustrates the concepts discussed in:
 
-@author: vigano
+* N. Viganò, et al., “Advanced light-field refocusing through tomographic
+modeling of the photographed scene,” Opt. Express, vol. 27, no. 6, p. 7834, Mar. 2019.
+
+@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France
+
+Created on Thu Mar 21 13:26:03 2019
 """
 
 import numpy as np
