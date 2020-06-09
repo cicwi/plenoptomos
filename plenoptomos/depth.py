@@ -321,23 +321,32 @@ def compute_depth_cues(
 
 def compute_depth_map(
         depth_cues, iterations=500, lambda_tv=2.0, lambda_d2=0.05,
-        lambda_wl=None, use_defocus=1.0, use_correspondence=1.0, use_emergence=0):
+        lambda_wl=None, use_defocus=1.0, use_correspondence=1.0, use_emergence=0.0):
     """Computes a depth map from the given depth cues.
 
     This depth map is based on the procedure from:
     [1] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,”
     in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.
 
-    :param depth_cues: The depth cues (dict)
-    :param iterations: Number of iterations (int)
-    :param lambda_tv: Lambda value of the TV term (float, default: 2.0)
-    :param lambda_d2: Lambda value of the smoothing term (float, default: 0.05)
-    :param lambda_wl: Lambda value of the wavelet term (float, default: None)
-    :param use_defocus: Weight for defocus cues (float, default: 1.0)
-    :param use_correspondence: Weight for corresponence cues (float, default: 1.0)
+    :param depth_cues: The depth cues
+    :type depth_cues: dict
+    :param iterations: Number of iterations, defaults to 500
+    :type iterations: int, optional
+    :param lambda_tv: Lambda value of the TV term, defaults to 2.0
+    :type lambda_tv: float, optional
+    :param lambda_d2: Lambda value of the smoothing term, defaults to 0.05
+    :type lambda_d2: float, optional
+    :param lambda_wl: Lambda value of the wavelet term, defaults to None
+    :type lambda_wl: float, optional
+    :param use_defocus: Weight of defocus cues, defaults to 1.0
+    :type use_defocus: float, optional
+    :param use_correspondence: Weight of corresponence cues, defaults to 1.0
+    :type use_correspondence: float, optional
+    :param use_emergence: Weight of the emergence cues, defaults to 0.0
+    :type use_emergence: float, optional
 
     :returns: The depth map
-    :rtype: numpy.array_like
+    :rtype: `numpy.array_like`
     """
 
     use_defocus = np.fmax(use_defocus, 0.0)
