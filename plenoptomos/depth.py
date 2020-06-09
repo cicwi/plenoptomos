@@ -108,7 +108,7 @@ def compute_depth_cues(
 
     paddings_ts = ((np.fmax(window_size, window_size) - 1) / 2 + 5).astype(np.intp)
     final_size_ts = lf_sa.camera.data_size_ts + 2 * paddings_ts
-    additional_padding_ts = np.floor(((8 - (final_size_ts % 8)) % 8) / 2).astype(np.intp)
+    additional_padding_ts = np.floor(((4 - (final_size_ts % 4)) % 4) / 2).astype(np.intp)
     paddings_ts += additional_padding_ts
     lf_sa.pad([0, 0, paddings_ts[0], paddings_ts[1]], method='edge')
     paddings_ts *= up_sampling
@@ -117,6 +117,21 @@ def compute_depth_cues(
         mask = np.pad(mask, ((paddings_ts[0], ), (paddings_ts[1], )), mode='edge')
         mask_renorm = spimg.convolve(mask, window_filter, mode='constant', cval=0.0)
         mask_renorm[mask_renorm == 0] = 1
+    else:
+        mask_renorm = 1
+
+    if algorithm.lower() == 'sirt':
+        algo = solvers.Sirt()
+    elif algorithm.lower() == 'cp_ls':
+        algo = solvers.CP_uc()
+    elif algorithm.lower() == 'cp_tv':
+        algo = solvers.CP_tv(axes=(-2, -1), lambda_tv=0.1)
+    elif algorithm.lower() == 'cp_wl':
+        algo = solvers.CP_wl(axes=(-2, -1), wl_type='sym4', decomp_lvl=2, lambda_wl=1e-1)
+    elif algorithm.lower() == 'bpj':
+        algo = solvers.BPJ()
+    else:
+        raise ValueError('Unrecognized algorithm: %s' % algorithm.lower())
 
     b = lf_sa.data[np.newaxis, ...]
 
@@ -131,24 +146,8 @@ def compute_depth_cues(
                 lf_sa.camera, np.array((z0, )), mask=lf_sa.mask, mode='independent',
                 up_sampling=up_sampling, beam_geometry=beam_geometry,
                 domain=domain, super_sampling=super_sampling, psf_d=psf) as p:
-            A = lambda x: p.FP(x)
-            At = lambda y: p.BP(y)
 
-            if algorithm.lower() == 'sirt':
-                algo = solvers.Sirt()
-            elif algorithm.lower() == 'cp_ls':
-                algo = solvers.CP_uc()
-            elif algorithm.lower() == 'cp_tv':
-                algo = solvers.CP_tv(axes=(-2, -1), lambda_tv=0.1)
-            elif algorithm.lower() == 'cp_wl':
-                algo = solvers.CP_wl(axes=(-2, -1), wl_type='db1', decomp_lvl=3, lambda_wl=1e-1)
-            elif algorithm.lower() == 'bpj':
-                algo = solvers.BPJ()
-            else:
-                raise ValueError('Unrecognized algorithm: %s' % algorithm.lower())
-            A_tilde_1 = lambda y : algo(A, y, num_iter=iterations, At=At, lower_limit=0)[0]
-
-            l_alpha_intuv = A_tilde_1(b)
+            l_alpha_intuv = algo(p.FP, b, num_iter=iterations, At=p.BP, lower_limit=0)[0]
 
             if compute_defocus:
                 l = _laplacian2(np.squeeze(l_alpha_intuv))
@@ -170,20 +169,14 @@ def compute_depth_cues(
                 depth_cues['emergence'][ii_a, :, :] = depth_emergence[paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
             if compute_correspondence:
-                reprojected_l_alpha_intuv = A(l_alpha_intuv)
+                reprojected_l_alpha_intuv = p.FP(l_alpha_intuv)
                 variances = (reprojected_l_alpha_intuv - b) ** 2
 
                 with Projector(
                         lf_sa.camera, np.array((z0, )), mask=lf_sa.mask, mode='independent',
                         up_sampling=up_sampling, beam_geometry=beam_geometry,
                         domain=domain, super_sampling=super_sampling) as p:
-                    A = lambda x: p.FP(x)
-                    At = lambda y: p.BP(y)
-
-                    algo = solvers.BPJ()
-                    A_tilde_1_corr = lambda y : algo(A, y, At=At, lower_limit=0)[0]
-
-                    bpj_variances = A_tilde_1_corr(variances)
+                    bpj_variances = solvers.BPJ()(p.FP, variances, At=p.BP, lower_limit=0)[0]
 
                 std_devs = np.sqrt(bpj_variances)
                 std_devs = np.squeeze(std_devs)
@@ -396,8 +389,8 @@ def compute_depth_map(
         q_c = np.zeros(img_size, dtype=data_type)
         tau += W_c
     if lambda_wl is not None:
-        wl_type = 'db4'
-        wl_lvl = np.fmin(pywt.dwtn_max_level(img_size, wl_type), 3)
+        wl_type = 'sym4'
+        wl_lvl = np.fmin(pywt.dwtn_max_level(img_size, wl_type), 2)
         print('Wavelets selected! Wl type: %s, Wl lvl %d' % (wl_type, wl_lvl))
         q_wl = pywt.swtn(depth, wl_type, wl_lvl)
         tau += lambda_wl * (2 ** wl_lvl)
