@@ -36,11 +36,11 @@ except ImportError:
 
 
 def compute_depth_cues(
-        lf : lightfield.Lightfield, zs, compute_defocus=True,
+        lf: lightfield.Lightfield, zs, compute_defocus=True,
         compute_correspondence=True, compute_emergence=False,
         beam_geometry='parallel', domain='object', psf=None,
         up_sampling=1, super_sampling=1, algorithm='bpj', iterations=5,
-        confidence_method="integral", peak_range = 3,
+        confidence_method="integral", peak_range=3,
         window_size=(9, 9), window_shape='gauss', mask=None, plot_filter=False):
     """Computes depth cues, needed to create a depth map.
 
@@ -69,15 +69,16 @@ def compute_depth_cues(
     data_type = lf.data.dtype
 
     depth_cues = {
-            'defocus' : np.array(()),
-            'correspondence' : np.array(()),
-            'emergence' : np.array(()),
-            'depth_defocus' : np.array(()),
-            'depth_correspondence' : np.array(()),
-            'depth_emergence' : np.array(()),
-            'confidence_defocus' : np.array(()),
-            'confidence_correspondence' : np.array(()),
-            'confidence_emergence' : np.array(()) }
+        'defocus': np.array(()),
+        'correspondence': np.array(()),
+        'emergence': np.array(()),
+        'depth_defocus': np.array(()),
+        'depth_correspondence': np.array(()),
+        'depth_emergence': np.array(()),
+        'confidence_defocus': np.array(()),
+        'confidence_correspondence': np.array(()),
+        'confidence_emergence': np.array(())
+        }
 
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
@@ -219,9 +220,10 @@ def compute_depth_cues(
             integral_conf = np.sum(depth_defocus, axis=0) - pk_vals
 
             depth_cues['confidence_defocus'][:] = np.reshape(integral_conf / (pk_vals * (num_zs-1)), defocus_map_size)
-            depth_cues['confidence_defocus'] = np.fmax(1 - depth_cues['confidence_defocus'], 0);
+            depth_cues['confidence_defocus'] = np.fmax(1 - depth_cues['confidence_defocus'], 0)
         elif confidence_method.lower() == 'neighbor_stddev':
             depth_cues['confidence_defocus'] = np.zeros(num_pixels, dtype=depth_defocus.dtype)
+
             peak_ranges_min = np.fmax(pk_locs - peak_range, 0).astype(np.intp)
             peak_ranges_max = np.fmin(pk_locs + peak_range, num_zs-1).astype(np.intp)
             for ii, pmin, pmax in zip(range(len(pk_locs)), peak_ranges_min, peak_ranges_max):
@@ -230,6 +232,7 @@ def compute_depth_cues(
                 dists = pnt_pos - pk_locs[ii]
                 coeffs = diffs / np.abs(dists)
                 depth_cues['confidence_defocus'][ii] = np.sqrt(np.sum(coeffs ** 2) / len(coeffs))
+
             depth_cues['confidence_defocus'] = np.reshape(depth_cues['confidence_defocus'], defocus_map_size)
         else:
             raise ValueError('Unknown confidence method: %s' % confidence_method)
@@ -268,6 +271,7 @@ def compute_depth_cues(
                 dists = pnt_pos - pk_locs[ii]
                 coeffs = diffs / np.abs(dists)
                 depth_cues['confidence_emergence'][ii] = np.sqrt(np.sum(coeffs ** 2) / len(coeffs))
+
             depth_cues['confidence_emergence'] = np.reshape(depth_cues['confidence_emergence'], emergence_map_size)
         else:
             raise ValueError('Unknown confidence method: %s' % confidence_method)
@@ -297,7 +301,8 @@ def compute_depth_cues(
             depth_correspondence = np.abs(depth_correspondence)
             integral_conf = np.sum(depth_correspondence, axis=0) - pk_vals
 
-            depth_cues['confidence_correspondence'][:] = np.reshape(integral_conf / (pk_vals * (num_zs-1)), correspondence_map_size)
+            depth_cues['confidence_correspondence'][:] = np.reshape(
+                integral_conf / (pk_vals * (num_zs-1)), correspondence_map_size)
             depth_cues['confidence_correspondence'] = np.fmax(1 - depth_cues['confidence_correspondence'], 0)
         elif confidence_method.lower() == 'neighbor_stddev':
             depth_cues['confidence_correspondence'] = np.zeros(num_pixels, dtype=depth_correspondence.dtype)
@@ -309,7 +314,9 @@ def compute_depth_cues(
                 dists = pnt_pos - pk_locs[ii]
                 coeffs = diffs / np.abs(dists)
                 depth_cues['confidence_correspondence'][ii] = np.sqrt(np.sum(coeffs ** 2) / len(coeffs))
-            depth_cues['confidence_correspondence'] = np.reshape(depth_cues['confidence_correspondence'], correspondence_map_size)
+
+            depth_cues['confidence_correspondence'] = np.reshape(
+                depth_cues['confidence_correspondence'], correspondence_map_size)
         else:
             raise ValueError('Unknown confidence method: %s' % confidence_method)
 
@@ -320,10 +327,10 @@ def compute_depth_cues(
 
 def compute_depth_map(
         depth_cues, iterations=500, lambda_tv=2.0, lambda_d2=0.05,
-        lambda_wl=None, use_defocus=1.0, use_correspondence=1.0, use_emergence=False):
+        lambda_wl=None, use_defocus=1.0, use_correspondence=1.0, use_emergence=0):
     """Computes a depth map from the given depth cues.
 
-    This depth map is created following the procedure from:
+    This depth map is based on the procedure from:
     [1] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,”
     in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.
 
@@ -406,8 +413,8 @@ def compute_depth_map(
 
         update = - lambda_tv * _divergence2(q_g[0, :, :], q_g[1, :, :])
         if lambda_d2 is not None:
-            l = _laplacian2(depth_it)
-            q_l += l / 8
+            l_dep = _laplacian2(depth_it)
+            q_l += l_dep / 8
             q_l /= np.fmax(1, np.abs(q_l))
 
             update += lambda_d2 * _laplacian2(q_l)
@@ -472,4 +479,3 @@ def _divergence2(x0, x1):
     d0 = np.pad(x0, ((1, 0), (0, 0)), mode='constant')
     d1 = np.pad(x1, ((0, 0), (1, 0)), mode='constant')
     return np.diff(d0, n=1, axis=0) + np.diff(d1, n=1, axis=1)
-
