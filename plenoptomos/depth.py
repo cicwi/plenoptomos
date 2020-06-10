@@ -56,20 +56,22 @@ def _get_parabola_vertex(coeffs, x_offs):
     return (vx + x_offs, vy)
 
 
-def _compute_depth_and_confidence(depth_cue, confidence_method, peak_range=2, med_filt_size=3, quadratic_ref=True):
+def _compute_depth_and_confidence(
+        depth_cue, confidence_method, peak_range=2, med_filt_size=3, quadratic_refinement=True):
     cue_map_size = depth_cue.shape[1:]
     num_zs = depth_cue.shape[0]
 
     response_funcs = np.reshape(depth_cue, (num_zs, -1))
+    data_type = response_funcs.dtype
 
     num_pixels = response_funcs.shape[1]
 
     peaks_val = np.max(response_funcs, axis=0)
     peaks_pos = np.argmax(response_funcs, axis=0)
 
-    if quadratic_ref:
+    if quadratic_refinement:
         fx = np.arange(3)
-        fy = np.zeros((3, num_pixels), dtype=response_funcs.dtype)
+        fy = np.zeros((3, num_pixels), dtype=data_type)
 
         peak_ranges_min = (peaks_pos - 1).astype(np.intp)
         peak_ranges_max = (peaks_pos + 2).astype(np.intp)
@@ -98,7 +100,7 @@ def _compute_depth_and_confidence(depth_cue, confidence_method, peak_range=2, me
         confidence = np.fmax(1 - confidence, 0) * (1 - invalid_vals)
 
     elif confidence_method.lower() == '2nd_peak':
-        peaks_val_second = np.zeros((num_pixels, ), dtype=response_funcs.dtype)
+        peaks_val_second = np.zeros((num_pixels, ), dtype=data_type)
 
         for ii in range(num_pixels):
             peaks = sps.find_peaks(response_funcs[:, ii], peaks_val[ii] / 10)
@@ -112,7 +114,7 @@ def _compute_depth_and_confidence(depth_cue, confidence_method, peak_range=2, me
         confidence = 1 - peaks_val_second / peaks_val
 
     elif confidence_method.lower() == 'neighbor_stddev':
-        confidence = np.empty(num_pixels, dtype=depth_cue.dtype)
+        confidence = np.empty(num_pixels, dtype=data_type)
 
         peak_ranges_min = np.fmax(peaks_pos - peak_range, 0).astype(np.intp)
         peak_ranges_max = np.fmin(peaks_pos + peak_range, num_zs-1).astype(np.intp)
@@ -136,33 +138,59 @@ def _compute_depth_and_confidence(depth_cue, confidence_method, peak_range=2, me
 
 def compute_depth_cues(
         lf: lightfield.Lightfield, zs, compute_defocus=True,
-        compute_correspondence=True, compute_emergence=False,
+        compute_correspondence=True, compute_xcorrelation=False,
         beam_geometry='parallel', domain='object', psf=None,
         up_sampling=1, super_sampling=1, algorithm='bpj', iterations=5,
-        confidence_method='integral', quadratic_ref=True,
+        confidence_method='integral', quadratic_refinement=True,
         window_size=(9, 9), window_shape='gauss', mask=None, plot_filter=False):
     """Computes depth cues, needed to create a depth map.
 
     These depth cues are created following the procedure from:
-    [1] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,”
+    * M. W. Tao, et al., "Depth from combining defocus and correspondence using light-field cameras,"
     in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.
 
-    :param lf: The light-field object (lightfield.Lightfield)
-    :param zs: Refocusing distances (numpy.array_like)
-    :param compute_defocus: Switch for defocus cues (Boolean, default: True)
-    :param compute_correspondence: Switch for corresponence cues (Boolean, default: True)
-    :param window_size: Filtering window size (tuple, default: (9, 9))
-    :param window_shape: Filtering window shape. Options: 'tri' | 'circ' | 'gauss' | 'rect' (string, default: 'circ')
-    :param up_sampling: Integer greater than 1 for up-sampling of the final images (int, default: 1)
-    :param border: Number of pixels to extend the border and reduce darkening of edges (int, default: 4)
-    :param border_padding: Border padding method (string, default: 'edge')
-    :param beam_geometry: Beam geometry. Possible options: 'parallel' | 'cone' (string, default: 'parallel')
-    :param domain: Refocusing domain. Possible options: 'object' | 'image' (string, default: 'object')
+    :param lf: The light-field object
+    :type lf: lightfield.Lightfield
+    :param zs: Refocusing distances
+    :type zs: `numpy.array_like`
+    :param compute_defocus: Enable defocus cues, defaults to True
+    :type compute_defocus: boolean, optional
+    :param compute_correspondence: Enable corresponence cues, defaults to True
+    :type compute_correspondence: boolean, optional
+    :param compute_xcorrelation: Enable cross-correlation cues, defaults to False
+    :type compute_xcorrelation: boolean, optional
+    :param beam_geometry: Beam geometry. Options: 'parallel' | 'cone', defaults to 'parallel'
+    :type beam_geometry: str, optional
+    :param domain: Refocusing domain. Options: 'object' | 'image', defaults to 'object'
+    :type domain: str, optional
+    :param psf: Refocusing PSF, defaults to None
+    :type psf: psf.PSFApply, optional
+    :param up_sampling: Integer greater than 1 for up-sampling of the final images, defaults to 1
+    :type up_sampling: int, optional
+    :param super_sampling: Integer equal or greater than 1, for higer sampling density of the final images, defaults to 1
+    :type super_sampling: int, optional
+    :param algorithm: Refocusing algorithm to use for the construction of the focal stack, defaults to 'bpj'
+    :type algorithm: str, optional
+    :param iterations: Number of refocusing iterations, defaults to 5
+    :type iterations: int, optional
+    :param confidence_method: Confidence computation method, defaults to 'integral', options: 'integral' | '2nd_peak'
+    :type confidence_method: str, optional
+    :param quadratic_refinement: Use quadratic fit, to refine depth estimation, defaults to True
+    :type quadratic_refinement: boolean, optional
+    :param window_size: Filtering window size, defaults to (9, 9)
+    :type window_size: tuple(int, int), optional
+    :param window_shape: Filtering window shape. Options: 'tri' | 'circ' | 'gauss' | 'rect', defaults to 'circ'
+    :type window_shape: str, optional
+    :param mask: Light-field data mask, defaults to None
+    :type mask: `numpy.array_like`, optional
+    :param plot_filter: Plot the used smoothing filter, defaults to False
+    :type plot_filter: boolean, optional
+
+    :raises ValueError: In case of unknown algorithm or confidence_method
 
     :returns: Depth cues and their confidences.
     :rtype: dict
     """
-
     lf_sa = lf.clone()
     lf_sa.set_mode_subaperture()
 
@@ -177,13 +205,13 @@ def compute_depth_cues(
     depth_cues = {
         'defocus': np.array(()),
         'correspondence': np.array(()),
-        'emergence': np.array(()),
+        'xcorrelation': np.array(()),
         'depth_defocus': np.array(()),
         'depth_correspondence': np.array(()),
-        'depth_emergence': np.array(()),
+        'depth_xcorrelation': np.array(()),
         'confidence_defocus': np.array(()),
         'confidence_correspondence': np.array(()),
-        'confidence_emergence': np.array(())
+        'confidence_xcorrelation': np.array(())
         }
 
     data_type = lf.data.dtype
@@ -193,8 +221,8 @@ def compute_depth_cues(
         depth_cues['defocus'] = np.empty(responses_shape, dtype=data_type)
     if compute_correspondence:
         depth_cues['correspondence'] = np.empty(responses_shape, dtype=data_type)
-    if compute_emergence:
-        depth_cues['emergence'] = np.empty(responses_shape, dtype=data_type)
+    if compute_xcorrelation:
+        depth_cues['xcorrelation'] = np.empty(responses_shape, dtype=data_type)
 
     paddings_ts = ((np.fmax(window_size, window_size) - 1) / 2 + 5).astype(np.intp)
     final_size_ts = lf_sa.camera.data_size_ts + 2 * paddings_ts
@@ -224,7 +252,7 @@ def compute_depth_cues(
         raise ValueError('Unrecognized algorithm: %s' % algorithm.lower())
 
     b = lf_sa.data[np.newaxis, ...]
-    if compute_emergence:
+    if compute_xcorrelation:
         highpass_filter = proc.get_highpass_filter(b.shape, 8, 1)
         b_hp = proc.apply_bandpass_filter(b, highpass_filter)
 
@@ -252,15 +280,15 @@ def compute_depth_cues(
                 depth_cues['defocus'][ii_a, :, :] = depth_defocus[
                     paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
-            if compute_emergence:
+            if compute_xcorrelation:
                 # Needs a high pass filter to the data!
                 l_alpha_intuv_hp = algo(p.FP, b_hp, num_iter=iterations, At=p.BP, lower_limit=0)[0]
                 l_alpha_intuv_hp = np.abs(l_alpha_intuv_hp)
 
-                depth_emergence = _apply_smoothing_filter(l_alpha_intuv_hp, window_filter, mask, mask_renorm)
-                depth_emergence = np.fmax(depth_emergence, 1e-5)
+                depth_xcorrelation = _apply_smoothing_filter(l_alpha_intuv_hp, window_filter, mask, mask_renorm)
+                depth_xcorrelation = np.fmax(depth_xcorrelation, 1e-5)
 
-                depth_cues['emergence'][ii_a, :, :] = depth_emergence[
+                depth_cues['xcorrelation'][ii_a, :, :] = depth_xcorrelation[
                     paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
 
             if compute_correspondence:
@@ -289,21 +317,21 @@ def compute_depth_cues(
         print('Computing depth estimations for defocus:\n - Preparing response..', end='', flush=True)
         c = tm.time()
         depth_cues['depth_defocus'], depth_cues['confidence_defocus'] = _compute_depth_and_confidence(
-            depth_cues['defocus'], confidence_method=confidence_method, quadratic_ref=quadratic_ref)
+            depth_cues['defocus'], confidence_method=confidence_method, quadratic_refinement=quadratic_refinement)
         print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_defocus'].size, tm.time() - c))
 
-    if compute_emergence:
-        print('Computing depth estimations for emergence:\n - Preparing response..', end='', flush=True)
+    if compute_xcorrelation:
+        print('Computing depth estimations for cross-correlation:\n - Preparing response..', end='', flush=True)
         c = tm.time()
-        depth_cues['depth_emergence'], depth_cues['confidence_emergence'] = _compute_depth_and_confidence(
-            depth_cues['emergence'], confidence_method=confidence_method, quadratic_ref=quadratic_ref)
-        print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_emergence'].size, tm.time() - c))
+        depth_cues['depth_xcorrelation'], depth_cues['confidence_xcorrelation'] = _compute_depth_and_confidence(
+            depth_cues['xcorrelation'], confidence_method=confidence_method, quadratic_refinement=quadratic_refinement)
+        print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_xcorrelation'].size, tm.time() - c))
 
     if compute_correspondence:
         print('Computing depth estimations for correspondence:\n - Preparing response..', end='', flush=True)
         c = tm.time()
         depth_cues['depth_correspondence'], depth_cues['confidence_correspondence'] = _compute_depth_and_confidence(
-            depth_cues['correspondence'], confidence_method=confidence_method, quadratic_ref=quadratic_ref)
+            depth_cues['correspondence'], confidence_method=confidence_method, quadratic_refinement=quadratic_refinement)
         print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_correspondence'].size, tm.time() - c))
 
     return depth_cues
@@ -311,7 +339,7 @@ def compute_depth_cues(
 
 def compute_depth_map(
         depth_cues, iterations=500, lambda_tv=2.0, lambda_d2=0.05,
-        lambda_wl=None, use_defocus=1.0, use_correspondence=1.0, use_emergence=0.0):
+        lambda_wl=None, use_defocus=1.0, use_correspondence=1.0, use_xcorrelation=0.0):
     """Computes a depth map from the given depth cues.
 
     This depth map is based on the procedure from:
@@ -332,19 +360,23 @@ def compute_depth_map(
     :type use_defocus: float, optional
     :param use_correspondence: Weight of corresponence cues, defaults to 1.0
     :type use_correspondence: float, optional
-    :param use_emergence: Weight of the emergence cues, defaults to 0.0
-    :type use_emergence: float, optional
+    :param use_xcorrelation: Weight of the cross-correlation cues, defaults to 0.0
+    :type use_xcorrelation: float, optional
+
+    :raises ValueError: In case of requested wavelet regularization but not available
 
     :returns: The depth map
     :rtype: `numpy.array_like`
     """
+    if not (lambda_wl is None or (has_pywt and use_swtn)):
+        raise ValueError('Wavelet regularization requested but not available')
 
     use_defocus = np.fmax(use_defocus, 0.0)
     use_defocus = np.fmin(use_defocus, 1.0)
     use_correspondence = np.fmax(use_correspondence, 0.0)
     use_correspondence = np.fmin(use_correspondence, 1.0)
-    use_emergence = np.fmax(use_emergence, 0.0)
-    use_emergence = np.fmin(use_emergence, 1.0)
+    use_xcorrelation = np.fmax(use_xcorrelation, 0.0)
+    use_xcorrelation = np.fmin(use_xcorrelation, 1.0)
 
     W_d = depth_cues['confidence_defocus']
     a_d = depth_cues['depth_defocus']
@@ -352,8 +384,8 @@ def compute_depth_map(
     W_c = depth_cues['confidence_correspondence']
     a_c = depth_cues['depth_correspondence']
 
-    W_e = depth_cues['confidence_emergence']
-    a_e = depth_cues['depth_emergence']
+    W_x = depth_cues['confidence_xcorrelation']
+    a_x = depth_cues['depth_xcorrelation']
 
     if use_defocus > 0 and (W_d.size == 0 or a_d.size == 0):
         use_defocus = 0
@@ -363,9 +395,9 @@ def compute_depth_map(
         use_correspondence = 0
         warnings.warn('Correspondence parameters were not passed, disabling their use')
 
-    if use_emergence > 0 and (W_e.size == 0 or a_e.size == 0):
-        use_emergence = 0
-        warnings.warn('Emergence parameters were not passed, disabling their use')
+    if use_xcorrelation > 0 and (W_x.size == 0 or a_x.size == 0):
+        use_xcorrelation = 0
+        warnings.warn('Cross-correlation parameters were not passed, disabling their use')
 
     if use_defocus:
         img_size = a_d.shape
@@ -373,11 +405,12 @@ def compute_depth_map(
     elif use_correspondence:
         img_size = a_c.shape
         data_type = a_c.dtype
-    elif use_emergence:
-        img_size = a_e.shape
-        data_type = a_e.dtype
+    elif use_xcorrelation:
+        img_size = a_x.shape
+        data_type = a_x.dtype
     else:
-        raise ValueError('Cannot proceed if at least one of Defocus, Correspondence, and Emergence cues can be used')
+        raise ValueError(
+            'Cannot proceed if at least one of Defocus, Correspondence, and Cross-correlation cues can be used')
 
     if lambda_wl is not None and has_pywt is False:
         lambda_wl = None
@@ -397,9 +430,9 @@ def compute_depth_map(
     if use_correspondence > 0:
         q_c = np.zeros(img_size, dtype=data_type)
         tau += W_c
-    if use_emergence > 0:
-        q_e = np.zeros(img_size, dtype=data_type)
-        tau += W_e
+    if use_xcorrelation > 0:
+        q_x = np.zeros(img_size, dtype=data_type)
+        tau += W_x
     if lambda_wl is not None:
         wl_type = 'sym4'
         wl_lvl = np.fmin(pywt.dwtn_max_level(img_size, wl_type), 2)
@@ -436,11 +469,11 @@ def compute_depth_map(
 
             update += use_correspondence * W_c * q_c
 
-        if use_emergence > 0:
-            q_e += (depth_it - a_c)
-            q_e /= np.fmax(1, np.abs(q_e))
+        if use_xcorrelation > 0:
+            q_x += (depth_it - a_c)
+            q_x /= np.fmax(1, np.abs(q_x))
 
-            update += use_emergence * W_e * q_e
+            update += use_xcorrelation * W_x * q_x
 
         if lambda_wl is not None:
             d = pywt.swtn(depth_it, wl_type, wl_lvl)
@@ -460,8 +493,10 @@ def compute_depth_map(
 def get_distances(dm, zs):
     """Convert depth map indices into distances
 
-    :param dm: the depth map (numpy.array_like)
-    :param zs: the corresponding distances in the depth map (numpy.array_like)
+    :param dm: the depth map
+    :type dm: numpy.array_like
+    :param zs: the corresponding distances in the depth map
+    :type zs: numpy.array_like
 
     :returns: the depth-map containing the real distances
     :rtype: numpy.array_like
