@@ -62,12 +62,14 @@ axs[0, 0].imshow(dc['depth_defocus'], vmin=0, vmax=len(z0s)-1)
 axs[0, 0].set_title('Depth from defocus')
 axs[1, 0].imshow(dc['confidence_defocus'])
 axs[1, 0].set_title('Confidence of defocus')
+
 axs[0, 1].imshow(dc['depth_correspondence'], vmin=0, vmax=len(z0s)-1)
 axs[0, 1].set_title('Depth from correspondence')
 axs[1, 1].imshow(dc['confidence_correspondence'])
 axs[1, 1].set_title('Confidence of correspondence')
+
 axs[0, 2].imshow(dm, vmin=0, vmax=len(z0s)-1)
-axs[0, 2].set_title('Depth map')
+axs[0, 2].set_title('Depth map - DC')
 axs[1, 2].imshow(lf.get_photograph())
 axs[1, 2].set_title('Acquisition focus')
 
@@ -76,4 +78,4 @@ for ii, d in enumerate(dists):
     axs[2, ii].set_title('Image %d' % d)
 
 plt.tight_layout()
-plt.show()
+plt.show(block=False)
