@@ -192,7 +192,7 @@ def compute_depth_cues(
 
     b = lf_sa.data[np.newaxis, ...]
     if compute_emergence:
-        highpass_filter = proc.get_highpass_filter(b.shape, 16, 4)
+        highpass_filter = proc.get_highpass_filter(b.shape, 8, 1)
         b_hp = proc.apply_bandpass_filter(b, highpass_filter)
 
     print('Computing responses for each alpha value: ', end='', flush=True)
