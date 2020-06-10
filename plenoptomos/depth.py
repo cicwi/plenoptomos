@@ -211,10 +211,10 @@ def compute_depth_cues(
             l_alpha_intuv = algo(p.FP, b, num_iter=iterations, At=p.BP, lower_limit=0)[0]
 
             if compute_defocus:
-                l_alpha_lap = _laplacian2(np.squeeze(l_alpha_intuv))
-                l_alpha_lap = np.abs(l_alpha_lap)
+                l_alpha_grad = _gradient2(np.squeeze(l_alpha_intuv))
+                l_alpha_grad = np.sqrt(np.abs(l_alpha_grad[0]) ** 2 + np.abs(l_alpha_grad[1]) ** 2)
 
-                depth_defocus = _apply_smoothing_filter(l_alpha_lap, window_filter, mask, mask_renorm)
+                depth_defocus = _apply_smoothing_filter(l_alpha_grad, window_filter, mask, mask_renorm)
                 depth_defocus = np.fmax(depth_defocus, 1e-5)
 
                 depth_cues['defocus'][ii_a, :, :] = depth_defocus[
