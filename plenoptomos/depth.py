@@ -42,7 +42,21 @@ def _apply_smoothing_filter(arr, window_filter, mask=None, mask_renorm=1):
         return sps.convolve(np.squeeze(arr), window_filter, mode='same')
 
 
-def _compute_depth_and_confidence(depth_cue, confidence_method, peak_range=2, med_filt_size=3):
+def _fit_parabola(fx, fy):
+    coords = np.empty((len(fx), 3))
+    coords[:, 0] = 1
+    coords[:, 1] = fx
+    coords[:, 2] = fx ** 2
+    return np.linalg.lstsq(coords, fy, rcond=None)[0]
+
+
+def _get_parabola_vertex(coeffs, x_offs):
+    vx = - coeffs[:, 1] / (2 * coeffs[:, 2])
+    vy = coeffs[:, 0] + vx * coeffs[:, 1] / 2
+    return (vx + x_offs, vy)
+
+
+def _compute_depth_and_confidence(depth_cue, confidence_method, peak_range=2, med_filt_size=3, quadratic_ref=True):
     cue_map_size = depth_cue.shape[1:]
     num_zs = depth_cue.shape[0]
 
@@ -52,6 +66,25 @@ def _compute_depth_and_confidence(depth_cue, confidence_method, peak_range=2, me
 
     peaks_val = np.max(response_funcs, axis=0)
     peaks_pos = np.argmax(response_funcs, axis=0)
+
+    if quadratic_ref:
+        fx = np.arange(3)
+        fy = np.zeros((3, num_pixels), dtype=response_funcs.dtype)
+
+        peak_ranges_min = (peaks_pos - 1).astype(np.intp)
+        peak_ranges_max = (peaks_pos + 2).astype(np.intp)
+
+        fx_min = np.fmax(peak_ranges_min, 0).astype(np.intp)
+        fx_max = np.fmin(peak_ranges_max, num_zs).astype(np.intp)
+
+        for ii in range(num_pixels):
+            fy_i = (fx_min[ii] - peak_ranges_min[ii]).astype(np.intp)
+            fy_e = (3 + fx_max[ii] - peak_ranges_max[ii]).astype(np.intp)
+            fy[fy_i:fy_e, ii] = response_funcs[fx_min[ii]:fx_max[ii], ii]
+
+        coeffs = _fit_parabola(fx, fy).transpose()
+
+        peaks_pos_new, peaks_val_new = _get_parabola_vertex(coeffs, peak_ranges_min)
 
     if confidence_method.lower() == 'integral':
         bckground = np.min(response_funcs, axis=0)
@@ -106,7 +139,7 @@ def compute_depth_cues(
         compute_correspondence=True, compute_emergence=False,
         beam_geometry='parallel', domain='object', psf=None,
         up_sampling=1, super_sampling=1, algorithm='bpj', iterations=5,
-        confidence_method='integral',
+        confidence_method='integral', quadratic_ref=True,
         window_size=(9, 9), window_shape='gauss', mask=None, plot_filter=False):
     """Computes depth cues, needed to create a depth map.
 
@@ -256,21 +289,21 @@ def compute_depth_cues(
         print('Computing depth estimations for defocus:\n - Preparing response..', end='', flush=True)
         c = tm.time()
         depth_cues['depth_defocus'], depth_cues['confidence_defocus'] = _compute_depth_and_confidence(
-            depth_cues['defocus'], confidence_method=confidence_method)
+            depth_cues['defocus'], confidence_method=confidence_method, quadratic_ref=quadratic_ref)
         print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_defocus'].size, tm.time() - c))
 
     if compute_emergence:
         print('Computing depth estimations for emergence:\n - Preparing response..', end='', flush=True)
         c = tm.time()
         depth_cues['depth_emergence'], depth_cues['confidence_emergence'] = _compute_depth_and_confidence(
-            depth_cues['emergence'], confidence_method=confidence_method)
+            depth_cues['emergence'], confidence_method=confidence_method, quadratic_ref=quadratic_ref)
         print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_emergence'].size, tm.time() - c))
 
     if compute_correspondence:
         print('Computing depth estimations for correspondence:\n - Preparing response..', end='', flush=True)
         c = tm.time()
         depth_cues['depth_correspondence'], depth_cues['confidence_correspondence'] = _compute_depth_and_confidence(
-            depth_cues['correspondence'], confidence_method=confidence_method)
+            depth_cues['correspondence'], confidence_method=confidence_method, quadratic_ref=quadratic_ref)
         print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_correspondence'].size, tm.time() - c))
 
     return depth_cues
