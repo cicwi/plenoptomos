@@ -42,12 +42,71 @@ def _apply_smoothing_filter(arr, window_filter, mask=None, mask_renorm=1):
         return sps.convolve(np.squeeze(arr), window_filter, mode='same')
 
 
+def _compute_depth_and_confidence(depth_cue, confidence_method, peak_range=2, med_filt_size=3):
+    cue_map_size = depth_cue.shape[1:]
+    num_zs = depth_cue.shape[0]
+
+    response_funcs = np.reshape(depth_cue, (num_zs, -1))
+
+    num_pixels = response_funcs.shape[1]
+
+    peaks_val = np.max(response_funcs, axis=0)
+    peaks_pos = np.argmax(response_funcs, axis=0)
+
+    if confidence_method.lower() == 'integral':
+        bckground = np.min(response_funcs, axis=0)
+        peaks_val -= bckground
+        response_funcs -= bckground
+
+        integral_conf = np.sum(response_funcs, axis=0) - peaks_val
+
+        invalid_vals = peaks_val == 0
+        confidence = integral_conf / (peaks_val * (num_zs-1) + invalid_vals)
+        confidence = np.fmax(1 - confidence, 0) * (1 - invalid_vals)
+
+    elif confidence_method.lower() == '2nd_peak':
+        peaks_val_second = np.zeros((num_pixels, ), dtype=response_funcs.dtype)
+
+        for ii in range(num_pixels):
+            peaks = sps.find_peaks(response_funcs[:, ii], peaks_val[ii] / 10)
+            if len(peaks[0]) > 1:
+                peaks_val_second[ii] = response_funcs[peaks[0][1], ii]
+            elif len(peaks[0]) == 1:
+                peaks_val_second[ii] = 0
+            elif len(peaks[0]) == 0:
+                peaks_val_second[ii] = peaks_val[ii]
+
+        confidence = 1 - peaks_val_second / peaks_val
+
+    elif confidence_method.lower() == 'neighbor_stddev':
+        confidence = np.empty(num_pixels, dtype=depth_cue.dtype)
+
+        peak_ranges_min = np.fmax(peaks_pos - peak_range, 0).astype(np.intp)
+        peak_ranges_max = np.fmin(peaks_pos + peak_range, num_zs-1).astype(np.intp)
+
+        for ii, pmin, pmax in zip(range(num_pixels), peak_ranges_min, peak_ranges_max):
+            pnt_pos = np.concatenate((np.arange(pmin, peaks_pos[ii]), np.arange(peaks_pos[ii]+1, pmax+1)))
+            diffs = np.abs(response_funcs[pnt_pos, ii] - peaks_val[ii])
+            dists = pnt_pos - peaks_pos[ii]
+            coeffs = diffs / np.abs(dists)
+            confidence[ii] = np.sqrt(np.sum(coeffs ** 2) / len(coeffs))
+    else:
+        raise ValueError('Unknown confidence method: %s' % confidence_method)
+
+    confidence = np.reshape(confidence, cue_map_size)
+    depth = np.reshape(peaks_pos, cue_map_size)
+    if med_filt_size is not None:
+        depth = sps.medfilt(depth, med_filt_size)
+
+    return (depth, confidence)
+
+
 def compute_depth_cues(
         lf: lightfield.Lightfield, zs, compute_defocus=True,
         compute_correspondence=True, compute_emergence=False,
         beam_geometry='parallel', domain='object', psf=None,
         up_sampling=1, super_sampling=1, algorithm='bpj', iterations=5,
-        confidence_method="integral", peak_range=3,
+        confidence_method='integral',
         window_size=(9, 9), window_shape='gauss', mask=None, plot_filter=False):
     """Computes depth cues, needed to create a depth map.
 
@@ -99,19 +158,11 @@ def compute_depth_cues(
     final_image_shape = lf_sa.camera.data_size_ts * up_sampling
     responses_shape = np.concatenate(((num_zs, ), final_image_shape))
     if compute_defocus:
-        depth_cues['defocus'] = np.zeros(responses_shape, dtype=data_type)
-        depth_cues['depth_defocus'] = np.zeros(final_image_shape, dtype=data_type)
-        depth_cues['confidence_defocus'] = np.zeros(final_image_shape, dtype=data_type)
-
+        depth_cues['defocus'] = np.empty(responses_shape, dtype=data_type)
     if compute_correspondence:
-        depth_cues['correspondence'] = np.zeros(responses_shape, dtype=data_type)
-        depth_cues['depth_correspondence'] = np.zeros(final_image_shape, dtype=data_type)
-        depth_cues['confidence_correspondence'] = np.zeros(final_image_shape, dtype=data_type)
-
+        depth_cues['correspondence'] = np.empty(responses_shape, dtype=data_type)
     if compute_emergence:
-        depth_cues['emergence'] = np.zeros(responses_shape, dtype=data_type)
-        depth_cues['depth_emergence'] = np.zeros(final_image_shape, dtype=data_type)
-        depth_cues['confidence_emergence'] = np.zeros(final_image_shape, dtype=data_type)
+        depth_cues['emergence'] = np.empty(responses_shape, dtype=data_type)
 
     paddings_ts = ((np.fmax(window_size, window_size) - 1) / 2 + 5).astype(np.intp)
     final_size_ts = lf_sa.camera.data_size_ts + 2 * paddings_ts
@@ -164,6 +215,7 @@ def compute_depth_cues(
                 l_alpha_lap = np.abs(l_alpha_lap)
 
                 depth_defocus = _apply_smoothing_filter(l_alpha_lap, window_filter, mask, mask_renorm)
+                depth_defocus = np.fmax(depth_defocus, 1e-5)
 
                 depth_cues['defocus'][ii_a, :, :] = depth_defocus[
                     paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
@@ -171,7 +223,10 @@ def compute_depth_cues(
             if compute_emergence:
                 # Needs a high pass filter to the data!
                 l_alpha_intuv_hp = algo(p.FP, b_hp, num_iter=iterations, At=p.BP, lower_limit=0)[0]
+                l_alpha_intuv_hp = np.abs(l_alpha_intuv_hp)
+
                 depth_emergence = _apply_smoothing_filter(l_alpha_intuv_hp, window_filter, mask, mask_renorm)
+                depth_emergence = np.fmax(depth_emergence, 1e-5)
 
                 depth_cues['emergence'][ii_a, :, :] = depth_emergence[
                     paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
@@ -187,7 +242,9 @@ def compute_depth_cues(
                     bpj_variances = solvers.BPJ()(p.FP, variances, At=p.BP, lower_limit=0)[0]
 
                 std_devs = np.sqrt(bpj_variances)
-                depth_correspondence = _apply_smoothing_filter(std_devs, window_filter, mask, mask_renorm)
+                inv_std_devs = 1 / np.fmax(std_devs, 1e-5)
+                depth_correspondence = _apply_smoothing_filter(inv_std_devs, window_filter, mask, mask_renorm)
+                depth_correspondence = np.fmax(depth_correspondence, 1e-5)
 
                 depth_cues['correspondence'][ii_a, :, :] = depth_correspondence[
                     paddings_ts[0]:-paddings_ts[0], paddings_ts[1]:-paddings_ts[1]]
@@ -199,125 +256,23 @@ def compute_depth_cues(
     if compute_defocus:
         print('Computing depth estimations for defocus:\n - Preparing response..', end='', flush=True)
         c = tm.time()
-        defocus_map_size = depth_cues['defocus'].shape[1:]
-
-        depth_defocus = np.reshape(depth_cues['defocus'], (num_zs, -1))
-
-        num_pixels = depth_defocus.shape[1]
-
-        pk_vals = np.max(depth_defocus, axis=0)
-        pk_locs = np.argmax(depth_defocus, axis=0)
-
-        depth_cues['depth_defocus'][:] = np.reshape(pk_locs, defocus_map_size)
-
-        if confidence_method.lower() == 'integral':
-            bckground = np.min(depth_defocus, axis=0)
-            pk_vals -= bckground
-            depth_defocus -= bckground
-            integral_conf = np.sum(depth_defocus, axis=0) - pk_vals
-
-            depth_cues['confidence_defocus'][:] = np.reshape(integral_conf / (pk_vals * (num_zs-1)), defocus_map_size)
-            depth_cues['confidence_defocus'] = np.fmax(1 - depth_cues['confidence_defocus'], 0)
-        elif confidence_method.lower() == 'neighbor_stddev':
-            depth_cues['confidence_defocus'] = np.zeros(num_pixels, dtype=depth_defocus.dtype)
-
-            peak_ranges_min = np.fmax(pk_locs - peak_range, 0).astype(np.intp)
-            peak_ranges_max = np.fmin(pk_locs + peak_range, num_zs-1).astype(np.intp)
-            for ii, pmin, pmax in zip(range(len(pk_locs)), peak_ranges_min, peak_ranges_max):
-                pnt_pos = np.concatenate((np.arange(pmin, pk_locs[ii]), np.arange(pk_locs[ii]+1, pmax+1)))
-                diffs = np.abs(depth_defocus[pnt_pos, ii] - pk_vals[ii])
-                dists = pnt_pos - pk_locs[ii]
-                coeffs = diffs / np.abs(dists)
-                depth_cues['confidence_defocus'][ii] = np.sqrt(np.sum(coeffs ** 2) / len(coeffs))
-
-            depth_cues['confidence_defocus'] = np.reshape(depth_cues['confidence_defocus'], defocus_map_size)
-        else:
-            raise ValueError('Unknown confidence method: %s' % confidence_method)
-
-        print('\b\b: Done (%d) in %g seconds.' % (num_pixels, tm.time() - c))
+        depth_cues['depth_defocus'], depth_cues['confidence_defocus'] = _compute_depth_and_confidence(
+            depth_cues['defocus'], confidence_method=confidence_method)
+        print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_defocus'].size, tm.time() - c))
 
     if compute_emergence:
         print('Computing depth estimations for emergence:\n - Preparing response..', end='', flush=True)
         c = tm.time()
-        emergence_map_size = depth_cues['emergence'].shape[1:]
-
-        depth_emergence = np.reshape(depth_cues['emergence'], (num_zs, -1))
-
-        num_pixels = depth_emergence.shape[1]
-
-        pk_vals = np.max(depth_emergence, axis=0)
-        pk_locs = np.argmax(depth_emergence, axis=0)
-
-        depth_cues['depth_emergence'][:] = np.reshape(pk_locs, emergence_map_size)
-
-        if confidence_method.lower() == 'integral':
-            bckground = np.min(depth_emergence, axis=0)
-            pk_vals -= bckground
-            depth_emergence -= bckground
-            integral_conf = np.sum(depth_emergence, axis=0) - pk_vals
-
-            depth_cues['confidence_emergence'][:] = np.reshape(integral_conf / (pk_vals * (num_zs-1)), emergence_map_size)
-            depth_cues['confidence_emergence'] = np.fmax(1 - depth_cues['confidence_emergence'], 0)
-        elif confidence_method.lower() == 'neighbor_stddev':
-            depth_cues['confidence_emergence'] = np.zeros(num_pixels, dtype=depth_emergence.dtype)
-            peak_ranges_min = np.fmax(pk_locs - peak_range, 0).astype(np.intp)
-            peak_ranges_max = np.fmin(pk_locs + peak_range, num_zs-1).astype(np.intp)
-            for ii, pmin, pmax in zip(range(len(pk_locs)), peak_ranges_min, peak_ranges_max):
-                pnt_pos = np.concatenate((np.arange(pmin, pk_locs[ii]), np.arange(pk_locs[ii]+1, pmax+1)))
-                diffs = np.abs(depth_emergence[pnt_pos, ii] - pk_vals[ii])
-                dists = pnt_pos - pk_locs[ii]
-                coeffs = diffs / np.abs(dists)
-                depth_cues['confidence_emergence'][ii] = np.sqrt(np.sum(coeffs ** 2) / len(coeffs))
-
-            depth_cues['confidence_emergence'] = np.reshape(depth_cues['confidence_emergence'], emergence_map_size)
-        else:
-            raise ValueError('Unknown confidence method: %s' % confidence_method)
-
-        print('\b\b: Done (%d) in %g seconds.' % (num_pixels, tm.time() - c))
+        depth_cues['depth_emergence'], depth_cues['confidence_emergence'] = _compute_depth_and_confidence(
+            depth_cues['emergence'], confidence_method=confidence_method)
+        print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_emergence'].size, tm.time() - c))
 
     if compute_correspondence:
         print('Computing depth estimations for correspondence:\n - Preparing response..', end='', flush=True)
         c = tm.time()
-
-        correspondence_map_size = depth_cues['correspondence'].shape[1:]
-
-        depth_correspondence = np.reshape(depth_cues['correspondence'], (num_zs, -1))
-
-        num_pixels = depth_correspondence.shape[1]
-
-        pk_vals = np.min(depth_correspondence, axis=0)
-        pk_locs = np.argmin(depth_correspondence, axis=0)
-
-        depth_cues['depth_correspondence'][:] = np.reshape(pk_locs, correspondence_map_size)
-
-        if confidence_method.lower() == 'integral':
-            bckground = np.max(depth_correspondence, axis=0)
-            pk_vals -= bckground
-            depth_correspondence -= bckground
-            pk_vals = np.abs(pk_vals)
-            depth_correspondence = np.abs(depth_correspondence)
-            integral_conf = np.sum(depth_correspondence, axis=0) - pk_vals
-
-            depth_cues['confidence_correspondence'][:] = np.reshape(
-                integral_conf / (pk_vals * (num_zs-1)), correspondence_map_size)
-            depth_cues['confidence_correspondence'] = np.fmax(1 - depth_cues['confidence_correspondence'], 0)
-        elif confidence_method.lower() == 'neighbor_stddev':
-            depth_cues['confidence_correspondence'] = np.zeros(num_pixels, dtype=depth_correspondence.dtype)
-            peak_ranges_min = np.fmax(pk_locs - peak_range, 0).astype(np.intp)
-            peak_ranges_max = np.fmin(pk_locs + peak_range, num_zs-1).astype(np.intp)
-            for ii, pmin, pmax in zip(range(len(pk_locs)), peak_ranges_min, peak_ranges_max):
-                pnt_pos = np.concatenate((np.arange(pmin, pk_locs[ii]), np.arange(pk_locs[ii]+1, pmax+1)))
-                diffs = np.abs(depth_correspondence[pnt_pos, ii] - pk_vals[ii])
-                dists = pnt_pos - pk_locs[ii]
-                coeffs = diffs / np.abs(dists)
-                depth_cues['confidence_correspondence'][ii] = np.sqrt(np.sum(coeffs ** 2) / len(coeffs))
-
-            depth_cues['confidence_correspondence'] = np.reshape(
-                depth_cues['confidence_correspondence'], correspondence_map_size)
-        else:
-            raise ValueError('Unknown confidence method: %s' % confidence_method)
-
-        print('\b\b: Done (%d) in %g seconds.' % (num_pixels, tm.time() - c))
+        depth_cues['depth_correspondence'], depth_cues['confidence_correspondence'] = _compute_depth_and_confidence(
+            depth_cues['correspondence'], confidence_method=confidence_method)
+        print('\b\b: Done (%d) in %g seconds.' % (depth_cues['depth_correspondence'].size, tm.time() - c))
 
     return depth_cues
 
