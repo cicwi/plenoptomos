@@ -130,9 +130,16 @@ def compute_depth_cues(
     :rtype: dict
     """
 
+    lf_sa = lf.clone()
+    lf_sa.set_mode_subaperture()
+
+    num_zs = zs.size
+
     window_size = np.array(window_size) * up_sampling
 
-    data_type = lf.data.dtype
+    window_filter = proc.get_smoothing_filter(
+            window_size=window_size, window_shape=window_shape,
+            plot_filter=plot_filter)
 
     depth_cues = {
         'defocus': np.array(()),
@@ -146,15 +153,7 @@ def compute_depth_cues(
         'confidence_emergence': np.array(())
         }
 
-    lf_sa = lf.clone()
-    lf_sa.set_mode_subaperture()
-
-    num_zs = zs.size
-
-    window_filter = proc.get_smoothing_filter(
-            window_size=window_size, window_shape=window_shape,
-            plot_filter=plot_filter)
-
+    data_type = lf.data.dtype
     final_image_shape = lf_sa.camera.data_size_ts * up_sampling
     responses_shape = np.concatenate(((num_zs, ), final_image_shape))
     if compute_defocus:
@@ -198,7 +197,7 @@ def compute_depth_cues(
 
     print('Computing responses for each alpha value: ', end='', flush=True)
     c = tm.time()
-    # Computing the changes of base, and integrating (for each alpha)
+
     for ii_a, z0 in enumerate(zs):
         prnt_str = '%03d/%03d' % (ii_a, num_zs)
         print(prnt_str, end='', flush=True)
