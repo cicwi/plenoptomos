@@ -313,7 +313,8 @@ class PSFApply(object):
     def apply_psf_direct(self, imgs):
         """Applies the PSF to the given images
 
-        :param imgs: The incoming images (numpy.array_like)
+        :param imgs: The incoming images
+        :type imgs: numpy.array_like
 
         :returns: The convolution between the images and the PSF
         :rtype: numpy.array_like
@@ -328,7 +329,8 @@ class PSFApply(object):
     def apply_psf_adjoint(self, imgs):
         """Applies the adjoint of the PSF to the given images
 
-        :param imgs: The incoming images (numpy.array_like)
+        :param imgs: The incoming images
+        :type imgs: numpy.array_like
 
         :returns: The convolution between the images and the adjoint of the PSF
         :rtype: numpy.array_like
@@ -345,15 +347,22 @@ class PSFApply(object):
             lambda_tv=None, lower_limit=None, upper_limit=None, verbose=False):
         """Uses iterative algorithms to deconvolve the PSF from the given images
 
-        :param imgs: The incoming images (numpy.array_like)
-        :param iterations: The number of reconstruciton iterations (int, default: 100)
-        :param lambda_wl: Weight factor for the wavelet deconvolution.
-        If None is passed, the SIRT algorithm will be used instead (float, default: None)
-        :param lambda_tv: Weight factor for the TV term.
-        If None is passed, the SIRT algorithm will be used instead (float, default: None)
-        :param data_term: Data consistency term used by the wl recosntruction. Options: 'l2' | 'kl' (string, default: 'l2')
-        :param lower_limit: Lower clipping value (float, default: None)
-        :param upper_limit: Upper clipping value (float, default: None)
+        :param imgs: The incoming images
+        :type imgs: numpy.array_like
+        :param iterations: The number of reconstruciton iterations, defaults to 100
+        :type iterations: int, optional
+        :param data_term:  Data consistency term used by the wl recosntruction. Options: 'l2' | 'kl', defaults to 'l2'
+        :type data_term: str, optional
+        :param lambda_wl: Weight factor for the wavelet deconvolution, defaults to None
+        :type lambda_wl: float, optional. If None is passed, the SIRT algorithm will be used instead.
+        :param lambda_tv: Weight factor for the TV term, defaults to None
+        :type lambda_tv: float, optional. If None is passed, the SIRT algorithm will be used instead
+        :param lower_limit: Lower clipping value, defaults to None
+        :type lower_limit: float, optional
+        :param upper_limit: Upper clipping value, defaults to None
+        :type upper_limit: float, optional
+        :param verbose: Enable messages, defaults to False
+        :type verbose: boolean, optional
 
         :returns: The deconvolution of the images
         :rtype: numpy.array_like
