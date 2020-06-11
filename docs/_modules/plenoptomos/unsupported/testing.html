@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>plenoptomos.unsupported.testing &mdash; plenoptomos  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> plenoptomos
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fileformat.html">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">plenoptomos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>plenoptomos.unsupported.testing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for plenoptomos.unsupported.testing</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Mon Jun 18 16:51:41 2018</span>
+
+<span class="sd">@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,</span>
+<span class="sd">and ESRF - The European Synchrotron, Grenoble, France</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">time</span> <span class="k">as</span> <span class="nn">tm</span>
+
+<span class="kn">from</span> <span class="nn">plenoptomos</span> <span class="kn">import</span> <span class="n">refocus</span><span class="p">,</span> <span class="n">tomo</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">solvers</span><span class="p">,</span> <span class="n">utils_io</span><span class="p">,</span> <span class="n">psf</span>
+
+
+<div class="viewcode-block" id="Tester"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.testing.Tester">[docs]</a><span class="k">class</span> <span class="nc">Tester</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">default_rec_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">up_sampling_st</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">psf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fourier_method</span><span class="o">=</span><span class="s1">&#39;slice&#39;</span><span class="p">,</span> <span class="n">up_sampling_function</span><span class="o">=</span><span class="s1">&#39;flat&#39;</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">)</span>
+    <span class="n">default_test_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">zs</span><span class="o">=</span><span class="p">[],</span> <span class="n">domain</span><span class="o">=</span><span class="p">[],</span> <span class="n">beam</span><span class="o">=</span><span class="p">[],</span> <span class="n">algo</span><span class="o">=</span><span class="p">[],</span> <span class="n">lambda_reg</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">default_conditions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">down_sampling_st</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">down_sampling_uv</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">extras</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">test_name</span><span class="p">,</span> <span class="n">lfs</span><span class="p">,</span> <span class="n">test_params</span><span class="o">=</span><span class="p">{},</span> <span class="n">rec_params</span><span class="o">=</span><span class="p">{},</span> <span class="n">test_conds</span><span class="o">=</span><span class="p">{},</span>
+            <span class="n">is_rgb</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">result_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_name</span> <span class="o">=</span> <span class="n">test_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lfs</span> <span class="o">=</span> <span class="n">lfs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_rgb</span> <span class="o">=</span> <span class="n">is_rgb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span> <span class="o">=</span> <span class="n">result_dir</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;results&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span> <span class="o">=</span> <span class="n">save</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">Tester</span><span class="o">.</span><span class="n">default_test_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">test_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">Tester</span><span class="o">.</span><span class="n">default_rec_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rec_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">Tester</span><span class="o">.</span><span class="n">default_conditions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">test_conds</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Tester.get_options_number"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.testing.Tester.get_options_number">[docs]</a>    <span class="k">def</span> <span class="nf">get_options_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">get_num_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">):</span>
+            <span class="n">option</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_params</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">option</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="mi">1</span>
+        <span class="n">option_nums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">get_num_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_params</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+        <span class="n">more_than_ones</span> <span class="o">=</span> <span class="n">option_nums</span><span class="p">[</span><span class="n">option_nums</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">more_than_ones</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">more_than_ones</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">more_than_ones</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="n">more_than_ones</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong set op options (Non matching numbers!)&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">more_than_ones</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">more_than_ones</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Tester.get_test_option"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.testing.Tester.get_test_option">[docs]</a>    <span class="k">def</span> <span class="nf">get_test_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option_name</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">struct</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">struct</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">struct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_params</span>
+        <span class="n">test_option</span> <span class="o">=</span> <span class="n">struct</span><span class="p">[</span><span class="n">option_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_option</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_option</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_option</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">test_option</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">test_option</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">test_option</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="n">test_option</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">test_option</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s1">&#39;What the **** is :&#39;</span><span class="p">,</span> <span class="n">option_name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Tester.launch_reconstruction"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.testing.Tester.launch_reconstruction">[docs]</a>    <span class="k">def</span> <span class="nf">launch_reconstruction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ii_t</span><span class="p">):</span>
+        <span class="n">td</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_option</span><span class="p">(</span><span class="s1">&#39;domain&#39;</span><span class="p">,</span> <span class="n">ii_t</span><span class="p">)</span>
+        <span class="n">tb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_option</span><span class="p">(</span><span class="s1">&#39;beam&#39;</span><span class="p">,</span> <span class="n">ii_t</span><span class="p">)</span>
+        <span class="n">tz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_option</span><span class="p">(</span><span class="s1">&#39;zs&#39;</span><span class="p">,</span> <span class="n">ii_t</span><span class="p">)</span>
+        <span class="n">ta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_option</span><span class="p">(</span><span class="s1">&#39;algo&#39;</span><span class="p">,</span> <span class="n">ii_t</span><span class="p">)</span>
+
+        <span class="n">up_sampling_st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span><span class="p">[</span><span class="s1">&#39;up_sampling_st&#39;</span><span class="p">]</span>
+        <span class="n">border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span><span class="p">[</span><span class="s1">&#39;border&#39;</span><span class="p">]</span>
+        <span class="n">iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span><span class="p">[</span><span class="s1">&#39;iterations&#39;</span><span class="p">]</span>
+        <span class="n">fourier_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span><span class="p">[</span><span class="s1">&#39;fourier_method&#39;</span><span class="p">]</span>
+        <span class="n">data_term</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_option</span><span class="p">(</span><span class="s1">&#39;data_term&#39;</span><span class="p">,</span> <span class="n">ii_t</span><span class="p">,</span> <span class="n">struct</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span><span class="p">)</span>
+        <span class="n">up_sampling_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_option</span><span class="p">(</span><span class="s1">&#39;up_sampling_function&#39;</span><span class="p">,</span> <span class="n">ii_t</span><span class="p">,</span> <span class="n">struct</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span><span class="p">)</span>
+
+        <span class="n">psf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rec_params</span><span class="p">[</span><span class="s1">&#39;psf&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">psf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_rgb</span><span class="p">:</span>
+            <span class="n">psf</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">lambda_reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_test_option</span><span class="p">(</span><span class="s1">&#39;lambda_reg&#39;</span><span class="p">,</span> <span class="n">ii_t</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">refocus</span><span class="o">.</span><span class="n">compute_refocus_integration</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">tz</span><span class="p">,</span> <span class="n">up_sampling</span><span class="o">=</span><span class="n">up_sampling_st</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="n">border</span><span class="p">,</span> <span class="n">beam_geometry</span><span class="o">=</span><span class="n">tb</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">td</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;fou&#39;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">refocus</span><span class="o">.</span><span class="n">compute_refocus_fourier</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">tz</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">fourier_method</span><span class="p">,</span> <span class="n">padding_factor</span><span class="o">=</span><span class="mf">1.125</span><span class="p">,</span>
+                    <span class="n">up_sampling</span><span class="o">=</span><span class="n">up_sampling_st</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="n">border</span><span class="p">,</span> <span class="n">beam_geometry</span><span class="o">=</span><span class="n">tb</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">td</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;bpj&#39;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">tomo</span><span class="o">.</span><span class="n">compute_refocus_backprojection</span><span class="p">(</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">tz</span><span class="p">,</span> <span class="n">up_sampling</span><span class="o">=</span><span class="n">up_sampling_st</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="n">border</span><span class="p">,</span> <span class="n">beam_geometry</span><span class="o">=</span><span class="n">tb</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">td</span><span class="p">)</span>
+<span class="c1">#            algo = solvers.BPJ(verbose=True)</span>
+<span class="c1">#            func = lambda x, _ : tomo.compute_refocus_iterative(</span>
+<span class="c1">#                    x, tz, algorithm=algo, up_sampling=up_sampling_st, border=border, beam_geometry=tb, domain=td)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ta</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itr&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itr&#39;</span><span class="p">:</span>
+                    <span class="n">algo</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_uc</span><span class="p">(</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itr_tv&#39;</span><span class="p">:</span>
+                    <span class="n">algo</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_tv</span><span class="p">(</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="n">lambda_reg</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itr_wl&#39;</span><span class="p">:</span>
+                    <span class="n">algo</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_wl</span><span class="p">(</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="n">lambda_reg</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">,</span> <span class="n">wl_type</span><span class="o">=</span><span class="s1">&#39;db1&#39;</span><span class="p">,</span> <span class="n">decomp_lvl</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itr_d2&#39;</span><span class="p">:</span>
+                    <span class="n">algo</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_smooth</span><span class="p">(</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lambda_d2</span><span class="o">=</span><span class="n">lambda_reg</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">)</span>
+
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">tomo</span><span class="o">.</span><span class="n">compute_refocus_iterative</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">tz</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">algo</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span>
+                        <span class="n">up_sampling</span><span class="o">=</span><span class="n">up_sampling_st</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="n">border</span><span class="p">,</span>
+                        <span class="n">up_sampling_function</span><span class="o">=</span><span class="n">up_sampling_function</span><span class="p">,</span>
+                        <span class="n">beam_geometry</span><span class="o">=</span><span class="n">tb</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">td</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itp&#39;</span><span class="p">:</span>
+                    <span class="n">algo</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_uc</span><span class="p">(</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itp_tv&#39;</span><span class="p">:</span>
+                    <span class="n">algo</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_tv</span><span class="p">(</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="n">lambda_reg</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itp_wl&#39;</span><span class="p">:</span>
+                    <span class="n">algo</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_wl</span><span class="p">(</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="n">lambda_reg</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">,</span> <span class="n">wl_type</span><span class="o">=</span><span class="s1">&#39;db1&#39;</span><span class="p">,</span> <span class="n">decomp_lvl</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;itp_d2&#39;</span><span class="p">:</span>
+                    <span class="n">algo</span> <span class="o">=</span> <span class="n">solvers</span><span class="o">.</span><span class="n">CP_smooth</span><span class="p">(</span>
+                        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">lambda_d2</span><span class="o">=</span><span class="n">lambda_reg</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">data_term</span><span class="o">=</span><span class="n">data_term</span><span class="p">)</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="n">tomo</span><span class="o">.</span><span class="n">compute_refocus_iterative</span><span class="p">(</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">tz</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">algo</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span><span class="p">,</span>
+                        <span class="n">up_sampling</span><span class="o">=</span><span class="n">up_sampling_st</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="n">border</span><span class="p">,</span>
+                        <span class="n">up_sampling_function</span><span class="o">=</span><span class="n">up_sampling_function</span><span class="p">,</span>
+                        <span class="n">psf</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">beam_geometry</span><span class="o">=</span><span class="n">tb</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">td</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_rgb</span><span class="p">:</span>
+            <span class="n">imgs_r</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lfs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">psf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">imgs_g</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lfs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">psf</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">imgs_b</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lfs</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">psf</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;fou&#39;</span><span class="p">):</span>
+                <span class="n">lf_ones</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+                <span class="n">lf_ones</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">lf_ones</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">imgs_ones</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">lf_ones</span><span class="p">,</span> <span class="n">psf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">imgs_r</span> <span class="o">/=</span> <span class="n">imgs_ones</span>
+                <span class="n">imgs_g</span> <span class="o">/=</span> <span class="n">imgs_ones</span>
+                <span class="n">imgs_b</span> <span class="o">/=</span> <span class="n">imgs_ones</span>
+
+            <span class="n">imgs</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">merge_rgb_images</span><span class="p">(</span><span class="n">imgs_r</span><span class="p">,</span> <span class="n">imgs_g</span><span class="p">,</span> <span class="n">imgs_b</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">imgs</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lfs</span><span class="p">,</span> <span class="n">psf</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span><span class="p">[</span><span class="s1">&#39;extras&#39;</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                <span class="n">extras_str</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span><span class="p">[</span><span class="s1">&#39;extras&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span><span class="p">[</span><span class="s1">&#39;extras&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span><span class="p">[</span><span class="s1">&#39;extras&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">extras_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">extras_str</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span><span class="p">[</span><span class="s1">&#39;extras&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ta</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;fou&#39;</span><span class="p">:</span>
+                <span class="n">extras_str</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">extras_str</span><span class="p">,</span> <span class="n">fourier_method</span><span class="p">])</span>
+
+            <span class="n">imgs_fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_algo-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">_domain-</span><span class="si">%s</span><span class="s1">_beam-</span><span class="si">%s</span><span class="s1">_us-st</span><span class="si">%d</span><span class="s1">_ds-st</span><span class="si">%d</span><span class="s1">-uv</span><span class="si">%d%s</span><span class="s1">.h5&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_name</span><span class="p">,</span> <span class="n">ta</span><span class="p">,</span> <span class="n">data_term</span><span class="p">,</span> <span class="n">td</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="n">up_sampling_st</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span><span class="p">[</span><span class="s1">&#39;down_sampling_st&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_conditions</span><span class="p">[</span><span class="s1">&#39;down_sampling_uv&#39;</span><span class="p">],</span>
+                    <span class="n">extras_str</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span><span class="p">)</span>
+            <span class="n">imgs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result_dir</span><span class="p">,</span> <span class="n">imgs_fname</span><span class="p">)</span>
+            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_refocused_stack</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">imgs_path</span><span class="p">,</span> <span class="n">zs</span><span class="o">=</span><span class="n">tz</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Blurring"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.testing.Blurring">[docs]</a><span class="k">class</span> <span class="nc">Blurring</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cameras</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_psfs_ml</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cameras</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cameras</span> <span class="o">=</span> <span class="n">cameras</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">psfs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vu&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;ts&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;defocus&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vu&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;ts&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;defocus&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+<div class="viewcode-block" id="Blurring.create_psf_lenses"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.testing.Blurring.create_psf_lenses">[docs]</a>    <span class="k">def</span> <span class="nf">create_psf_lenses</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">=</span><span class="s1">&#39;vu&#39;</span><span class="p">,</span> <span class="n">airy_rings</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">refocus_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">up_sampling</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">plot_psfs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_otf</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">make_psf</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">psf</span><span class="o">.</span><span class="n">PSF</span><span class="o">.</span><span class="n">create_theo_psf</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">=</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">airy_rings</span><span class="o">=</span><span class="n">airy_rings</span><span class="p">,</span> <span class="n">refocus_distance</span><span class="o">=</span><span class="n">refocus_distance</span><span class="p">,</span> <span class="n">up_sampling</span><span class="o">=</span><span class="n">up_sampling</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">psfs</span><span class="p">[</span><span class="n">coordinates</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_psf</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cameras</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">plot_psfs</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_psfs_ml</span><span class="p">):</span>
+                <span class="n">pixels_distance</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">psfs</span><span class="p">[</span><span class="n">coordinates</span><span class="p">][</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">grid_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">pixels_distance</span><span class="p">,</span> <span class="n">pixels_distance</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pixels_distance</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="p">[</span><span class="n">grid_p1</span><span class="p">,</span> <span class="n">grid_p2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">grid_p</span><span class="p">,</span> <span class="n">grid_p</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">)</span>
+
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_psfs_ml</span><span class="p">,</span> <span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">grid_p1</span><span class="p">,</span> <span class="n">grid_p2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">psfs</span><span class="p">[</span><span class="n">coordinates</span><span class="p">][</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.5</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;vu&#39;</span><span class="p">:</span>
+            <span class="n">data_format</span> <span class="o">=</span> <span class="s1">&#39;raw&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_format</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">coordinates</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">psf</span><span class="o">.</span><span class="n">PSFApply2D</span><span class="p">(</span><span class="n">psf_d</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">use_otf</span><span class="o">=</span><span class="n">use_otf</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">use_fftconv</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">psfs</span><span class="p">[</span><span class="n">coordinates</span><span class="p">]]</span></div>
+
+<div class="viewcode-block" id="Blurring.blur"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.testing.Blurring.blur">[docs]</a>    <span class="k">def</span> <span class="nf">blur</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lfs</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">=</span><span class="s1">&#39;vu&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;vu&#39;</span><span class="p">:</span>
+                <span class="n">lens_type</span> <span class="o">=</span> <span class="s1">&#39;micro-lens&#39;</span>
+            <span class="k">elif</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ts&#39;</span><span class="p">:</span>
+                <span class="n">lens_type</span> <span class="o">=</span> <span class="s1">&#39;main-lens&#39;</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_psfs_ml</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">detect_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cameras</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Applying </span><span class="si">%s</span><span class="s1"> PSF for color: </span><span class="si">%s</span><span class="s1">..&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lens_type</span><span class="p">,</span> <span class="n">color</span><span class="o">.</span><span class="n">upper</span><span class="p">()),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;vu&#39;</span><span class="p">:</span>
+                <span class="n">data_raw</span> <span class="o">=</span> <span class="n">lfs</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">get_raw_detector_picture</span><span class="p">()</span>
+                <span class="n">data_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">coordinates</span><span class="p">][</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">apply_psf_direct</span><span class="p">(</span><span class="n">data_raw</span><span class="p">)</span>
+                <span class="n">lfs</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">set_raw_detector_picture</span><span class="p">(</span><span class="n">data_raw</span><span class="o">=</span><span class="n">data_raw</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lfs</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">coordinates</span><span class="p">][</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">apply_psf_direct</span><span class="p">(</span><span class="n">lfs</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\b\b</span><span class="s1">: Done in </span><span class="si">%g</span><span class="s1"> seconds.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

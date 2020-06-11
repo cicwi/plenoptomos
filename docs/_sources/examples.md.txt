@@ -101,7 +101,7 @@ The computed depth cues are then assembled in a depth-map with the following opt
 dm = pleno.depth.compute_depth_map(dc, lambda_tv=1.0, lambda_d2=None)
 ```
 The expected output is:
-![](Images/example_03_results.png "results_rose_depth")
+![](Images/example_03_results_grad.png "results_rose_depth")
 
 The function `compute_depth_cues` is highly tunable and allows the user to use advanced refocusing methods in the computation of the said depth cues.
 For instance:

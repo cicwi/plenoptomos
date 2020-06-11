@@ -10,6 +10,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 -->
 
+[Unreleased]: https://www.github.com/cicwi/plenoptomos/compare/v0.1.2...develop
+
+## 0.1.2 - 2020-06-11
+### Added
+- Support for pixel masks
+- Support for saving in .vox data format
+- Image processing functions (smoothing, lowpass and highpass filters, background subtraction, etc)
+- Sub-aperture image warping
+- Simple focal stack visualization tool
+- Unsupported tools for: tomographic reconstructions, matrix testing, and creation of refocusing movies
+- Depth-estimation quadratic refinement of peak positions
+- Depth-estimation "2nd peak" confidence method
+- Complete support for cross-correlation cue
+### Fixed
+- Test failure
+- Roll-off correction for Fourier refocusing
+- Formatting style (linting applied)
+- Documentation (including docstrings quality)
+- Defocus depth cue: use gradient instead of laplacian
+- Correspondence depth cue: correct computation of confidence
+
 ## 0.1.1 - 2019-12-12
 ### Added
 - Example on creating and using files in .vox data format
@@ -25,12 +46,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 0.1.0 - 2019-03-25
 - Initial release.
 ### Added
-* support for a few types of datasets and formats (including the .vox format).
-* support for refocusing using standard algorithms like the integration and Fourier methods.
-* support for GPU accelerated tomography based refocusing, including the following algorithms:
+- support for a few types of datasets and formats (including the .vox format).
+- support for refocusing using standard algorithms like the integration and Fourier methods.
+- support for GPU accelerated tomography based refocusing, including the following algorithms:
   * unfiltered back-projection
   * SIRT
   * Chambolle-Pock (Least-square, TV)
-* support for depth estimation
-
-[Unreleased]: https://www.github.com/cicwi/plenoptomos/compare/v0.1.0...develop
+- support for depth estimation

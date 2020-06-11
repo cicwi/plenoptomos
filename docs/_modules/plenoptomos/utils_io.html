@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -150,18 +150,19 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Created on Wed Mar  1 16:09:53 2017</span>
-
-<span class="sd">@author: vigano</span>
-
 <span class="sd">Convenience functions for handling IO with hdf5 files of frequently used data</span>
 <span class="sd">structures.</span>
+
+<span class="sd">@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,</span>
+<span class="sd">and ESRF - The European Synchrotron, Grenoble, France</span>
+
+<span class="sd">Created on Wed Mar  1 16:09:53 2017</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="nn">mim</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">lightfield</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">lightfield</span>
 
 <span class="kn">import</span> <span class="nn">h5py</span>
 
@@ -188,6 +189,7 @@
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saved dataset &quot;</span><span class="si">%s</span><span class="s1">&quot; to file: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dset_name</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div>
 
+
 <div class="viewcode-block" id="load_field_fromh5"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.utils_io.load_field_fromh5">[docs]</a><span class="k">def</span> <span class="nf">load_field_fromh5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
     <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -203,7 +205,7 @@
         <span class="n">save_field_toh5</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;zs&#39;</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="save_lightfield"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.utils_io.save_lightfield">[docs]</a><span class="k">def</span> <span class="nf">save_lightfield</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lf</span> <span class="p">:</span> <span class="n">lightfield</span><span class="o">.</span><span class="n">Lightfield</span><span class="p">):</span>
+<div class="viewcode-block" id="save_lightfield"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.utils_io.save_lightfield">[docs]</a><span class="k">def</span> <span class="nf">save_lightfield</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lf</span><span class="p">:</span> <span class="n">lightfield</span><span class="o">.</span><span class="n">Lightfield</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">lf</span><span class="o">.</span><span class="n">camera</span><span class="o">.</span><span class="vm">__dict__</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -212,9 +214,12 @@
         <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">lf</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lf</span><span class="o">.</span><span class="n">flat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;flat&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">lf</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lf</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;mask&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">lf</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lf</span><span class="o">.</span><span class="n">shifts_vu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lf</span><span class="o">.</span><span class="n">shifts_vu</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> \
                 <span class="ow">and</span> <span class="n">lf</span><span class="o">.</span><span class="n">shifts_vu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lf</span><span class="o">.</span><span class="n">shifts_vu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;shifts_vu&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">lf</span><span class="o">.</span><span class="n">shifts_vu</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="load_lightfield"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.utils_io.load_lightfield">[docs]</a><span class="k">def</span> <span class="nf">load_lightfield</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -227,11 +232,11 @@
         <span class="n">lf</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][()]</span>
         <span class="k">if</span> <span class="s1">&#39;/flat&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">lf</span><span class="o">.</span><span class="n">flat</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;flat&#39;</span><span class="p">][()]</span>
+        <span class="k">if</span> <span class="s1">&#39;/mask&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">lf</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">][()]</span>
         <span class="k">if</span> <span class="s1">&#39;/shifts_vu&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">lf</span><span class="o">.</span><span class="n">shifts_vu</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;shifts_vu&#39;</span><span class="p">][()]</span>
         <span class="k">return</span> <span class="n">lf</span></div>
-
-
 </pre></div>
 
            </div>

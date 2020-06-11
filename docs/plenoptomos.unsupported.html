@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>plenoptomos.unsupported package &mdash; plenoptomos  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="plenoptomos package" href="plenoptomos.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> plenoptomos
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fileformat.html">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples description</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">plenoptomos</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="plenoptomos.html">plenoptomos package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="plenoptomos.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">plenoptomos.unsupported package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.colors">plenoptomos.colors module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.data_format">plenoptomos.data_format module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.depth">plenoptomos.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.import_lf">plenoptomos.import_lf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.lightfield">plenoptomos.lightfield module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.psf">plenoptomos.psf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.refocus">plenoptomos.refocus module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.solvers">plenoptomos.solvers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.tomo">plenoptomos.tomo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.utils_io">plenoptomos.utils_io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.utils_plot">plenoptomos.utils_plot module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos.utils_proc">plenoptomos.utils_proc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plenoptomos.html#module-plenoptomos">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">plenoptomos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">plenoptomos</a> &raquo;</li>
+        
+          <li><a href="plenoptomos.html">plenoptomos package</a> &raquo;</li>
+        
+      <li>plenoptomos.unsupported package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/plenoptomos.unsupported.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="plenoptomos-unsupported-package">
+<h1>plenoptomos.unsupported package<a class="headerlink" href="#plenoptomos-unsupported-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-plenoptomos.unsupported.geometry">
+<span id="plenoptomos-unsupported-geometry-module"></span><h2>plenoptomos.unsupported.geometry module<a class="headerlink" href="#module-plenoptomos.unsupported.geometry" title="Permalink to this headline">¶</a></h2>
+<p>Created on Thu Sep 13 18:07:48 2018</p>
+<p>&#64;author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France</p>
+<dl class="class">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation">
+<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.unsupported.geometry.</code><code class="sig-name descname">GeometryTransformation</code><span class="sig-paren">(</span><em class="sig-param">t=array([[1., 0., 0.],        [0., 1., 0.],        [0., 0., 1.]], dtype=float32), s=array([0., 0., 0.], dtype=float32)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Geometry transformation class. It allows to manipulate position and direction vectors.</p>
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.apply_direction">
+<code class="sig-name descname">apply_direction</code><span class="sig-paren">(</span><em class="sig-param">vec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.apply_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.apply_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements application of the transformation to a direction vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vec</strong> (<cite>numpy.array_like</cite>) – Direction vector</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of the transformation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>numpy.array_like</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.apply_position">
+<code class="sig-name descname">apply_position</code><span class="sig-paren">(</span><em class="sig-param">vec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.apply_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.apply_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements application of the transformation to a position vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vec</strong> (<cite>numpy.array_like</cite>) – Position vector</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of the transformation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>numpy.array_like</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.get_axis_angle">
+<em class="property">static </em><code class="sig-name descname">get_axis_angle</code><span class="sig-paren">(</span><em class="sig-param">vec_ref</em>, <em class="sig-param">vec_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.get_axis_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.get_axis_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the rotation axis and angle of the rotation that transformed vec_ref into vec_dir.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vec_ref</strong> (<cite>numpy.array_like</cite>) – The initial vector.</p></li>
+<li><p><strong>vec_dir</strong> (<cite>numpy.array_like</cite>) – The result vector.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The normalized rotation axis and angle.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple(<cite>numpy.array_like</cite>, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.get_rotation_components">
+<em class="property">static </em><code class="sig-name descname">get_rotation_components</code><span class="sig-paren">(</span><em class="sig-param">rot_axis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.get_rotation_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.get_rotation_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the rotation components for the given rotation axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rot_axis</strong> (<em>&lt;3</em><em>, </em><em>&gt; numpy.array_like</em>) – The rotation axis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The rotation components</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple(&lt;3, 3&gt; numpy.array_like, &lt;3, 3&gt; numpy.array_like, &lt;3, 3&gt; numpy.array_like)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.get_rotation_matrix">
+<em class="property">static </em><code class="sig-name descname">get_rotation_matrix</code><span class="sig-paren">(</span><em class="sig-param">rotcomp</em>, <em class="sig-param">angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.get_rotation_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.get_rotation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the rotation matrix for the given rotation components and angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rotcomp</strong> (<em>tuple</em><em>(</em><em>&lt;3</em><em>, </em><em>3&gt; numpy.array_like</em><em>, </em><em>&lt;3</em><em>, </em><em>3&gt; numpy.array_like</em><em>, </em><em>&lt;3</em><em>, </em><em>3&gt; numpy.array_like</em><em>)</em>) – The rotation components, computed with <cite>get_rotation_components</cite></p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – The rotation angle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The rotation matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>&lt;3, 3&gt; <cite>numpy.array_like</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.get_rototranslation">
+<em class="property">static </em><code class="sig-name descname">get_rototranslation</code><span class="sig-paren">(</span><em class="sig-param">axis</em>, <em class="sig-param">angles</em>, <em class="sig-param">axis_origin=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.get_rototranslation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.get_rototranslation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a roto-translation transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<cite>numpy.array_like</cite>) – Rotation axis</p></li>
+<li><p><strong>angles</strong> (<em>float</em>) – rotation angle</p></li>
+<li><p><strong>axis_origin</strong> (<cite>numpy.array_like</cite>, optional. Default: None) – Origin of the rotation axis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The roto-translation transformation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>GeometryTransformation</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.get_scale">
+<em class="property">static </em><code class="sig-name descname">get_scale</code><span class="sig-paren">(</span><em class="sig-param">scale</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.get_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.get_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a scaling transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>scale</strong> (<em>float</em>) – The scaling factor.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The scaling transformation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>GeometryTransformation</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.get_transform">
+<em class="property">static </em><code class="sig-name descname">get_transform</code><span class="sig-paren">(</span><em class="sig-param">t_type</em>, <em class="sig-param">*args</em>, <em class="sig-param">**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.get_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.get_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t_type</strong> (<em>string</em>) – Type of transformation. Options are: ‘rot’ | ‘tr’</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The chosen transformation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>GeometryTransofrm</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.get_translation">
+<em class="property">static </em><code class="sig-name descname">get_translation</code><span class="sig-paren">(</span><em class="sig-param">point</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.get_translation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.get_translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a transflation transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>point</strong> (<cite>numpy.array_like</cite>) – Translation position.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The translation transformation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>GeometryTransformation</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.geometry.GeometryTransformation.rmatvec">
+<code class="sig-name descname">rmatvec</code><span class="sig-paren">(</span><em class="sig-param">vec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/geometry.html#GeometryTransformation.rmatvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.geometry.GeometryTransformation.rmatvec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement the transpose of the transformation to vector operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vec</strong> (<em>numpy.array_like &lt;3</em><em>, </em><em>&gt;</em><em> or </em><em>&lt;4</em><em>, </em><em>&gt;</em>) – Direction vectors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.unsupported.reconstruction">
+<span id="plenoptomos-unsupported-reconstruction-module"></span><h2>plenoptomos.unsupported.reconstruction module<a class="headerlink" href="#module-plenoptomos.unsupported.reconstruction" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Mar  6 12:20:48 2019</p>
+<p>&#64;author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France</p>
+<dl class="class">
+<dt id="plenoptomos.unsupported.reconstruction.Reconstruct3D">
+<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.unsupported.reconstruction.</code><code class="sig-name descname">Reconstruct3D</code><span class="sig-paren">(</span><em class="sig-param">vol_geom</em>, <em class="sig-param">proj_geom</em>, <em class="sig-param">super_sampling=1</em>, <em class="sig-param">gpu_index=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#Reconstruct3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.Reconstruct3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="plenoptomos.unsupported.reconstruction.Reconstruct3D.bp">
+<code class="sig-name descname">bp</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#Reconstruct3D.bp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.Reconstruct3D.bp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.reconstruction.Reconstruct3D.cp">
+<code class="sig-name descname">cp</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">iterations=100</em>, <em class="sig-param">pars={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#Reconstruct3D.cp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.Reconstruct3D.cp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.reconstruction.Reconstruct3D.fp">
+<code class="sig-name descname">fp</code><span class="sig-paren">(</span><em class="sig-param">vol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#Reconstruct3D.fp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.Reconstruct3D.fp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.reconstruction.Reconstruct3D.reconstruct">
+<code class="sig-name descname">reconstruct</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">algo='SIRT3D_CUDA'</em>, <em class="sig-param">iterations=25</em>, <em class="sig-param">pars={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#Reconstruct3D.reconstruct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.Reconstruct3D.reconstruct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.reconstruction.Reconstruct3D.sirt">
+<code class="sig-name descname">sirt</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">iterations=25</em>, <em class="sig-param">pars={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#Reconstruct3D.sirt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.Reconstruct3D.sirt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.unsupported.reconstruction.correct_projs">
+<code class="sig-prename descclassname">plenoptomos.unsupported.reconstruction.</code><code class="sig-name descname">correct_projs</code><span class="sig-paren">(</span><em class="sig-param">projs</em>, <em class="sig-param">flats</em>, <em class="sig-param">darks</em>, <em class="sig-param">crop=None</em>, <em class="sig-param">pad=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#correct_projs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.correct_projs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.unsupported.reconstruction.get_geometry">
+<code class="sig-prename descclassname">plenoptomos.unsupported.reconstruction.</code><code class="sig-name descname">get_geometry</code><span class="sig-paren">(</span><em class="sig-param">dset_path</em>, <em class="sig-param">projs_shape</em>, <em class="sig-param">beam_geometry='cone'</em>, <em class="sig-param">vol_shift_mm=0.0</em>, <em class="sig-param">vol_size_add=None</em>, <em class="sig-param">detector_tilt_deg=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#get_geometry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.get_geometry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.unsupported.reconstruction.get_scanner_conf">
+<code class="sig-prename descclassname">plenoptomos.unsupported.reconstruction.</code><code class="sig-name descname">get_scanner_conf</code><span class="sig-paren">(</span><em class="sig-param">dset_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#get_scanner_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.get_scanner_conf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="plenoptomos.unsupported.reconstruction.load_images">
+<code class="sig-prename descclassname">plenoptomos.unsupported.reconstruction.</code><code class="sig-name descname">load_images</code><span class="sig-paren">(</span><em class="sig-param">dset_path</em>, <em class="sig-param">imprefix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/reconstruction.html#load_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.reconstruction.load_images" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.unsupported.testing">
+<span id="plenoptomos-unsupported-testing-module"></span><h2>plenoptomos.unsupported.testing module<a class="headerlink" href="#module-plenoptomos.unsupported.testing" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mon Jun 18 16:51:41 2018</p>
+<p>&#64;author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France</p>
+<dl class="class">
+<dt id="plenoptomos.unsupported.testing.Blurring">
+<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.unsupported.testing.</code><code class="sig-name descname">Blurring</code><span class="sig-paren">(</span><em class="sig-param">cameras</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/testing.html#Blurring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.testing.Blurring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="plenoptomos.unsupported.testing.Blurring.blur">
+<code class="sig-name descname">blur</code><span class="sig-paren">(</span><em class="sig-param">lfs</em>, <em class="sig-param">coordinates='vu'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/testing.html#Blurring.blur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.testing.Blurring.blur" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.testing.Blurring.create_psf_lenses">
+<code class="sig-name descname">create_psf_lenses</code><span class="sig-paren">(</span><em class="sig-param">coordinates='vu'</em>, <em class="sig-param">airy_rings=3</em>, <em class="sig-param">refocus_distance=None</em>, <em class="sig-param">up_sampling=1</em>, <em class="sig-param">plot_psfs=False</em>, <em class="sig-param">use_otf=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/testing.html#Blurring.create_psf_lenses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.testing.Blurring.create_psf_lenses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.unsupported.testing.Tester">
+<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.unsupported.testing.</code><code class="sig-name descname">Tester</code><span class="sig-paren">(</span><em class="sig-param">test_name</em>, <em class="sig-param">lfs</em>, <em class="sig-param">test_params={}</em>, <em class="sig-param">rec_params={}</em>, <em class="sig-param">test_conds={}</em>, <em class="sig-param">is_rgb=False</em>, <em class="sig-param">result_dir=None</em>, <em class="sig-param">save=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/testing.html#Tester"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.testing.Tester" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="plenoptomos.unsupported.testing.Tester.default_conditions">
+<code class="sig-name descname">default_conditions</code><em class="property"> = {'down_sampling_st': 1, 'down_sampling_uv': 1, 'extras': ''}</em><a class="headerlink" href="#plenoptomos.unsupported.testing.Tester.default_conditions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="plenoptomos.unsupported.testing.Tester.default_rec_params">
+<code class="sig-name descname">default_rec_params</code><em class="property"> = {'border': 8, 'data_term': 'l2', 'fourier_method': 'slice', 'iterations': 50, 'psf': None, 'up_sampling_function': 'flat', 'up_sampling_st': 1}</em><a class="headerlink" href="#plenoptomos.unsupported.testing.Tester.default_rec_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="plenoptomos.unsupported.testing.Tester.default_test_params">
+<code class="sig-name descname">default_test_params</code><em class="property"> = {'algo': [], 'beam': [], 'domain': [], 'lambda_reg': [], 'zs': []}</em><a class="headerlink" href="#plenoptomos.unsupported.testing.Tester.default_test_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.testing.Tester.get_options_number">
+<code class="sig-name descname">get_options_number</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/testing.html#Tester.get_options_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.testing.Tester.get_options_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.testing.Tester.get_test_option">
+<code class="sig-name descname">get_test_option</code><span class="sig-paren">(</span><em class="sig-param">option_name</em>, <em class="sig-param">ind</em>, <em class="sig-param">struct=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/testing.html#Tester.get_test_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.testing.Tester.get_test_option" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.testing.Tester.launch_reconstruction">
+<code class="sig-name descname">launch_reconstruction</code><span class="sig-paren">(</span><em class="sig-param">ii_t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/testing.html#Tester.launch_reconstruction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.testing.Tester.launch_reconstruction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.unsupported.utils_img">
+<span id="plenoptomos-unsupported-utils-img-module"></span><h2>plenoptomos.unsupported.utils_img module<a class="headerlink" href="#module-plenoptomos.unsupported.utils_img" title="Permalink to this headline">¶</a></h2>
+<p>Created on Fri Dec  8 15:24:12 2017</p>
+<p>&#64;author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France</p>
+<dl class="class">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator">
+<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.unsupported.utils_img.</code><code class="sig-name descname">MovieCreator</code><span class="sig-paren">(</span><em class="sig-param">out_dir</em>, <em class="sig-param">lf</em>, <em class="sig-param">z0s</em>, <em class="sig-param">focal_stack</em>, <em class="sig-param">dmap</em>, <em class="sig-param">all_focus</em>, <em class="sig-param">use_overlay=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_allfocus_frames">
+<code class="sig-name descname">create_allfocus_frames</code><span class="sig-paren">(</span><em class="sig-param">num_frames=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_allfocus_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_allfocus_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_dmap_frames">
+<code class="sig-name descname">create_dmap_frames</code><span class="sig-paren">(</span><em class="sig-param">num_frames=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_dmap_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_dmap_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_refocus_frame">
+<code class="sig-name descname">create_refocus_frame</code><span class="sig-paren">(</span><em class="sig-param">z_ind</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_refocus_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_refocus_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_simple_frame">
+<code class="sig-name descname">create_simple_frame</code><span class="sig-paren">(</span><em class="sig-param">img</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_simple_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_simple_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_static_frames">
+<code class="sig-name descname">create_static_frames</code><span class="sig-paren">(</span><em class="sig-param">num_frames</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_static_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_static_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_sublf_frame">
+<code class="sig-name descname">create_sublf_frame</code><span class="sig-paren">(</span><em class="sig-param">sublf_size</em>, <em class="sig-param">sublf_center_vu=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_sublf_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_sublf_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_transition">
+<code class="sig-name descname">create_transition</code><span class="sig-paren">(</span><em class="sig-param">from_img</em>, <em class="sig-param">to_img</em>, <em class="sig-param">num_frames</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_transition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_transition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_transition_frame">
+<code class="sig-name descname">create_transition_frame</code><span class="sig-paren">(</span><em class="sig-param">from_img</em>, <em class="sig-param">to_img</em>, <em class="sig-param">percentage</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_transition_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_transition_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.create_transition_sublf">
+<code class="sig-name descname">create_transition_sublf</code><span class="sig-paren">(</span><em class="sig-param">final_sublf_size</em>, <em class="sig-param">direction='to'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.create_transition_sublf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.create_transition_sublf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.overlay_text_on_image">
+<code class="sig-name descname">overlay_text_on_image</code><span class="sig-paren">(</span><em class="sig-param">img_ref</em>, <em class="sig-param">img_text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.overlay_text_on_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.overlay_text_on_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.render_distance">
+<code class="sig-name descname">render_distance</code><span class="sig-paren">(</span><em class="sig-param">img_size</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.render_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.render_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.render_text">
+<code class="sig-name descname">render_text</code><span class="sig-paren">(</span><em class="sig-param">img_size</em>, <em class="sig-param">t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.render_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.render_text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.MovieCreator.to_01">
+<code class="sig-name descname">to_01</code><span class="sig-paren">(</span><em class="sig-param">img</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#MovieCreator.to_01"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.MovieCreator.to_01" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D">
+<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.unsupported.utils_img.</code><code class="sig-name descname">ShiftsFinderVolume3D</code><span class="sig-paren">(</span><em class="sig-param">data_fix</em>, <em class="sig-param">data_move</em>, <em class="sig-param">do_clear=True</em>, <em class="sig-param">clims=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#ShiftsFinderVolume3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.ax_lr">
+<code class="sig-name descname">ax_lr</code><em class="property"> = [2, 2, 1]</em><a class="headerlink" href="#plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.ax_lr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.ax_ud">
+<code class="sig-name descname">ax_ud</code><em class="property"> = [1, 0, 0]</em><a class="headerlink" href="#plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.ax_ud" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.axs_rot">
+<code class="sig-name descname">axs_rot</code><em class="property"> = ['Z', 'Y', 'X']</em><a class="headerlink" href="#plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.axs_rot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.planes_vis">
+<code class="sig-name descname">planes_vis</code><em class="property"> = ['XY', 'XZ', 'YZ']</em><a class="headerlink" href="#plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.planes_vis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#ShiftsFinderVolume3D.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.show" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">direction</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#ShiftsFinderVolume3D.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.update_ax">
+<code class="sig-name descname">update_ax</code><span class="sig-paren">(</span><em class="sig-param">ax</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/unsupported/utils_img.html#ShiftsFinderVolume3D.update_ax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.unsupported.utils_img.ShiftsFinderVolume3D.update_ax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-plenoptomos.unsupported">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-plenoptomos.unsupported" title="Permalink to this headline">¶</a></h2>
+<p>Unsupported utility tools.</p>
+<p>&#64;author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,
+and ESRF - The European Synchrotron, Grenoble, France</p>
+<p>Created on Mon Jun  8 15:28:00 2020</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plenoptomos.html" class="btn btn-neutral float-left" title="plenoptomos package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

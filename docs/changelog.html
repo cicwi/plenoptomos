@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="plenoptomos package" href="plenoptomos.html" /> 
+    <link rel="prev" title="plenoptomos.unsupported package" href="plenoptomos.unsupported.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,13 +85,18 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples description</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.1.1 - 2019-12-12</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.1.2 - 2020-06-11</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">0.1.0 - 2019-03-25</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.1.1 - 2019-12-12</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id3">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">0.1.0 - 2019-03-25</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -170,16 +175,44 @@ and this project adheres to <a class="reference external" href="https://semver.o
 ### Added
 ### Fixed
 --><div class="section" id="id1">
-<h2>0.1.1 - 2019-12-12<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>0.1.2 - 2020-06-11<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="added">
 <h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Support for pixel masks</p></li>
+<li><p>Support for saving in .vox data format</p></li>
+<li><p>Image processing functions (smoothing, lowpass and highpass filters, background subtraction, etc)</p></li>
+<li><p>Sub-aperture image warping</p></li>
+<li><p>Simple focal stack visualization tool</p></li>
+<li><p>Unsupported tools for: tomographic reconstructions, matrix testing, and creation of refocusing movies</p></li>
+<li><p>Depth-estimation quadratic refinement of peak positions</p></li>
+<li><p>Depth-estimation “2nd peak” confidence method</p></li>
+<li><p>Complete support for cross-correlation cue</p></li>
+</ul>
+</div>
+<div class="section" id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Test failure</p></li>
+<li><p>Roll-off correction for Fourier refocusing</p></li>
+<li><p>Formatting style (linting applied)</p></li>
+<li><p>Documentation (including docstrings quality)</p></li>
+<li><p>Defocus depth cue: use gradient instead of laplacian</p></li>
+<li><p>Correspondence depth cue: correct computation of confidence</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="id2">
+<h2>0.1.1 - 2019-12-12<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Added<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Example on creating and using files in .vox data format</p></li>
 <li><p>Added TV regularization to PSF deconvolution</p></li>
 </ul>
 </div>
-<div class="section" id="fixed">
-<h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Fixed<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Fixed and enabled OTF functionality in PSF convolution</p></li>
 <li><p>Allow loading when ASTRA is not installed</p></li>
@@ -190,13 +223,13 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </div>
 </div>
-<div class="section" id="id2">
-<h2>0.1.0 - 2019-03-25<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>0.1.0 - 2019-03-25<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Initial release.</p></li>
 </ul>
-<div class="section" id="id3">
-<h3>Added<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>Added<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>support for a few types of datasets and formats (including the .vox format).</p></li>
 <li><p>support for refocusing using standard algorithms like the integration and Fourier methods.</p></li>
@@ -222,7 +255,7 @@ and this project adheres to <a class="reference external" href="https://semver.o
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="plenoptomos.html" class="btn btn-neutral float-left" title="plenoptomos package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="plenoptomos.unsupported.html" class="btn btn-neutral float-left" title="plenoptomos.unsupported package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -228,9 +228,9 @@ The Integration, Back-projection and SIRT functions are straight-forward:</p>
 </div>
 <p>This syntax allows the users to create their own refocusing algorithms, and pass them to the function <code class="docutils literal notranslate"><span class="pre">pleno.tomo.compute_refocus_iterative</span></code>.</p>
 <p>The expected refocusing for one distance will be:
-<img alt="results_rose" src="_images/example_02_dist10.png" /></p>
+<img alt="_images/example_02_dist10.png" src="_images/example_02_dist10.png" /></p>
 <p>Which zoomed on the rose will be:
-<img alt="results_rose_zoom" src="_images/example_02_zoom_rose_dist10.png" /></p>
+<img alt="_images/example_02_zoom_rose_dist10.png" src="_images/example_02_zoom_rose_dist10.png" /></p>
 </div>
 <div class="section" id="example-03-flower-depth-py">
 <h2>example_03_flower_depth.py<a class="headerlink" href="#example-03-flower-depth-py" title="Permalink to this headline">¶</a></h2>
@@ -248,7 +248,7 @@ The Integration, Back-projection and SIRT functions are straight-forward:</p>
 </pre></div>
 </div>
 <p>The expected output is:
-<img alt="results_rose_depth" src="_images/example_03_results.png" /></p>
+<img alt="_images/example_03_results_grad.png" src="_images/example_03_results_grad.png" /></p>
 <p>The function <code class="docutils literal notranslate"><span class="pre">compute_depth_cues</span></code> is highly tunable and allows the user to use advanced refocusing methods in the computation of the said depth cues.
 For instance:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dc</span> <span class="o">=</span> <span class="n">pleno</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">compute_depth_cues</span><span class="p">(</span><span class="n">lf</span><span class="p">,</span> <span class="n">z0s</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;sirt&#39;</span><span class="p">)</span>
@@ -303,14 +303,14 @@ The data collection has been performed by Charlotte Herzog, Pablo Martinez Gil, 
 </pre></div>
 </div>
 <p>This will open a window, which shows the peaks associated to the lenslets in each dimension of the raw detector image (it is obtained through a sum in the perpendicular direction).
-<img alt="pre-fit dim0" src="_images/example_04_dim0_pre-fit.png" /></p>
+<img alt="_images/example_04_dim0_pre-fit.png" src="_images/example_04_dim0_pre-fit.png" /></p>
 <p>In this case, the first and last peaks are either truncated or not fully illuminated, so it makes sense to remove them from the dataset.
 For the fitting, moreover, we suggest to skip the first and last of the remaining set.</p>
 <p>Once confirmed, the window will be updated to handle the other image dimension:
-<img alt="pre-fit dim1" src="_images/example_04_dim1_pre-fit.png" /></p>
+<img alt="_images/example_04_dim1_pre-fit.png" src="_images/example_04_dim1_pre-fit.png" /></p>
 <p>Also in this case, the first and last peaks can be removed from the dataset, and the first and last of the remaining set can be temporarily excluded from the fitting.</p>
 <p>The fully fitted lenslet positions should look like the following:
-<img alt="post-fit" src="_images/example_04_post-fit.png" /></p>
+<img alt="_images/example_04_post-fit.png" src="_images/example_04_post-fit.png" /></p>
 <p>The computed dimensions of the lenslets should be (48.2, 48.2273), and the expected offsets should be (46.5125, 30.5504).
 In case a series of datasets were to be acquired with an identical camera setup, it is possible to skip the fitting procedure by passing directly the <code class="docutils literal notranslate"><span class="pre">pitch</span></code> (lenslet size) and <code class="docutils literal notranslate"><span class="pre">offset</span></code> values.</p>
 <p>The calibrated dataset can then be loaded using the <code class="docutils literal notranslate"><span class="pre">load</span></code> function:</p>

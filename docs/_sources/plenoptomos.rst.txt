@@ -1,6 +1,13 @@
 plenoptomos package
 ===================
 
+Subpackages
+-----------
+
+.. toctree::
+
+   plenoptomos.unsupported
+
 Submodules
 ----------
 
@@ -80,6 +87,22 @@ plenoptomos.utils\_io module
 ----------------------------
 
 .. automodule:: plenoptomos.utils_io
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+plenoptomos.utils\_plot module
+------------------------------
+
+.. automodule:: plenoptomos.utils_plot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+plenoptomos.utils\_proc module
+------------------------------
+
+.. automodule:: plenoptomos.utils_proc
    :members:
    :undoc-members:
    :show-inheritance:

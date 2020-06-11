@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>plenoptomos.unsupported.geometry &mdash; plenoptomos  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> plenoptomos
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fileformat.html">File format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">plenoptomos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">plenoptomos</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>plenoptomos.unsupported.geometry</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for plenoptomos.unsupported.geometry</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Sep 13 18:07:48 2018</span>
+
+<span class="sd">@author: Nicola VIGANÒ, Computational Imaging group, CWI, The Netherlands,</span>
+<span class="sd">and ESRF - The European Synchrotron, Grenoble, France</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="GeometryTransformation"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation">[docs]</a><span class="k">class</span> <span class="nc">GeometryTransformation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Geometry transformation class. It allows to manipulate position and direction vectors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>  <span class="c1"># The transformation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">s</span>  <span class="c1"># The shift (translation)</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implement multiplication operation.</span>
+
+<span class="sd">        :param other: Either another transformation to compose or a vector.</span>
+<span class="sd">        :type other: Either `GeometryTransformation` or `numpy.array_like`</span>
+
+<span class="sd">        :return: Result of the multiplication.</span>
+<span class="sd">        :rtype: Either `GeometryTransformation` or `numpy.array_like`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">GeometryTransformation</span><span class="p">):</span>
+            <span class="n">new_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">new_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">GeometryTransformation</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">new_t</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">new_s</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matvec</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GeometryTransformation.apply_position"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.apply_position">[docs]</a>    <span class="k">def</span> <span class="nf">apply_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implements application of the transformation to a position vector.</span>
+
+<span class="sd">        :param vec: Position vector</span>
+<span class="sd">        :type vec: `numpy.array_like`</span>
+
+<span class="sd">        :return: Result of the transformation</span>
+<span class="sd">        :rtype: `numpy.array_like`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="GeometryTransformation.apply_direction"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.apply_direction">[docs]</a>    <span class="k">def</span> <span class="nf">apply_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implements application of the transformation to a direction vector.</span>
+
+<span class="sd">        :param vec: Direction vector</span>
+<span class="sd">        :type vec: `numpy.array_like`</span>
+
+<span class="sd">        :return: Result of the transformation</span>
+<span class="sd">        :rtype: `numpy.array_like`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_matvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implement transformation to vector operation.</span>
+
+<span class="sd">        :param vec: Either position or direction vectors.</span>
+<span class="sd">        :type vec: numpy.array_like &lt;3, &gt; or &lt;4, &gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_direction</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vec</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_direction</span><span class="p">(</span><span class="n">vec</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">vec</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_position</span><span class="p">(</span><span class="n">vec</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;4th component of 4-vectors can only be 1 or 0, while </span><span class="si">%d</span><span class="s1"> was found&#39;</span> <span class="o">%</span> <span class="n">vec</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This function only accepts 3 and 4-vectors, while </span><span class="si">%d</span><span class="s1">-vector was found&#39;</span> <span class="o">%</span> <span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<div class="viewcode-block" id="GeometryTransformation.rmatvec"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.rmatvec">[docs]</a>    <span class="k">def</span> <span class="nf">rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implement the transpose of the transformation to vector operation.</span>
+
+<span class="sd">        :param vec: Direction vectors.</span>
+<span class="sd">        :type vec: numpy.array_like &lt;3, &gt; or &lt;4, &gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_direction</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vec</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_direction</span><span class="p">(</span><span class="n">vec</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;4th component of 4-vectors can only be 0 (direction), while </span><span class="si">%d</span><span class="s1"> was found&#39;</span> <span class="o">%</span> <span class="n">vec</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;This function only accepts 3-vectors, while </span><span class="si">%d</span><span class="s1">-vector was found&#39;</span> <span class="o">%</span> <span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="GeometryTransformation.get_rotation_components"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.get_rotation_components">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_rotation_components</span><span class="p">(</span><span class="n">rot_axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the rotation components for the given rotation axis.</span>
+
+<span class="sd">        :param rot_axis: The rotation axis.</span>
+<span class="sd">        :type rot_axis: &lt;3, &gt; numpy.array_like</span>
+
+<span class="sd">        :return: The rotation components</span>
+<span class="sd">        :rtype: tuple(&lt;3, 3&gt; numpy.array_like, &lt;3, 3&gt; numpy.array_like, &lt;3, 3&gt; numpy.array_like)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rot_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rot_axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">rot_axis</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rot_axis</span><span class="p">,</span> <span class="n">rot_axis</span><span class="p">))</span>
+
+        <span class="n">r_comp_const</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">rot_axis</span><span class="p">,</span> <span class="n">rot_axis</span><span class="p">)</span>
+        <span class="n">r_comp_cos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">-</span> <span class="n">r_comp_const</span>
+        <span class="n">r_comp_sin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">r_comp_sin</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">rot_axis</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>  <span class="n">rot_axis</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">rot_axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">r_comp_sin</span> <span class="o">-=</span> <span class="n">r_comp_sin</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">r_comp_const</span><span class="p">,</span> <span class="n">r_comp_cos</span><span class="p">,</span> <span class="n">r_comp_sin</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeometryTransformation.get_rotation_matrix"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.get_rotation_matrix">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_rotation_matrix</span><span class="p">(</span><span class="n">rotcomp</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the rotation matrix for the given rotation components and angle.</span>
+
+<span class="sd">        :param rotcomp: The rotation components, computed with `get_rotation_components`</span>
+<span class="sd">        :type rotcomp: tuple(&lt;3, 3&gt; numpy.array_like, &lt;3, 3&gt; numpy.array_like, &lt;3, 3&gt; numpy.array_like)</span>
+<span class="sd">        :param angle: The rotation angle</span>
+<span class="sd">        :type angle: float</span>
+
+<span class="sd">        :return: The rotation matrix</span>
+<span class="sd">        :rtype: &lt;3, 3&gt; `numpy.array_like`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cos_as</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">sin_as</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+
+        <span class="p">(</span><span class="n">r_comp_const</span><span class="p">,</span> <span class="n">r_comp_cos</span><span class="p">,</span> <span class="n">r_comp_sin</span><span class="p">)</span> <span class="o">=</span> <span class="n">rotcomp</span>
+
+        <span class="k">return</span> <span class="n">r_comp_const</span> <span class="o">+</span> <span class="n">cos_as</span> <span class="o">*</span> <span class="n">r_comp_cos</span> <span class="o">+</span> <span class="n">sin_as</span> <span class="o">*</span> <span class="n">r_comp_sin</span></div>
+
+<div class="viewcode-block" id="GeometryTransformation.get_axis_angle"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.get_axis_angle">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_axis_angle</span><span class="p">(</span><span class="n">vec_ref</span><span class="p">,</span> <span class="n">vec_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes the rotation axis and angle of the rotation that transformed vec_ref into vec_dir.</span>
+
+<span class="sd">        :param vec_ref: The initial vector.</span>
+<span class="sd">        :type vec_ref: `numpy.array_like`</span>
+<span class="sd">        :param vec_dir: The result vector.</span>
+<span class="sd">        :type vec_dir: `numpy.array_like`</span>
+
+<span class="sd">        :return: The normalized rotation axis and angle.</span>
+<span class="sd">        :rtype: tuple(`numpy.array_like`, float)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vec_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vec_ref</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">vec_dir</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vec_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">vec_ref</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_ref</span><span class="p">,</span> <span class="n">vec_ref</span><span class="p">))</span>
+        <span class="n">vec_dir</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_dir</span><span class="p">,</span> <span class="n">vec_dir</span><span class="p">))</span>
+
+        <span class="n">vec_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec_ref</span><span class="p">,</span> <span class="n">vec_dir</span><span class="p">)</span>
+        <span class="n">vec_axis_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_axis</span><span class="p">,</span> <span class="n">vec_axis</span><span class="p">))</span>
+        <span class="n">vec_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec_ref</span><span class="p">,</span> <span class="n">vec_dir</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">vec_axis_norm</span> <span class="o">&lt;</span> <span class="mf">1e-5</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">vec_axis</span> <span class="o">/=</span> <span class="n">vec_axis_norm</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">vec_axis</span><span class="p">,</span> <span class="n">vec_angle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeometryTransformation.get_translation"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.get_translation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_translation</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a transflation transformation.</span>
+
+<span class="sd">        :param point: Translation position.</span>
+<span class="sd">        :type point: `numpy.array_like`</span>
+
+<span class="sd">        :return: The translation transformation</span>
+<span class="sd">        :rtype: `GeometryTransformation`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GeometryTransformation</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">point</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeometryTransformation.get_scale"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.get_scale">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_scale</span><span class="p">(</span><span class="n">scale</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a scaling transformation.</span>
+
+<span class="sd">        :param scale: The scaling factor.</span>
+<span class="sd">        :type scale: float</span>
+
+<span class="sd">        :return: The scaling transformation</span>
+<span class="sd">        :rtype: `GeometryTransformation`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">GeometryTransformation</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeometryTransformation.get_rototranslation"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.get_rototranslation">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_rototranslation</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">axis_origin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a roto-translation transformation.</span>
+
+<span class="sd">        :param axis: Rotation axis</span>
+<span class="sd">        :type axis: `numpy.array_like`</span>
+<span class="sd">        :param angles: rotation angle</span>
+<span class="sd">        :type angles: float</span>
+<span class="sd">        :param axis_origin: Origin of the rotation axis</span>
+<span class="sd">        :type axis_origin: `numpy.array_like`, optional. Default: None</span>
+
+<span class="sd">        :return: The roto-translation transformation</span>
+<span class="sd">        :rtype: `GeometryTransformation`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r_comp</span> <span class="o">=</span> <span class="n">GeometryTransformation</span><span class="o">.</span><span class="n">get_rotation_components</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">GeometryTransformation</span><span class="o">.</span><span class="n">get_rotation_matrix</span><span class="p">(</span><span class="n">r_comp</span><span class="p">,</span> <span class="n">angles</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">axis_origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axis_origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">axis_origin</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">axis_origin</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">axis_origin</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">GeometryTransformation</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GeometryTransformation</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">r</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeometryTransformation.get_transform"><a class="viewcode-back" href="../../../plenoptomos.unsupported.html#plenoptomos.unsupported.geometry.GeometryTransformation.get_transform">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_transform</span><span class="p">(</span><span class="n">t_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a transformation.</span>
+
+<span class="sd">        :param t_type: Type of transformation. Options are: &#39;rot&#39; | &#39;tr&#39;</span>
+<span class="sd">        :type t_type: string</span>
+
+<span class="sd">        :return: The chosen transformation</span>
+<span class="sd">        :rtype: `GeometryTransofrm`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">t_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;rot&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GeometryTransformation</span><span class="o">.</span><span class="n">get_rototranslation</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">t_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;tr&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GeometryTransformation</span><span class="o">.</span><span class="n">get_translation</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Author
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
