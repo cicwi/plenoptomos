@@ -123,7 +123,7 @@ examples folder.
 * **Nicola Viganò** - *Main developer*
 * **Francesco Brun** - *Initial contributions*
 * **Pablo Martinez Gil** - *Contributed to the creation and enabling of the .vox data format, and to the wavelet solver*
-* **Charlotte Herzog** - *Contributed to the creation an
+* **Charlotte Herzog** - *Contributed to the creation and enabling of the .vox data format*
 
 See also the list of [contributors](https://github.com/cicwi/plenoptomos/contributors) who participated in this project.
 
