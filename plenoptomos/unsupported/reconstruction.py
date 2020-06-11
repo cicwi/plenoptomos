@@ -10,7 +10,7 @@ and ESRF - The European Synchrotron, Grenoble, France
 import numpy as np
 import matplotlib.image as mim
 
-from . import solvers
+from plenoptomos import solvers
 from . import geometry
 
 import astra

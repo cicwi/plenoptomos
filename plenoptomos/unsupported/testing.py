@@ -16,12 +16,7 @@ import os
 
 import time as tm
 
-from . import refocus
-from . import tomo
-from . import colors
-from . import solvers
-from . import utils_io
-from . import psf
+from plenoptomos import refocus, tomo, colors, solvers, utils_io, psf
 
 
 class Tester(object):
