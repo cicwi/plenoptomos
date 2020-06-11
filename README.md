@@ -1,5 +1,9 @@
 # plenoptomos
 
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/cicwi/plenoptomos)
+![License](https://img.shields.io/github/license/cicwi/plenoptomos)
+[![DOI](https://zenodo.org/badge/176960959.svg)](https://zenodo.org/badge/latestdoi/176960959)
+
 Plenoptic imaging reconstruction tools, developed in the context of the VOXEL
 project, part of the European Union's Horizon 2020 research and innovation
 programme ([VOXEL H2020-FETOPEN-2014-2015-RIA  GA 665207](https://ec.europa.eu/programmes/horizon2020/en/news/3d-x-ray-imaging-very-low-dose)).
@@ -38,7 +42,7 @@ Python 3.
 
 Simply install with:
 ```
-conda install -c cicwi plenoptomos
+conda install -c n-vigano plenoptomos
 ```
 
 ### Installing from source
