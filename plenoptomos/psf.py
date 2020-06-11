@@ -364,7 +364,7 @@ class PSFApply(object):
         paddings_ts_upper = border
 
         if lambda_tv is None and lambda_wl is not None:
-            decomp_lvl = 3
+            decomp_lvl = 2
             padding_align = 2 ** decomp_lvl
             final_size_ts = self.image_size + 2 * border
             additional_padding_ts = ((padding_align - (final_size_ts % padding_align)) % padding_align)
@@ -379,7 +379,7 @@ class PSFApply(object):
                     data_term=data_term, lambda_tv=lambda_tv, verbose=verbose)
         elif lambda_wl is not None:
             sol = solvers.CP_wl(
-                    data_term=data_term, lambda_wl=lambda_wl, wl_type='db1',
+                    data_term=data_term, lambda_wl=lambda_wl, wl_type='sym4',
                     decomp_lvl=decomp_lvl, verbose=verbose)
         else:
             sol = solvers.Sirt(verbose=verbose)
