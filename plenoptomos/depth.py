@@ -146,8 +146,10 @@ def compute_depth_cues(
     """Computes depth cues, needed to create a depth map.
 
     These depth cues are created following the procedure from:
-    * M. W. Tao, et al., "Depth from combining defocus and correspondence using light-field cameras,"
-    in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.
+
+    M. W. Tao, et al., "Depth from combining defocus and correspondence using
+    light-field cameras," in Proceedings of the IEEE International Conference on
+    Computer Vision, 2013, pp. 673–680.
 
     :param lf: The light-field object
     :type lf: lightfield.Lightfield
@@ -343,8 +345,10 @@ def compute_depth_map(
     """Computes a depth map from the given depth cues.
 
     This depth map is based on the procedure from:
-    [1] M. W. Tao, et al., “Depth from combining defocus and correspondence using light-field cameras,”
-    in Proceedings of the IEEE International Conference on Computer Vision, 2013, pp. 673–680.
+
+    M. W. Tao, et al., "Depth from combining defocus and correspondence using
+    light-field cameras," in Proceedings of the IEEE International Conference on
+    Computer Vision, 2013, pp. 673–680.
 
     :param depth_cues: The depth cues
     :type depth_cues: dict
