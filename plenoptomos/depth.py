@@ -474,7 +474,7 @@ def compute_depth_map(
             update += use_correspondence * W_c * q_c
 
         if use_xcorrelation > 0:
-            q_x += (depth_it - a_c)
+            q_x += (depth_it - a_x)
             q_x /= np.fmax(1, np.abs(q_x))
 
             update += use_xcorrelation * W_x * q_x
