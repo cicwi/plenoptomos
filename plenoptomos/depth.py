@@ -60,14 +60,14 @@ def _compute_depth_and_confidence(
         depth_cue, confidence_method, peak_range=2, med_filt_size=3, quadratic_refinement=True):
     cue_map_size = depth_cue.shape[1:]
     num_zs = depth_cue.shape[0]
+    data_type = depth_cue.dtype
 
-    response_funcs = np.reshape(depth_cue, (num_zs, -1))
-    data_type = response_funcs.dtype
+    response_funcs = np.reshape(depth_cue, (num_zs, -1)).astype(data_type)
 
     num_pixels = response_funcs.shape[1]
 
-    peaks_val = np.max(response_funcs, axis=0)
-    peaks_pos = np.argmax(response_funcs, axis=0)
+    peaks_val = np.max(response_funcs, axis=0).astype(data_type)
+    peaks_pos = np.argmax(response_funcs, axis=0).astype(data_type)
 
     if quadratic_refinement:
         fx = np.arange(3)
@@ -86,7 +86,7 @@ def _compute_depth_and_confidence(
 
         coeffs = _fit_parabola(fx, fy).transpose()
 
-        peaks_pos_new, peaks_val_new = _get_parabola_vertex(coeffs, peak_ranges_min)
+        peaks_pos, peaks_val = _get_parabola_vertex(coeffs, peak_ranges_min)
 
     if confidence_method.lower() == 'integral':
         bckground = np.min(response_funcs, axis=0)
