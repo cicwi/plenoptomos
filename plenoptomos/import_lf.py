@@ -485,7 +485,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
                             ii_v * mult[0], ii_u * mult[1]))
                     flat_imgs[ii_v, ii_u, ...] = mim.imread(filename)
 
-            # This procedure is less performing (on a theoretical level), but due
+            # This procedure is slower (on a theoretical level), but due
             # to the crappy implementation of scipy it saves a ton of memory
             (out_v_points, out_u_points) = (
                 np.linspace(0, 2, camera.data_size_vu[0]),
@@ -531,7 +531,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     if det_is_fixed and crop_fixed_det:
         sd_so_diff = sd_dist - so_dist
         camera_physical_pixsize = camera.pixel_size_ts * (sd_dist / so_dist)
-        compute_shift = lambda pos_vu: pos_vu * camera.pixel_size_vu / camera_physical_pixsize * sd_so_diff / so_dist
+        compute_shift = lambda pos_vu: pos_vu * (camera.pixel_size_vu / camera_physical_pixsize) * (sd_so_diff / so_dist)
 
         half_size_vu = (camera.data_size_vu.astype(np.float32) - 1) / 2
         max_shift_ts = compute_shift(half_size_vu)
@@ -545,7 +545,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
             final_size_ts[0], final_size_ts[1], max_shift_ts[0], max_shift_ts[1]), end='', flush=True)
         c = tm.time()
 
-        final_size_ts = np.floor(final_size_ts)
+        final_size_ts = np.floor(final_size_ts).astype(np.intp)
         lf_crop_size = np.concatenate((camera.data_size_vu, final_size_ts)).astype(np.intp)
         lf_img_crop = np.zeros(lf_crop_size, dtype=data_type)
 
@@ -562,12 +562,12 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
 
                 shift_vu = np.array([ii_v, ii_u]).astype(np.float32) - half_size_vu
                 shift_ts = compute_shift(shift_vu)
+
                 base_int_t = np.linspace(
-                        -half_final_size_ts[0] + shift_ts[0],
-                        half_final_size_ts[0] + shift_ts[0], final_size_ts[0])
+                    -half_final_size_ts[0] + shift_ts[0], half_final_size_ts[0] + shift_ts[0], final_size_ts[0])
                 base_int_s = np.linspace(
-                        -half_final_size_ts[1] + shift_ts[1],
-                        half_final_size_ts[1] + shift_ts[1], final_size_ts[1])
+                    -half_final_size_ts[1] + shift_ts[1], half_final_size_ts[1] + shift_ts[1], final_size_ts[1])
+
                 base_int_ts = np.meshgrid(base_int_t, base_int_s, indexing='ij')
                 base_int_ts = np.transpose(np.array(base_int_ts), axes=(1, 2, 0))
 
