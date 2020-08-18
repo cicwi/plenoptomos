@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    plenoptomos.unsupported
 
@@ -106,7 +107,6 @@ plenoptomos.utils\_proc module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------
