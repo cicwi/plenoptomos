@@ -11,7 +11,6 @@ Created on Fri Dec  8 15:24:12 2017
 import numpy as np
 
 import matplotlib.pyplot as plt
-import matplotlib.image as mim
 import matplotlib.cm as mcm
 
 

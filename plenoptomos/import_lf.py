@@ -23,9 +23,18 @@ import re
 import configparser
 import time as tm
 
-import matplotlib.image as mim
+try:
+    import imageio as iio
+except ImportError as ex:
+    print('WARNING: error importing Imageio, using matplotlib instead')
+    print('Error message:\n', ex)
+    import matplotlib.image as iio
 
 import subprocess as sp
+
+
+def read_image(img_path, data_type):
+    return iio.imread(img_path).astype(data_type)
 
 
 def lytro_create_warps(file_path):
@@ -141,7 +150,7 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
                 filenames = glob.glob(filename)
                 filename = filenames[0]
 
-                img_rgb = mim.imread(filename).astype(data_type)
+                img_rgb = read_image(filename, data_type)
 
                 img_rgb = np.pad(
                     img_rgb, ((extra_cols[0], extra_cols[1]), (extra_rows[0], extra_rows[1]), (0, 0)), mode='edge')
@@ -170,7 +179,7 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
 
         print('Loading ESLF image..', end='', flush=True)
         c = tm.time()
-        raw_im2D = mim.imread(data_path)
+        raw_im2D = read_image(data_path, data_type)
         print('\b\b: Done in %g seconds.' % (tm.time()-c))
 
         lenslet_raw_size = np.array(camera.data_size_vu, dtype=np.int)
@@ -268,7 +277,7 @@ def from_stanford_archive(dataset_path, mode='grayscale', rgb2gs_mode='luma', bi
             shifts_v[ii_v, ii_u] = shift_v
             shifts_u[ii_v, ii_u] = shift_u
 
-            img_rgb = mim.imread(filename).astype(data_type)
+            img_rgb = read_image(filename, data_type)
 
             img_rgb = np.pad(img_rgb, ((extra_cols[0], extra_cols[1]), (extra_rows[0], extra_rows[1]), (0, 0)), mode='edge')
             img_rgb = np.reshape(img_rgb, binning_shape)
@@ -461,7 +470,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
             print(prnt_str, end='', flush=True)
 
             filename = os.path.join(dset_path, 'scan_%02d_%02d.tif' % (ii_v, ii_u))
-            lf_img[ii_v, ii_u, :, :] = mim.imread(filename).astype(data_type)
+            lf_img[ii_v, ii_u, :, :] = read_image(filename, data_type)
 
             print(('\b') * len(prnt_str), end='', flush=True)
     print('Done (%d, %d) = %d in %g seconds.\n' % (
@@ -470,7 +479,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     print('Loading dark and bright-field..', end='', flush=True)
     if num_phases > 1:
         filename = os.path.join(dset_path, 'dark.tif')
-        d0 = mim.imread(filename).astype(data_type)
+        d0 = read_image(filename, data_type)
 
         i0 = np.empty_like(lf_img)
 
@@ -483,7 +492,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
                 for ii_u in range(3):
                     filename = os.path.join(dset_path, 'flat_%02d_%02d.tif' % (
                             ii_v * mult[0], ii_u * mult[1]))
-                    flat_imgs[ii_v, ii_u, ...] = mim.imread(filename)
+                    flat_imgs[ii_v, ii_u, ...] = read_image(filename, data_type)
 
             # This procedure is slower (on a theoretical level), but due
             # to the crappy implementation of scipy it saves a ton of memory
@@ -513,13 +522,13 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
             for ii_v in range(camera.data_size_vu[0]):
                 for ii_u in range(camera.data_size_vu[1]):
                     filename = os.path.join(dset_path, 'flat_%02d_%02d.tif' % (ii_v, ii_u))
-                    i0[ii_v, ii_u, ...] = mim.imread(filename)
+                    i0[ii_v, ii_u, ...] = read_image(filename, data_type)
     else:
         filename = os.path.join(dset_path, 'di0000.tif')
-        d0 = mim.imread(filename).astype(data_type)
+        d0 = read_image(filename, data_type)
 
         filename = os.path.join(dset_path, 'io0000.tif')
-        i0 = mim.imread(filename).astype(data_type)
+        i0 = read_image(filename, data_type)
     print('\b\b: Done in %g seconds.' % (tm.time()-c))
 
     lf_img -= d0

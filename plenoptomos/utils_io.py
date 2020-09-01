@@ -11,7 +11,13 @@ Created on Wed Mar  1 16:09:53 2017
 """
 
 import numpy as np
-import matplotlib.image as mim
+
+try:
+    import imageio as iio
+except ImportError as ex:
+    print('WARNING: error importing Imageio, using matplotlib instead')
+    print('Error message:\n', ex)
+    import matplotlib.image as iio
 
 from . import lightfield
 
@@ -20,9 +26,9 @@ import h5py
 
 def save_refocused_image(img2d, filename, ind=None):
     if ind is not None:
-        mim.imsave(filename, img2d[ind, ...], vmin=0.0, vmax=1.0)
+        iio.imsave(filename, img2d[ind, ...], vmin=0.0, vmax=1.0)
     else:
-        mim.imsave(filename, img2d, vmin=0.0, vmax=1.0)
+        iio.imsave(filename, img2d, vmin=0.0, vmax=1.0)
 
 
 def save_field_toh5(filename, dset_name, data, verbose=False, append=False, compression_lvl=7, to_uint8=False):
