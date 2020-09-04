@@ -33,6 +33,9 @@ except ImportError as ex:
 import subprocess as sp
 
 
+eps_fp32 = np.finfo(np.float32).eps
+
+
 def read_image(img_path, data_type):
     return iio.imread(img_path).astype(data_type)
 
@@ -73,7 +76,7 @@ def lytro_read_metadata(fname_json):
 
     :param fname_json: The path to the .json file (string)
 
-    :returns: The camera object
+    :return: The camera object
     :rtype: lightfield.Camera
     """
     camera = lightfield.get_camera('lytro_illum')
@@ -119,7 +122,7 @@ def from_lytro(data_path, fname_json, source='warp', mode='grayscale', rgb2gs_mo
     :param binning: Binning of the input images, used to reduce their size and resolution (int, default: 1)
     :param data_type: Datatype of the output light-field data (np.dtype)
 
-    :returns: The imported light-field datastructure
+    :return: The imported light-field datastructure
     :rtype: lightfield.Lightfield
     """
     print('Initializing metadata..', end='', flush=True)
@@ -233,7 +236,7 @@ def from_stanford_archive(dataset_path, mode='grayscale', rgb2gs_mode='luma', bi
     :param binning: Binning of the input images, used to reduce their size and resolution (int, default: 1)
     :param data_type: Datatype of the output light-field data (np.dtype)
 
-    :returns: The imported light-field datastructure
+    :return: The imported light-field datastructure
     :rtype: lightfield.Lightfield
     """
     print('Initializing metadata..', end='', flush=True)
@@ -410,17 +413,21 @@ def _flexray_parse_source_det_positions(script_path):
             curr_v_pos_det += 1
             curr_h_pos_det = 0
 
-    return (positions_tube, positions_det, num_phases, np.array(binnings, dtype=np.intp), rois, out_grid_size[:-1], det_is_fixed)
+    return (
+        positions_tube, positions_det, num_phases, np.array(binnings, dtype=np.intp), rois, out_grid_size[:-1], det_is_fixed)
 
 
 def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     """Imports light-fields from FleXray scanner data.
 
-    :param dset_path: Directory of the sub-aperture images (containing a .ini file) (string)
-    :param crop_fixed_det: Crops the images, in case of fixed detector acquisitions (Boolean, default: True)
-    :param data_type: Datatype of the output light-field data (np.dtype)
+    :param dset_path: Directory of the sub-aperture images (containing a .ini file)
+    :type dset_path: string
+    :param crop_fixed_det: Crops the images, in case of fixed detector acquisitions, defaults to True
+    :type crop_fixed_det: boolean, optional
+    :param data_type: Datatype of the output light-field data, defaults to np.float32
+    :type data_type: `numpy.dtype`, optional
 
-    :returns: The imported light-field datastructure
+    :return: The imported light-field datastructure
     :rtype: lightfield.Lightfield
     """
     print('Initializing metadata..', end='', flush=True)
@@ -512,11 +519,11 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
                     coeff_u_high = 1 - coeff_u_low
 
                     i0[ii_v, ii_u, ...] = coeff_v_low * coeff_u_low * flat_imgs[ind_v_low, ind_u_low, ...]
-                    if coeff_u_high > np.finfo(np.float32).eps:
+                    if coeff_u_high > eps_fp32:
                         i0[ii_v, ii_u, ...] += coeff_v_low * coeff_u_high * flat_imgs[ind_v_low, ind_u_high, ...]
-                    if coeff_v_high > np.finfo(np.float32).eps:
+                    if coeff_v_high > eps_fp32:
                         i0[ii_v, ii_u, ...] += coeff_v_high * coeff_u_low * flat_imgs[ind_v_high, ind_u_low, ...]
-                    if coeff_v_high > np.finfo(np.float32).eps and coeff_u_high > np.finfo(np.float32).eps:
+                    if coeff_v_high > eps_fp32 and coeff_u_high > eps_fp32:
                         i0[ii_v, ii_u, ...] += coeff_v_high * coeff_u_high * flat_imgs[ind_v_high, ind_u_high, ...]
         else:
             for ii_v in range(camera.data_size_vu[0]):
@@ -533,7 +540,7 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
 
     lf_img -= d0
     lf_img /= i0
-    lf_img[lf_img < np.finfo(np.float32).eps] = np.finfo(np.float32).eps
+    lf_img[lf_img < eps_fp32] = eps_fp32
     lf_img = -np.log(lf_img)
     lf_img = np.flip(lf_img, axis=0)
 
