@@ -295,17 +295,26 @@ def compute_depth_cues(
 
             if compute_correspondence:
                 reprojected_l_alpha_intuv = p.FP(l_alpha_intuv)
-                variances = np.abs(reprojected_l_alpha_intuv - b) ** 2
+
+                # The l2 norm was used in the paper. However, the l1 norm is more robust to outliers.
+                # Not giving the user the choice for the moment, and keeping the implementation pretty simple
+                fit_norm = 2
+                deviations = np.abs(reprojected_l_alpha_intuv - b)
+                if fit_norm == 2:
+                    deviations = deviations ** 2
 
                 with Projector(
                         lf_sa.camera, np.array((z0, )), mask=lf_sa.mask, mode='independent',
                         up_sampling=up_sampling, beam_geometry=beam_geometry,
                         domain=domain, super_sampling=super_sampling) as p:
-                    bpj_variances = solvers.BPJ()(p.FP, variances, At=p.BP, lower_limit=0)[0]
+                    bpj_deviations = solvers.BPJ()(p.FP, deviations, At=p.BP, lower_limit=0)[0]
 
-                std_devs = np.sqrt(bpj_variances)
-                inv_std_devs = 1 / np.fmax(std_devs, 1e-5)
-                depth_correspondence = _apply_smoothing_filter(inv_std_devs, window_filter, mask, mask_renorm)
+                if fit_norm == 2:
+                    bpj_deviations = np.sqrt(bpj_deviations)
+
+                # inverting std_devs to have higher signal where the error is lower
+                inv_bpj_devs = 1 / np.fmax(bpj_deviations, 1e-5)
+                depth_correspondence = _apply_smoothing_filter(inv_bpj_devs, window_filter, mask, mask_renorm)
                 depth_correspondence = np.fmax(depth_correspondence, 1e-5)
 
                 depth_cues['correspondence'][ii_a, :, :] = depth_correspondence[
