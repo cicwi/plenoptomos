@@ -23,6 +23,7 @@ import re
 import configparser
 import time as tm
 
+import matplotlib.pyplot as plt
 try:
     import imageio as iio
 except ImportError as ex:
@@ -417,13 +418,17 @@ def _flexray_parse_source_det_positions(script_path):
         positions_tube, positions_det, num_phases, np.array(binnings, dtype=np.intp), rois, out_grid_size[:-1], det_is_fixed)
 
 
-def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
+def from_flexray(dset_path, crop_fixed_det=True, normalize_flats=False, plot_lf=False, data_type=np.float32):
     """Imports light-fields from FleXray scanner data.
 
     :param dset_path: Directory of the sub-aperture images (containing a .ini file)
     :type dset_path: string
     :param crop_fixed_det: Crops the images, in case of fixed detector acquisitions, defaults to True
     :type crop_fixed_det: boolean, optional
+    :param normalize_flats: Renormalizes the flats to same total intensity, defaults to False
+    :type normalize_flats: boolean, optional
+    :param plot_lf: Displays the loaded light-field, defaults to False
+    :type plot_lf: boolean, optional
     :param data_type: Datatype of the output light-field data, defaults to np.float32
     :type data_type: `numpy.dtype`, optional
 
@@ -539,6 +544,27 @@ def from_flexray(dset_path, crop_fixed_det=True, data_type=np.float32):
     print('\b\b: Done in %g seconds.' % (tm.time()-c))
 
     lf_img -= d0
+    i0 = np.fmax(i0 - d0, eps_fp32)
+    if normalize_flats:
+        mean_i0 = np.mean(i0, axis=(-2, -1), keepdims=True)
+        mean_i0 /= np.max(mean_i0)
+        i0 /= mean_i0
+
+    if plot_lf:
+        flat = np.transpose(i0, [0, 2, 1, 3])
+        flat = np.reshape(flat, [flat.shape[0] * flat.shape[1], flat.shape[2] * flat.shape[3]])
+        proj = np.transpose(lf_img, [0, 2, 1, 3])
+        proj = np.reshape(proj, [proj.shape[0] * proj.shape[1], proj.shape[2] * proj.shape[3]])
+
+        f, axs = plt.subplots(1, 3, sharex=True, sharey=True)
+        axs[0].imshow(proj)
+        axs[0].set_title('Raw light-field')
+        axs[1].imshow(flat)
+        axs[1].set_title('Flat-field')
+        axs[2].imshow(proj / np.fmax(flat, eps_fp32))
+        axs[2].set_title('Corrected light-field')
+        plt.show(block=False)
+
     lf_img /= i0
     lf_img[lf_img < eps_fp32] = eps_fp32
     lf_img = -np.log(lf_img)
