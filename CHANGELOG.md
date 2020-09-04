@@ -14,9 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.1.3 - 2020-08-18
 ### Fixed
-- computation of depth sub-sampling quadratic fit
-- import of flexray light-fields
-- depth-map computation with cross-correlation
+- Computation of depth sub-sampling quadratic fit
+- Import of flexray light-fields
+- Depth-map computation with cross-correlation
 
 ## 0.1.2 - 2020-06-11
 ### Added
