@@ -18,7 +18,7 @@ class Scroller(object):
     """Class to be used in conjunction with RefocusVisualizer."""
 
     def __init__(
-            self, f, ax, data, pos_val=None, title=None, do_clear=True, clims=None, cmap=mcm.viridis):
+            self, f, ax, data, pos_val=None, title=None, do_clear=True, clims=None, cmap=mcm.viridis, colorbar=True):
         self.f = f
         self.ax = ax
         self.title = title
@@ -27,10 +27,20 @@ class Scroller(object):
         self.do_clear = do_clear
         self.clims = clims
         self.cmap = cmap
+        self.colorbar = colorbar
 
         self.depth_stack = self.data[0].shape[0]
         self.num_stacks = len(self.data)
         self.curr_pos = 0
+
+        if isinstance(self.clims, (list, tuple)):
+            if len(self.clims) > 1:
+                self.clims_is_global = False
+            else:
+                self.clims_is_global = True
+                self.clims = self.clims[0]
+        else:
+            self.clims_is_global = True
 
         if self.title is None:
             self.title = 'index %d/%d'
@@ -83,37 +93,44 @@ class Scroller(object):
         """Updates the axes, to show the new requested image."""
         if isinstance(self.ax, np.ndarray):
             for ii in range(self.num_stacks):
-                im = self._update_ax(self.ax[ii], self.data[ii])
+                update_cb = self.colorbar and (not self.clims_is_global or ii == (self.num_stacks - 1))
+                im = self._update_ax(self.ax[ii], self.data[ii], update_cb)
                 self.ax[ii].set_title(
                     self.title % (self.curr_pos+1, len(self.pos_val[ii]), self.pos_val[ii][self.curr_pos]))
                 if self.clims is not None:
-                    if isinstance(self.clims, (list, tuple)):
-                        im.set_clim(self.clims[ii][0], self.clims[ii][1])
-                    else:
+                    if self.clims_is_global:
                         im.set_clim(self.clims[0], self.clims[1])
+                    else:
+                        im.set_clim(self.clims[ii][0], self.clims[ii][1])
         else:
-            im = self._update_ax(self.ax, self.data[0])
+            im = self._update_ax(self.ax, self.data[0], self.colorbar)
             self.ax.set_title(self.title % (
                 self.curr_pos+1, self.depth_stack, self.pos_val[0][self.curr_pos]))
             if self.clims is not None:
-                if isinstance(self.clims, (list, tuple)):
-                    im.set_clim(self.clims[0][0], self.clims[0][1])
-                else:
+                if self.clims_is_global:
                     im.set_clim(self.clims[0], self.clims[1])
+                else:
+                    im.set_clim(self.clims[0][0], self.clims[0][1])
         self.f.canvas.draw()
 
-    def _update_ax(self, ax, data):
+    def _update_ax(self, ax, data, update_cb):
         if self.do_clear:
-            ax.cla()
             for im in ax.get_images():
+                if update_cb:
+                    im.colorbar.remove()
                 im.remove()
+            ax.cla()
             im = ax.imshow(data[self.curr_pos, ...], cmap=self.cmap)
+            if update_cb:
+                plt.colorbar(im, ax=ax)
         else:
             try:
                 im = ax.get_images()[0]
                 im.set_data(data[self.curr_pos, ...])
             except IndexError:
                 im = ax.imshow(data[self.curr_pos, ...], cmap=self.cmap)
+                if update_cb:
+                    plt.colorbar(im, ax=ax)
         return im
 
 
@@ -122,7 +139,8 @@ class RefocusVisualizer(object):
 
     def __init__(
             self, data, pos_val=None, ref_img=None, transpose_axes=None,
-            share_axes=False, clims=None, do_clear=True, cmap=mcm.viridis):
+            share_axes=False, clims=None, do_clear=True, cmap=mcm.viridis,
+            colorbar=True):
         """Visualization tool for refocusing stacks.
 
         :param data: Refocus stacks
@@ -141,6 +159,8 @@ class RefocusVisualizer(object):
         :type do_clear: boolean, optional
         :param cmap: Color map for visualization of the images, defaults to mcm.viridis
         :type cmap: `matplotlib.cm`, optional
+        :param colorbar: Whether to show a colorbar or not, defaults to True
+        :type colorbar: boolean, optional
 
         :raises ValueError: Errors produce in case of mismatching data sizes.
         """
@@ -196,6 +216,7 @@ class RefocusVisualizer(object):
         tot_plots = num_data_stacks + int(self.ref_img is not None)
         self.f = plt.figure()
         self.ax = self.f.subplots(1, tot_plots, sharex=share_axes, sharey=share_axes)
+
         if self.ref_img is not None:
             self.ax[0].imshow(self.ref_img)
             self.scroller = Scroller(
