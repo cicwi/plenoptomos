@@ -162,7 +162,7 @@ class RefocusVisualizer(object):
         :param colorbar: Whether to show a colorbar or not, defaults to True
         :type colorbar: boolean, optional
 
-        :raises ValueError: Errors produce in case of mismatching data sizes.
+        :raises ValueError: Errors produced in case of mismatching data sizes.
         """
         self.data = data
         self.pos_val = pos_val
