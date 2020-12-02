@@ -10,7 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 -->
 
-[Unreleased]: https://www.github.com/cicwi/plenoptomos/compare/v0.1.3...develop
+[Unreleased]: https://www.github.com/cicwi/plenoptomos/compare/v0.1.4...develop
+
+## 0.1.4 - 2020-12-02
+### Added
+- Hidden support for different data fitting norms in the correspondence cue computation (depth-estimation)
+- Normalization support for flat-field data
+- Colorbar support in refocus visualization
+### Fixed
+- Loading TIFF data (relying on the ImageIO library now)
+- Loading of flexray data
+- Refocus visualization color limits
+- Typos
 
 ## 0.1.3 - 2020-08-18
 ### Fixed
