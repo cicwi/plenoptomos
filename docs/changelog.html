@@ -85,22 +85,27 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples description</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">plenoptomos</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.1.3 - 2020-08-18</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.1.4 - 2020-12-02</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">0.1.2 - 2020-06-11</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.1.3 - 2020-08-18</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id3">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">0.1.1 - 2019-12-12</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id4">0.1.2 - 2020-06-11</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id5">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id6">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">0.1.0 - 2019-03-25</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id7">0.1.1 - 2019-12-12</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id8">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">0.1.0 - 2019-03-25</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Added</a></li>
 </ul>
 </li>
 </ul>
@@ -179,20 +184,40 @@ and this project adheres to <a class="reference external" href="https://semver.o
 ### Added
 ### Fixed
 --><div class="section" id="id1">
-<h2>0.1.3 - 2020-08-18<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>0.1.4 - 2020-12-02<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="added">
+<h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Hidden support for different data fitting norms in the correspondence cue computation (depth-estimation)</p></li>
+<li><p>Normalization support for flat-field data</p></li>
+<li><p>Colorbar support in refocus visualization</p></li>
+</ul>
+</div>
 <div class="section" id="fixed">
 <h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>computation of depth sub-sampling quadratic fit</p></li>
-<li><p>import of flexray light-fields</p></li>
-<li><p>depth-map computation with cross-correlation</p></li>
+<li><p>Loading TIFF data (relying on the ImageIO library now)</p></li>
+<li><p>Loading of flexray data</p></li>
+<li><p>Refocus visualization color limits</p></li>
+<li><p>Typos</p></li>
 </ul>
 </div>
 </div>
 <div class="section" id="id2">
-<h2>0.1.2 - 2020-06-11<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="added">
-<h3>Added<a class="headerlink" href="#added" title="Permalink to this headline">¶</a></h3>
+<h2>0.1.3 - 2020-08-18<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Fixed<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Computation of depth sub-sampling quadratic fit</p></li>
+<li><p>Import of flexray light-fields</p></li>
+<li><p>Depth-map computation with cross-correlation</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>0.1.2 - 2020-06-11<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h3>Added<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Support for pixel masks</p></li>
 <li><p>Support for saving in .vox data format</p></li>
@@ -205,8 +230,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Complete support for cross-correlation cue</p></li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h3>Fixed<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>Fixed<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Test failure</p></li>
 <li><p>Roll-off correction for Fourier refocusing</p></li>
@@ -217,17 +242,17 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </div>
 </div>
-<div class="section" id="id4">
-<h2>0.1.1 - 2019-12-12<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id5">
-<h3>Added<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id7">
+<h2>0.1.1 - 2019-12-12<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h3>Added<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Example on creating and using files in .vox data format</p></li>
 <li><p>Added TV regularization to PSF deconvolution</p></li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h3>Fixed<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id9">
+<h3>Fixed<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Fixed and enabled OTF functionality in PSF convolution</p></li>
 <li><p>Allow loading when ASTRA is not installed</p></li>
@@ -238,13 +263,13 @@ and this project adheres to <a class="reference external" href="https://semver.o
 </ul>
 </div>
 </div>
-<div class="section" id="id7">
-<h2>0.1.0 - 2019-03-25<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id10">
+<h2>0.1.0 - 2019-03-25<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Initial release.</p></li>
 </ul>
-<div class="section" id="id8">
-<h3>Added<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id11">
+<h3>Added<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>support for a few types of datasets and formats (including the .vox format).</p></li>
 <li><p>support for refocusing using standard algorithms like the integration and Fourier methods.</p></li>

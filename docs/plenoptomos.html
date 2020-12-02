@@ -465,14 +465,16 @@ and ESRF - The European Synchrotron, Grenoble, France</p>
 <p>Created on Mon Feb 18 16:08:43 2019</p>
 <dl class="py function">
 <dt id="plenoptomos.import_lf.from_flexray">
-<code class="sig-prename descclassname">plenoptomos.import_lf.</code><code class="sig-name descname">from_flexray</code><span class="sig-paren">(</span><em class="sig-param">dset_path</em>, <em class="sig-param">crop_fixed_det=True</em>, <em class="sig-param">data_type=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#from_flexray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.from_flexray" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">plenoptomos.import_lf.</code><code class="sig-name descname">from_flexray</code><span class="sig-paren">(</span><em class="sig-param">dset_path</em>, <em class="sig-param">crop_fixed_det=True</em>, <em class="sig-param">normalize_flats=False</em>, <em class="sig-param">plot_lf=False</em>, <em class="sig-param">data_type=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#from_flexray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.from_flexray" title="Permalink to this definition">¶</a></dt>
 <dd><p>Imports light-fields from FleXray scanner data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dset_path</strong> – Directory of the sub-aperture images (containing a .ini file) (string)</p></li>
-<li><p><strong>crop_fixed_det</strong> – Crops the images, in case of fixed detector acquisitions (Boolean, default: True)</p></li>
-<li><p><strong>data_type</strong> – Datatype of the output light-field data (np.dtype)</p></li>
+<li><p><strong>dset_path</strong> (<em>string</em>) – Directory of the sub-aperture images (containing a .ini file)</p></li>
+<li><p><strong>crop_fixed_det</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Crops the images, in case of fixed detector acquisitions, defaults to True</p></li>
+<li><p><strong>normalize_flats</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Renormalizes the flats to same total intensity, defaults to False</p></li>
+<li><p><strong>plot_lf</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Displays the loaded light-field, defaults to False</p></li>
+<li><p><strong>data_type</strong> (<cite>numpy.dtype</cite>, optional) – Datatype of the output light-field data, defaults to np.float32</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -560,6 +562,11 @@ corresponding json file</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt id="plenoptomos.import_lf.read_image">
+<code class="sig-prename descclassname">plenoptomos.import_lf.</code><code class="sig-name descname">read_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img_path</span></em>, <em class="sig-param"><span class="n">data_type</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/import_lf.html#read_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.import_lf.read_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-plenoptomos.lightfield">
@@ -1418,7 +1425,7 @@ and ESRF - The European Synchrotron, Grenoble, France</p>
 <p>Created on Fri Dec  8 15:24:12 2017</p>
 <dl class="py class">
 <dt id="plenoptomos.utils_plot.RefocusVisualizer">
-<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.utils_plot.</code><code class="sig-name descname">RefocusVisualizer</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">pos_val=None</em>, <em class="sig-param">ref_img=None</em>, <em class="sig-param">transpose_axes=None</em>, <em class="sig-param">share_axes=False</em>, <em class="sig-param">clims=None</em>, <em class="sig-param">do_clear=True</em>, <em class="sig-param">cmap=&lt;matplotlib.colors.ListedColormap object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_plot.html#RefocusVisualizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_plot.RefocusVisualizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.utils_plot.</code><code class="sig-name descname">RefocusVisualizer</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">pos_val=None</em>, <em class="sig-param">ref_img=None</em>, <em class="sig-param">transpose_axes=None</em>, <em class="sig-param">share_axes=False</em>, <em class="sig-param">clims=None</em>, <em class="sig-param">do_clear=True</em>, <em class="sig-param">cmap=&lt;matplotlib.colors.ListedColormap object&gt;</em>, <em class="sig-param">colorbar=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_plot.html#RefocusVisualizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_plot.RefocusVisualizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Simple visualization tool for refocusing stacks.</p>
 <dl class="py method">
@@ -1430,7 +1437,7 @@ and ESRF - The European Synchrotron, Grenoble, France</p>
 
 <dl class="py class">
 <dt id="plenoptomos.utils_plot.Scroller">
-<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.utils_plot.</code><code class="sig-name descname">Scroller</code><span class="sig-paren">(</span><em class="sig-param">f</em>, <em class="sig-param">ax</em>, <em class="sig-param">data</em>, <em class="sig-param">pos_val=None</em>, <em class="sig-param">title=None</em>, <em class="sig-param">do_clear=True</em>, <em class="sig-param">clims=None</em>, <em class="sig-param">cmap=&lt;matplotlib.colors.ListedColormap object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_plot.html#Scroller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_plot.Scroller" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">plenoptomos.utils_plot.</code><code class="sig-name descname">Scroller</code><span class="sig-paren">(</span><em class="sig-param">f</em>, <em class="sig-param">ax</em>, <em class="sig-param">data</em>, <em class="sig-param">pos_val=None</em>, <em class="sig-param">title=None</em>, <em class="sig-param">do_clear=True</em>, <em class="sig-param">clims=None</em>, <em class="sig-param">cmap=&lt;matplotlib.colors.ListedColormap object&gt;</em>, <em class="sig-param">colorbar=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plenoptomos/utils_plot.html#Scroller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#plenoptomos.utils_plot.Scroller" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class to be used in conjunction with RefocusVisualizer.</p>
 <dl class="py method">
