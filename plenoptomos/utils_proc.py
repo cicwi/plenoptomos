@@ -38,7 +38,7 @@ def get_smoothing_filter(
     window_size = np.array(window_size)
 
     if window_shape.lower() == 'tri':
-        window_filter = spsig.triang(window_size[0]) * np.reshape(spsig.triang(window_size[1]), [1, -1])
+        window_filter = spsig.triang(window_size[0])[:, None] * spsig.triang(window_size[1])[None, :]
     elif window_shape.lower() == 'circ':
         tt = np.linspace(-(window_size[0] - 1) / 2, (window_size[0] - 1) / 2, window_size[0])
         ss = np.linspace(-(window_size[1] - 1) / 2, (window_size[1] - 1) / 2, window_size[1])

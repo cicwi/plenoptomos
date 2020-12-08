@@ -403,7 +403,7 @@ class PSFApply(object):
                 crops.append(slice(None))
             else:
                 crops.append(slice(b, -b))
-        return imgs_dec[crops]
+        return imgs_dec[tuple(crops)]
 
     def _get_psf_datashape(self):
         psf_shape = np.zeros_like(self.image_size)
@@ -525,7 +525,9 @@ class PSFApply4D(PSFApply):
             if data_format is None:
                 data_format = psf_d.data_format
         else:
-            psf = np.squeeze(psf_d)
+            if not len(psf_d.shape) == 4:
+                psf_d = np.squeeze(psf_d)
+            psf = psf_d
         PSFApply.__init__(
                 self, psf, img_size=img_size, use_otf=use_otf,
                 data_format=data_format, use_fftconv=use_fftconv)
@@ -533,10 +535,13 @@ class PSFApply4D(PSFApply):
     def _check_incoming_psf(self, psf_d):
         if len(psf_d) == 0 or not len(psf_d.shape) == 4:
             raise ValueError(
-                'PSFs should be in the form of 4D images  with dimensions [0] == [1] and [2] == [3], with odd edges')
+                'PSFs should be in the form of 4D images, with dimensions [0] == [1] and [2] == [3], with odd edges.' +
+                ' Given: [%s]' % np.array(psf_d.shape))
         elif not psf_d.shape[0] == psf_d.shape[1] or not psf_d.shape[2] == psf_d.shape[3]:
             raise ValueError(
-                'PSFs should be in the form of 4D images  with _dimensions [0] == [1] and [2] == [3]_, with odd edges')
+                'PSFs should be in the form of 4D images, with _dimensions [0] == [1] and [2] == [3]_, with odd edges.' +
+                ' Given: [%s]' % np.array(psf_d.shape))
         elif np.mod(psf_d.shape[0], 2) == 0 or np.mod(psf_d.shape[2], 2) == 0:
             raise ValueError(
-                'PSFs should be in the form of 4D images  with dimensions [0] == [1] and [2] == [3], with _odd edges_')
+                'PSFs should be in the form of 4D images, with dimensions [0] == [1] and [2] == [3], with _odd edges_.' +
+                ' Given: [%s]' % np.array(psf_d.shape))
