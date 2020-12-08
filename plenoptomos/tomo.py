@@ -310,7 +310,7 @@ class Projector(object):
         if not self.is_initialized:
             raise RuntimeError('Projector not initialized!!')
 
-        y = np.reshape(y, np.concatenate(((-1, ), self.img_size)))
+        y = np.reshape(y.copy(), np.concatenate(((-1, ), self.img_size)))  # We need to copy the incoming image!
 
         self._apply_psf_to_lightfield(y, is_direct=False)
 
