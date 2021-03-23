@@ -234,7 +234,7 @@ class CP_uc(Solver):
             out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
 
         if self.data_term.lower() == 'kl':
-            b_kl = 4 * sigma * b
+            b_kl = 4 * sigma * np.fmax(b, 0)
 
         c_init = tm.time()
 
@@ -392,7 +392,7 @@ class CP_tv(Solver, Operations):
             out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
 
         if self.data_term.lower() == 'kl':
-            b_kl = 4 * sigma * b
+            b_kl = 4 * sigma * np.fmax(b, 0)
 
         c_init = tm.time()
 
@@ -516,7 +516,7 @@ class CP_smooth(Solver, Operations):
             out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
 
         if self.data_term.lower() == 'kl':
-            b_kl = 4 * sigma * b
+            b_kl = 4 * sigma * np.fmax(b, 0)
 
         c_init = tm.time()
 
@@ -660,7 +660,7 @@ class CP_wl(Solver):
             out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
 
         if self.data_term.lower() == 'kl':
-            b_kl = 4 * sigma * b
+            b_kl = 4 * sigma * np.fmax(b, 0)
 
         c_init = tm.time()
 
