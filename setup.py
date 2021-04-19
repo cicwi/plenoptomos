@@ -48,10 +48,10 @@ dev_requirements = [
     # Other
     'watchdog',
     'coverage',
-    ]
+]
 
 setup(
-    author="Nicola Viganò",
+    author="Nicola VIGANÒ",
     author_email='N.R.Vigano@cwi.nl',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -67,10 +67,12 @@ setup(
     install_requires=requirements,
     license="GNU General Public License v3",
     long_description=readme + '\n\n' + history,
+    long_description_content_type='text/markdown',
     include_package_data=True,
     keywords='plenoptomos',
     name='plenoptomos',
     packages=find_packages(include=['plenoptomos']),
+    python_requires='>=3.5',
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
