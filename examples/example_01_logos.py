@@ -20,8 +20,8 @@ import matplotlib.image as mim
 import plenoptomos as pleno
 
 print('Setting up the known volume..')
-cwi_img = mim.imread('examples/cwi_logo_small.png')
-vox_img = mim.imread('examples/voxel_logo_small.png')
+cwi_img = mim.imread("examples/data/cwi_logo_small.png")
+vox_img = mim.imread("examples/data/voxel_logo_small.png")
 
 alphas_ph = np.array((1.1, 1, 0.90))
 vols_shape = (alphas_ph.size, 256, 512)
@@ -119,9 +119,14 @@ refocused_bpj_g = pleno.tomo.compute_refocus_backprojection(lf_g, z0s_par, beam_
 refocused_bpj_b = pleno.tomo.compute_refocus_backprojection(lf_b, z0s_par, beam_geometry='parallel', domain='object')
 refocused_bpj_po = pleno.colors.merge_rgb_images(refocused_bpj_r, refocused_bpj_g, refocused_bpj_b)
 
-f, ax = plt.subplots(2, 2)
+f, ax = plt.subplots(2, 2, sharex=True, sharey=True)
 ax[0, 0].imshow(np.squeeze(refocused_int))
+ax[0, 0].set_title("Integration")
 ax[0, 1].imshow(np.squeeze(refocused_bpj_co))
+ax[0, 1].set_title("Back-projection - Cone, Object")
 ax[1, 0].imshow(np.squeeze(refocused_bpj_ci))
+ax[1, 0].set_title("Back-projection - Cone, Image")
 ax[1, 1].imshow(np.squeeze(refocused_bpj_po))
+ax[1, 1].set_title("Back-projection - Parallel, Object")
+f.tight_layout()
 plt.show()
