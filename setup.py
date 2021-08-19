@@ -25,6 +25,7 @@ requirements = [
     'configparser',
     'pillow',
     'imageio',
+    'tqdm',
 ]
 
 setup_requirements = []

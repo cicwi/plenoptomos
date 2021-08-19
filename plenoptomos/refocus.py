@@ -17,11 +17,27 @@ import numpy.fft as fft
 import time as tm
 from . import lightfield
 
+from tqdm import tqdm
+
+import concurrent.futures as cf
+import multiprocessing as mp
+
+
+num_threads = round(np.log2(mp.cpu_count() + 1))
+
 
 def compute_refocus_integration(
-        lf: lightfield.Lightfield, zs, beam_geometry='parallel', domain='object',
-        up_sampling=1, border=4, border_padding='edge'):
-    """Perform the refocusing of the input light field image using the integration method.
+    lf: lightfield.Lightfield,
+    zs,
+    beam_geometry: str = "parallel",
+    domain: str = "object",
+    up_sampling: int = 1,
+    border: int = 4,
+    border_padding: str = "edge",
+    use_multithreading: bool = True,
+):
+    """
+    Perform the refocusing of the input light field image using the integration method.
 
     This method was presented in:
     [1] R. Ng, et al., “Light Field Photography with a Hand-held Plenoptic Camera,”
@@ -103,17 +119,30 @@ def compute_refocus_integration(
 
     # Computing the changes of base, and integrating (for each alpha):
     for ii in range(num_alphas):
-        prnt_str = "%d/%d (alpha = %g, z = %g)" % (ii+1, num_alphas, alphas[ii], zs[ii])
-        print(prnt_str, end='', flush=True)
+        prnt_str = "  * %d/%d (alpha = %g, z = %g)" % (ii + 1, num_alphas, alphas[ii], zs[ii])
         # Change of base:
         sheared_coords = camera_sheared.get_sheared_coords(
-            alphas[ii], space='direct', beam_geometry=beam_geometry, domain=domain)
-        sheared_lf_data = interp_lf4D(sheared_coords)
+            alphas[ii], space="direct", beam_geometry=beam_geometry, domain=domain
+        )
+        final_shape = sheared_coords.shape
+        sheared_coords = np.reshape(sheared_coords, (-1, *sheared_coords.shape[2:]))
+
+        if use_multithreading:
+            print(prnt_str)
+            with cf.ThreadPoolExecutor(max_workers=num_threads) as executor:
+                sheared_lf_data = executor.map(interp_lf4D, list(sheared_coords))
+            sheared_lf_data = [*sheared_lf_data]
+        else:
+            sheared_lf_data = [None] * sheared_coords.shape[0]
+
+            for ii_p in tqdm(range(sheared_coords.shape[0]), desc=prnt_str):
+                sheared_lf_data[ii_p] = interp_lf4D(sheared_coords[ii_p, ...])
+
+        sheared_lf_data = np.ascontiguousarray(sheared_lf_data)
+        sheared_lf_data = np.reshape(sheared_lf_data, final_shape[:-1])
 
         # Integrate:
         imgs[ii, ...] = np.sum(sheared_lf_data, axis=(0, 1))
-
-        print(('\b') * len(prnt_str), end='', flush=True)
 
     # Renormalizing:
     imgs /= renorm_sa_images
