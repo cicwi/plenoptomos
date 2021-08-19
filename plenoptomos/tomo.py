@@ -61,6 +61,8 @@ class Projector(object):
 
         if psf_d is None:
             psf_d = []
+        if not isinstance(psf_d, (list, tuple)):
+            psf_d = [psf_d]
         self.psf = psf_d
 
         self._init_geometry(zs)
