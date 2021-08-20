@@ -160,19 +160,7 @@ class Projector(object):
             self.vol_geom = []
             for d in zs_n:
                 lims_z = d + np.array([-1.0, 1.0]) / 2
-                self.vol_geom.append(
-                    astra.create_vol_geom(
-                        self.vol_size[0],
-                        self.vol_size[1],
-                        self.vol_size[2],
-                        lims_s[0],
-                        lims_s[1],
-                        lims_t[0],
-                        lims_t[1],
-                        lims_z[0],
-                        lims_z[1],
-                    )
-                )
+                self.vol_geom.append(astra.create_vol_geom(*self.vol_size, *lims_s, *lims_t, *lims_z))
         elif self.mode == "range":
             if num_dists > 1:
                 lims_z = (zs_n[0], zs_n[-1])
@@ -181,17 +169,7 @@ class Projector(object):
             else:
                 lims_z = zs_n + np.array([-1.0, 1.0]) / 2
             self.vol_geom = [
-                astra.create_vol_geom(
-                    self.vol_size[0],
-                    self.vol_size[1],
-                    self.vol_size[2],
-                    lims_s[0],
-                    lims_s[1],
-                    lims_t[0],
-                    lims_t[1],
-                    lims_z[0],
-                    lims_z[1],
-                )
+                self.vol_geom.append(astra.create_vol_geom(*self.vol_size, *lims_s, *lims_t, *lims_z))
             ]
 
         if self.beam_geometry.lower() == "cone":
