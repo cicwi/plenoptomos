@@ -23,6 +23,8 @@ from .tomo import Projector
 
 import time as tm
 
+from tqdm import tqdm
+
 import warnings
 
 try:
@@ -37,10 +39,12 @@ except ImportError:
 
 
 def _apply_smoothing_filter(arr, window_filter, mask=None, mask_renorm=1):
+    arr = np.squeeze(arr)
+    window_filter = np.array(window_filter, ndmin=arr.ndim)
     if mask is not None:
-        return sps.convolve(np.squeeze(arr) * mask, window_filter, mode="same") / mask_renorm
+        return sps.convolve(arr * mask, window_filter, mode="same") / mask_renorm
     else:
-        return sps.convolve(np.squeeze(arr), window_filter, mode="same")
+        return sps.convolve(arr, window_filter, mode="same")
 
 
 def _fit_parabola(fx, fy):
@@ -264,17 +268,16 @@ def compute_depth_cues(
     else:
         raise ValueError("Unrecognized algorithm: %s" % algorithm.lower())
 
+    l_alpha_intuv = [None] * len(zs)
+
     b = lf_sa.data[np.newaxis, ...]
     if compute_xcorrelation:
         highpass_filter = proc.get_highpass_filter(b.shape, 8, 1)
         b_hp = proc.apply_bandpass_filter(b, highpass_filter)
 
-    print("Computing responses for each alpha value: ", end="", flush=True)
-    c = tm.time()
+        l_alpha_intuv_hp = [None] * len(zs)
 
-    for ii_a, z0 in enumerate(zs):
-        prnt_str = "%03d/%03d" % (ii_a, num_zs)
-        print(prnt_str, end="", flush=True)
+    for ii_a, z0 in enumerate(tqdm(zs, desc="Computing focal stack")):
 
         with Projector(
             lf_sa.camera,
@@ -288,71 +291,101 @@ def compute_depth_cues(
             psf_d=psf,
         ) as p:
 
-            l_alpha_intuv = algo(p.FP, b, num_iter=iterations, At=p.BP, lower_limit=0)[0]
-
-            if compute_defocus:
-                l_alpha_grad = _gradient2(np.squeeze(l_alpha_intuv))
-                l_alpha_grad = np.sqrt(np.abs(l_alpha_grad[0]) ** 2 + np.abs(l_alpha_grad[1]) ** 2)
-
-                depth_defocus = _apply_smoothing_filter(l_alpha_grad, window_filter, mask, mask_renorm)
-                depth_defocus = np.fmax(depth_defocus, 1e-5)
-
-                depth_cues["defocus"][ii_a, :, :] = depth_defocus[
-                    paddings_ts[0] : -paddings_ts[0], paddings_ts[1] : -paddings_ts[1]
-                ]
+            l_alpha_intuv[ii_a] = algo(p.FP, b, num_iter=iterations, At=p.BP, lower_limit=0)[0]
 
             if compute_xcorrelation:
-                # Needs a high pass filter to the data!
-                l_alpha_intuv_hp = algo(p.FP, b_hp, num_iter=iterations, At=p.BP, lower_limit=0)[0]
-                l_alpha_intuv_hp = np.abs(l_alpha_intuv_hp)
+                l_alpha_intuv_hp[ii_a] = algo(p.FP, b_hp, num_iter=iterations, At=p.BP, lower_limit=0)[0]
 
-                depth_xcorrelation = _apply_smoothing_filter(l_alpha_intuv_hp, window_filter, mask, mask_renorm)
-                depth_xcorrelation = np.fmax(depth_xcorrelation, 1e-5)
+    l_alpha_intuv = np.ascontiguousarray(l_alpha_intuv)
 
-                depth_cues["xcorrelation"][ii_a, :, :] = depth_xcorrelation[
-                    paddings_ts[0] : -paddings_ts[0], paddings_ts[1] : -paddings_ts[1]
-                ]
+    if compute_xcorrelation:
+        l_alpha_intuv_hp = np.ascontiguousarray(l_alpha_intuv_hp)
 
-            if compute_correspondence:
-                reprojected_l_alpha_intuv = p.FP(l_alpha_intuv)
-
-                # The l2 norm was used in the paper. However, the l1 norm is more robust to outliers.
-                # Not giving the user the choice for the moment, and keeping the implementation pretty simple
-                fit_norm = 2
-                deviations = np.abs(reprojected_l_alpha_intuv - b)
-                if fit_norm == 2:
-                    deviations = deviations ** 2
-
-                with Projector(
-                    lf_sa.camera,
-                    np.array((z0,)),
-                    mask=lf_sa.mask,
-                    mode="independent",
-                    up_sampling=up_sampling,
-                    beam_geometry=beam_geometry,
-                    domain=domain,
-                    super_sampling=super_sampling,
-                ) as p:
-                    bpj_deviations = solvers.BPJ()(p.FP, deviations, At=p.BP, lower_limit=0)[0]
-
-                if fit_norm == 2:
-                    bpj_deviations = np.sqrt(bpj_deviations)
-
-                # inverting std_devs to have higher signal where the error is lower
-                inv_bpj_devs = 1 / np.fmax(bpj_deviations, 1e-5)
-                depth_correspondence = _apply_smoothing_filter(inv_bpj_devs, window_filter, mask, mask_renorm)
-                depth_correspondence = np.fmax(depth_correspondence, 1e-5)
-
-                depth_cues["correspondence"][ii_a, :, :] = depth_correspondence[
-                    paddings_ts[0] : -paddings_ts[0], paddings_ts[1] : -paddings_ts[1]
-                ]
-
-        print(("\b") * len(prnt_str), end="", flush=True)
-
-    print("Done (%d) in %g seconds." % (num_zs, tm.time() - c))
+    print("Computing responses for each alpha value:")
 
     if compute_defocus:
-        print("Computing depth estimations for defocus:\n - Preparing response..", end="", flush=True)
+        print(" - Defocus..", end="", flush=True)
+        c = tm.time()
+
+        l_alpha_grad = _gradient2(np.squeeze(l_alpha_intuv))
+        l_alpha_grad = np.sqrt(np.abs(l_alpha_grad[0]) ** 2 + np.abs(l_alpha_grad[1]) ** 2)
+
+        depth_defocus = _apply_smoothing_filter(l_alpha_grad, window_filter, mask, mask_renorm)
+        depth_defocus = np.fmax(depth_defocus, 1e-5)
+
+        depth_cues["defocus"][:, :, :] = depth_defocus[
+            ..., paddings_ts[0] : -paddings_ts[0], paddings_ts[1] : -paddings_ts[1]
+        ]
+
+        print("\b\b: Done in %g seconds." % (tm.time() - c))
+
+    if compute_xcorrelation:
+        print(" - Cross-correlation..", end="", flush=True)
+        c = tm.time()
+
+        # Needs a high pass filter to the data!
+        l_alpha_intuv_hp = np.abs(l_alpha_intuv_hp)
+
+        depth_xcorrelation = _apply_smoothing_filter(l_alpha_intuv_hp, window_filter, mask, mask_renorm)
+        depth_xcorrelation = np.fmax(depth_xcorrelation, 1e-5)
+
+        depth_cues["xcorrelation"][:, :, :] = depth_xcorrelation[
+            ..., paddings_ts[0] : -paddings_ts[0], paddings_ts[1] : -paddings_ts[1]
+        ]
+
+        print("\b\b: Done in %g seconds." % (tm.time() - c))
+
+    if compute_correspondence:
+        for ii_a, z0 in enumerate(tqdm(zs, desc=" - Correspondence")):
+
+            with Projector(
+                lf_sa.camera,
+                np.array((z0,)),
+                mask=lf_sa.mask,
+                mode="independent",
+                up_sampling=up_sampling,
+                beam_geometry=beam_geometry,
+                domain=domain,
+                super_sampling=super_sampling,
+                psf_d=psf,
+            ) as p:
+
+                reprojected_l_alpha_intuv = p.FP(l_alpha_intuv[ii_a, ...])
+
+            # The l2 norm was used in the paper. However, the l1 norm is more robust to outliers.
+            # Not giving the user the choice for the moment, and keeping the implementation pretty simple
+            fit_norm = 2
+            deviations = np.abs(reprojected_l_alpha_intuv - b)
+            if fit_norm == 2:
+                deviations = deviations ** 2
+
+            with Projector(
+                lf_sa.camera,
+                np.array((z0,)),
+                mask=lf_sa.mask,
+                mode="independent",
+                up_sampling=up_sampling,
+                beam_geometry=beam_geometry,
+                domain=domain,
+                super_sampling=super_sampling,
+            ) as p:
+                bpj_deviations = solvers.BPJ()(p.FP, deviations, At=p.BP, lower_limit=0)[0]
+
+            if fit_norm == 2:
+                bpj_deviations = np.sqrt(bpj_deviations)
+
+            # inverting std_devs to have higher signal where the error is lower
+            inv_bpj_devs = 1 / np.fmax(bpj_deviations, 1e-5)
+            depth_correspondence = _apply_smoothing_filter(inv_bpj_devs, window_filter, mask, mask_renorm)
+            depth_correspondence = np.fmax(depth_correspondence, 1e-5)
+
+            depth_cues["correspondence"][ii_a, :, :] = depth_correspondence[
+                paddings_ts[0] : -paddings_ts[0], paddings_ts[1] : -paddings_ts[1]
+            ]
+
+    print("Computing depth estimations for each cue:")
+    if compute_defocus:
+        print(" - Defocus..", end="", flush=True)
         c = tm.time()
         depth_cues["depth_defocus"], depth_cues["confidence_defocus"] = _compute_depth_and_confidence(
             depth_cues["defocus"], confidence_method=confidence_method, quadratic_refinement=quadratic_refinement
@@ -360,7 +393,7 @@ def compute_depth_cues(
         print("\b\b: Done (%d) in %g seconds." % (depth_cues["depth_defocus"].size, tm.time() - c))
 
     if compute_xcorrelation:
-        print("Computing depth estimations for cross-correlation:\n - Preparing response..", end="", flush=True)
+        print(" - Cross-correlation..", end="", flush=True)
         c = tm.time()
         depth_cues["depth_xcorrelation"], depth_cues["confidence_xcorrelation"] = _compute_depth_and_confidence(
             depth_cues["xcorrelation"], confidence_method=confidence_method, quadratic_refinement=quadratic_refinement
@@ -368,7 +401,7 @@ def compute_depth_cues(
         print("\b\b: Done (%d) in %g seconds." % (depth_cues["depth_xcorrelation"].size, tm.time() - c))
 
     if compute_correspondence:
-        print("Computing depth estimations for correspondence:\n - Preparing response..", end="", flush=True)
+        print(" - Correspondence..", end="", flush=True)
         c = tm.time()
         depth_cues["depth_correspondence"], depth_cues["confidence_correspondence"] = _compute_depth_and_confidence(
             depth_cues["correspondence"], confidence_method=confidence_method, quadratic_refinement=quadratic_refinement
@@ -563,10 +596,16 @@ def _laplacian2(x):
 
 
 def _gradient2(x):
-    d0 = np.pad(x, ((0, 1), (0, 0)), mode="constant")
-    d0 = np.diff(d0, n=1, axis=0)
-    d1 = np.pad(x, ((0, 0), (0, 1)), mode="constant")
-    d1 = np.diff(d1, n=1, axis=1)
+    pad_width = [(0, 0)] * x.ndim
+
+    pad_width[-2], pad_width[-1] = (0, 1), (0, 0)
+    d0 = np.pad(x, pad_width=pad_width, mode="constant")
+    d0 = np.diff(d0, n=1, axis=-2)
+
+    pad_width[-2], pad_width[-1] = (0, 0), (0, 1)
+    d1 = np.pad(x, pad_width=pad_width, mode="constant")
+    d1 = np.diff(d1, n=1, axis=-1)
+
     return (d0, d1)
 
 
