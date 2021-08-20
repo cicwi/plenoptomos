@@ -16,7 +16,7 @@ try:
     from . import reconstruction  # noqa: F401, F402
     from . import testing  # noqa: F401, F402
 except ImportError as ex:
-    print('WARNING: error while importing tomography module.\nAdvanced refocusing and depth estimation will not be available')
-    print('Error message:\n', ex)
+    print("WARNING: error while importing tomography module.\nAdvanced refocusing and depth estimation will not be available")
+    print("Error message:\n", ex)
 
 from . import utils_img  # noqa: F401, F402

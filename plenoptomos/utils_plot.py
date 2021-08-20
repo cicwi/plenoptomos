@@ -17,8 +17,7 @@ import matplotlib.cm as mcm
 class Scroller(object):
     """Class to be used in conjunction with RefocusVisualizer."""
 
-    def __init__(
-            self, f, ax, data, pos_val=None, title=None, do_clear=True, clims=None, cmap=mcm.viridis, colorbar=True):
+    def __init__(self, f, ax, data, pos_val=None, title=None, do_clear=True, clims=None, cmap=mcm.viridis, colorbar=True):
         self.f = f
         self.ax = ax
         self.title = title
@@ -43,29 +42,29 @@ class Scroller(object):
             self.clims_is_global = True
 
         if self.title is None:
-            self.title = 'index %d/%d'
+            self.title = "index %d/%d"
             if self.pos_val is not None:
-                self.title += '\n(distance: %g)'
+                self.title += "\n(distance: %g)"
 
-        self.f.canvas.mpl_connect('key_press_event', self._key_event)
-        self.f.canvas.mpl_connect('scroll_event', self._scroll_event)
-        self.f.canvas.mpl_connect('button_press_event', self._button_event)
+        self.f.canvas.mpl_connect("key_press_event", self._key_event)
+        self.f.canvas.mpl_connect("scroll_event", self._scroll_event)
+        self.f.canvas.mpl_connect("button_press_event", self._button_event)
         self.update()
 
     def _key_event(self, e):
-        if e.key == 'right':
+        if e.key == "right":
             self.curr_pos += 1
-        elif e.key == 'left':
+        elif e.key == "left":
             self.curr_pos -= 1
-        elif e.key == 'up':
+        elif e.key == "up":
             self.curr_pos += 1
-        elif e.key == 'down':
+        elif e.key == "down":
             self.curr_pos -= 1
-        elif e.key == 'pageup':
+        elif e.key == "pageup":
             self.curr_pos += 10
-        elif e.key == 'pagedown':
+        elif e.key == "pagedown":
             self.curr_pos -= 10
-        elif e.key == 'escape':
+        elif e.key == "escape":
             plt.close(self.f)
         else:
             print(e.key)
@@ -75,9 +74,9 @@ class Scroller(object):
         self.update()
 
     def _scroll_event(self, e):
-        if e.button == 'up':
+        if e.button == "up":
             self.curr_pos += 1
-        elif e.button == 'down':
+        elif e.button == "down":
             self.curr_pos -= 1
         else:
             print(e.key)
@@ -95,8 +94,7 @@ class Scroller(object):
             for ii in range(self.num_stacks):
                 update_cb = self.colorbar and (not self.clims_is_global or ii == (self.num_stacks - 1))
                 im = self._update_ax(self.ax[ii], self.data[ii], update_cb)
-                self.ax[ii].set_title(
-                    self.title % (self.curr_pos+1, len(self.pos_val[ii]), self.pos_val[ii][self.curr_pos]))
+                self.ax[ii].set_title(self.title % (self.curr_pos + 1, len(self.pos_val[ii]), self.pos_val[ii][self.curr_pos]))
                 if self.clims is not None:
                     if self.clims_is_global:
                         im.set_clim(self.clims[0], self.clims[1])
@@ -104,8 +102,7 @@ class Scroller(object):
                         im.set_clim(self.clims[ii][0], self.clims[ii][1])
         else:
             im = self._update_ax(self.ax, self.data[0], self.colorbar)
-            self.ax.set_title(self.title % (
-                self.curr_pos+1, self.depth_stack, self.pos_val[0][self.curr_pos]))
+            self.ax.set_title(self.title % (self.curr_pos + 1, self.depth_stack, self.pos_val[0][self.curr_pos]))
             if self.clims is not None:
                 if self.clims_is_global:
                     im.set_clim(self.clims[0], self.clims[1])
@@ -138,9 +135,17 @@ class RefocusVisualizer(object):
     """Simple visualization tool for refocusing stacks."""
 
     def __init__(
-            self, data, pos_val=None, ref_img=None, transpose_axes=None,
-            share_axes=False, clims=None, do_clear=True, cmap=mcm.viridis,
-            colorbar=True):
+        self,
+        data,
+        pos_val=None,
+        ref_img=None,
+        transpose_axes=None,
+        share_axes=False,
+        clims=None,
+        do_clear=True,
+        cmap=mcm.viridis,
+        colorbar=True,
+    ):
         """Visualization tool for refocusing stacks.
 
         :param data: Refocus stacks
@@ -181,23 +186,23 @@ class RefocusVisualizer(object):
                 num_data_stacks = 1
                 self.data = [self.data[ii, ...] for ii in range(self.data.shape[0])]
             else:
-                raise ValueError(('What is the incoming data?', self.data))
+                raise ValueError(("What is the incoming data?", self.data))
         else:
-            raise ValueError(('What is the incoming data?', self.data))
+            raise ValueError(("What is the incoming data?", self.data))
 
-        print('Found %d data stacks' % num_data_stacks)
+        print("Found %d data stacks" % num_data_stacks)
         len_stack = self.data[0].shape[0]
-        print('- Stack size: %d' % len_stack)
-        print('- Data shape: %s' % np.array(self.data[0].shape[1:]))
+        print("- Stack size: %d" % len_stack)
+        print("- Data shape: %s" % np.array(self.data[0].shape[1:]))
 
         if self.pos_val is None:
-            self.pos_val = (np.zeros((len_stack, )), ) * num_data_stacks
+            self.pos_val = (np.zeros((len_stack,)),) * num_data_stacks
         elif isinstance(self.pos_val, np.ndarray):
             self.pos_val = [self.pos_val] * num_data_stacks
         elif len(self.pos_val) == 1 and isinstance(self.pos_val[0], np.ndarray):
             self.pos_val = self.pos_val * num_data_stacks
         elif not len(self.pos_val) == num_data_stacks:
-            raise ValueError('The positions arrays should be as many as the data arrays, or a common one for all')
+            raise ValueError("The positions arrays should be as many as the data arrays, or a common one for all")
 
         if transpose_axes is not None:
             if self.ref_img is not None:
@@ -208,7 +213,7 @@ class RefocusVisualizer(object):
         if clims is None:
             clims = [[x.min(), x.max()] for x in self.data]
         elif isinstance(clims, str):
-            if clims.lower() == 'global':
+            if clims.lower() == "global":
                 clims = [[x.min(), x.max()] for x in self.data]
                 clims = np.stack(clims, axis=0)
                 clims = np.array([np.min(clims[:, 0]), np.max(clims[:, 1])])
@@ -220,10 +225,12 @@ class RefocusVisualizer(object):
         if self.ref_img is not None:
             self.ax[0].imshow(self.ref_img)
             self.scroller = Scroller(
-                self.f, self.ax[1:], data=self.data, pos_val=self.pos_val, clims=clims, do_clear=do_clear, cmap=cmap)
+                self.f, self.ax[1:], data=self.data, pos_val=self.pos_val, clims=clims, do_clear=do_clear, cmap=cmap
+            )
         else:
             self.scroller = Scroller(
-                self.f, self.ax, data=self.data, pos_val=self.pos_val, clims=clims, do_clear=do_clear, cmap=cmap)
+                self.f, self.ax, data=self.data, pos_val=self.pos_val, clims=clims, do_clear=do_clear, cmap=cmap
+            )
         self.f.set_tight_layout(True)
 
     def show(self, *args, **kwords):

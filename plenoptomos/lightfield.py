@@ -74,7 +74,7 @@ class Camera(object):
         self.a = 0.0
         self.b = 0.0
         self.wavelength_range = np.array((0.4, 0.7))  # For polychromatic visible light
-        self.wavelength_unit = 'um'
+        self.wavelength_unit = "um"
 
     def clone(self):
         return copy.deepcopy(self)
@@ -90,10 +90,10 @@ class Camera(object):
 
     def print(self):
         for k, v in self.__dict__.items():
-            print(' %18s : %s' % (k, str(v)))
-        print(' %18s : %s' % ('z0', self.get_focused_distance()))
+            print(" %18s : %s" % (k, str(v)))
+        print(" %18s : %s" % ("z0", self.get_focused_distance()))
 
-    def get_alphas(self, alphas, beam_geometry_in='cone', beam_geometry_out='parallel'):
+    def get_alphas(self, alphas, beam_geometry_in="cone", beam_geometry_out="parallel"):
         """Converts the refocusing alphas between beam geometries
 
         :param alphas: Sequence of alpha values as numpy array (numpy.array_like)
@@ -103,9 +103,9 @@ class Camera(object):
         :returns: The converted alphas
         :rtype: (numpy.array_like)
         """
-        if beam_geometry_in.lower() == 'cone' and beam_geometry_out.lower() == 'parallel':
+        if beam_geometry_in.lower() == "cone" and beam_geometry_out.lower() == "parallel":
             return 2 - 1 / alphas
-        elif beam_geometry_in.lower() == 'parallel' and beam_geometry_out.lower() == 'cone':
+        elif beam_geometry_in.lower() == "parallel" and beam_geometry_out.lower() == "cone":
             return 1 / (2 - alphas)
         else:
             return alphas
@@ -119,20 +119,20 @@ class Camera(object):
     def get_raw_detector_size(self):
         return self.data_size_ts * self.data_size_vu
 
-    def get_scales(self, space='direct', domain='object'):
-        if domain.lower() == 'object':
+    def get_scales(self, space="direct", domain="object"):
+        if domain.lower() == "object":
             M = self.get_focused_distance() / self.z1
-        elif domain.lower() == 'image':
+        elif domain.lower() == "image":
             M = 1
         else:
             raise ValueError("No known domain '%s'" % domain)
 
-        if space.lower() == 'direct':
+        if space.lower() == "direct":
             scale_t = self.pixel_size_ts[0] * M
             scale_s = self.pixel_size_ts[1] * M
             scale_v = self.pixel_size_vu[0]
             scale_u = self.pixel_size_vu[1]
-        elif space.lower() in ('fourier', 'fourier_slice'):
+        elif space.lower() in ("fourier", "fourier_slice"):
             scale_t = 1 / (self.pixel_size_ts[0] * self.data_size_ts[0] * M)
             scale_s = 1 / (self.pixel_size_ts[1] * self.data_size_ts[1] * M)
             scale_v = 1 / (self.pixel_size_vu[0] * self.data_size_vu[0])
@@ -141,35 +141,35 @@ class Camera(object):
             raise ValueError("No known space '%s'" % space)
         return (scale_t, scale_s, scale_v, scale_u)
 
-    def get_sigmatau_scales(self, space='direct', domain='object'):
-        if domain.lower() == 'object':
+    def get_sigmatau_scales(self, space="direct", domain="object"):
+        if domain.lower() == "object":
             M = self.get_focused_distance() / self.z1
-        elif domain.lower() == 'image':
+        elif domain.lower() == "image":
             M = 1
         else:
             raise ValueError("No known domain '%s'" % domain)
 
-        if space.lower() == 'direct':
+        if space.lower() == "direct":
             scale_tau = self.pixel_size_yx[0] * M
             scale_sigma = self.pixel_size_yx[1] * M
-        elif space.lower() in ('fourier', 'fourier_slice'):
+        elif space.lower() in ("fourier", "fourier_slice"):
             scale_tau = 1 / (self.pixel_size_yx[0] * self.data_size_vu[0] * M)
             scale_sigma = 1 / (self.pixel_size_yx[1] * self.data_size_vu[1] * M)
         else:
             raise ValueError("No known space '%s'" % space)
         return (scale_tau, scale_sigma)
 
-    def get_grid_points(self, space='direct', domain='object', oversampling=1):
-        (scale_t, scale_s, scale_v, scale_u) = self.get_scales(space='direct', domain=domain)
+    def get_grid_points(self, space="direct", domain="object", oversampling=1):
+        (scale_t, scale_s, scale_v, scale_u) = self.get_scales(space="direct", domain=domain)
 
         data_size = np.concatenate((np.array(self.data_size_ts) * oversampling, self.data_size_vu))
         data_span = (data_size - 1) / 2
-        if space.lower() == 'direct':
+        if space.lower() == "direct":
             samp_t = np.linspace(-data_span[0], data_span[0], data_size[0]) * scale_t / oversampling
             samp_s = np.linspace(-data_span[1], data_span[1], data_size[1]) * scale_s / oversampling
             samp_v = np.linspace(-data_span[2], data_span[2], data_size[2]) * scale_v
             samp_u = np.linspace(-data_span[3], data_span[3], data_size[3]) * scale_u
-        elif space.lower() in ('fourier', 'fourier_slice'):
+        elif space.lower() in ("fourier", "fourier_slice"):
             samp_t = np.fft.fftshift(np.fft.fftfreq(data_size[0])) / scale_t
             samp_s = np.fft.fftshift(np.fft.fftfreq(data_size[1])) / scale_s
             samp_v = np.fft.fftshift(np.fft.fftfreq(data_size[2])) / scale_v
@@ -179,7 +179,7 @@ class Camera(object):
 
         return (samp_v, samp_u, samp_t, samp_s)
 
-    def get_sigmatau_grid_points(self, space='direct', domain='object'):
+    def get_sigmatau_grid_points(self, space="direct", domain="object"):
         data_size = np.array(self.data_size_vu)
         data_span = (data_size - 1) / 2
 
@@ -191,18 +191,19 @@ class Camera(object):
         return (samp_tau, samp_sigma)
 
     def get_sheared_coords(
-            self, alpha, space='direct', beam_geometry='parallel', domain='object', transformation='shear', oversampling=1):
+        self, alpha, space="direct", beam_geometry="parallel", domain="object", transformation="shear", oversampling=1
+    ):
         (samp_v, samp_u, samp_t, samp_s) = self.get_grid_points(space=space, domain=domain, oversampling=oversampling)
 
         # We are multiplying the equations by alpha because we don't need
         # to rescale the images in lightfield refocusing
-        if space.lower() == 'direct':
-            (out_samp_v, out_samp_u, out_samp_t, out_samp_s) = np.meshgrid(samp_v, samp_u, samp_t, samp_s, indexing='ij')
+        if space.lower() == "direct":
+            (out_samp_v, out_samp_u, out_samp_t, out_samp_s) = np.meshgrid(samp_v, samp_u, samp_t, samp_s, indexing="ij")
 
-            if beam_geometry.lower() == 'parallel':
+            if beam_geometry.lower() == "parallel":
                 out_samp_t = out_samp_t + out_samp_v * (1 - 1 / alpha)
                 out_samp_s = out_samp_s + out_samp_u * (1 - 1 / alpha)
-            elif beam_geometry.lower() == 'cone':
+            elif beam_geometry.lower() == "cone":
                 out_samp_t = out_samp_t / alpha + out_samp_v * (1 - 1 / alpha)
                 out_samp_s = out_samp_s / alpha + out_samp_u * (1 - 1 / alpha)
             else:
@@ -211,20 +212,20 @@ class Camera(object):
             out_grid = np.array((out_samp_v, out_samp_u, out_samp_t, out_samp_s))
             return np.transpose(out_grid, axes=(1, 2, 3, 4, 0))
 
-        elif space.lower() == 'fourier':
-            (out_samp_v, out_samp_u, out_samp_t, out_samp_s) = np.meshgrid(samp_v, samp_u, samp_t, samp_s, indexing='ij')
+        elif space.lower() == "fourier":
+            (out_samp_v, out_samp_u, out_samp_t, out_samp_s) = np.meshgrid(samp_v, samp_u, samp_t, samp_s, indexing="ij")
 
-            if transformation.lower() == 'shear':
+            if transformation.lower() == "shear":
                 out_samp_v = out_samp_t * (1 - alpha)
                 out_samp_u = out_samp_s * (1 - alpha)
-                if beam_geometry.lower() == 'parallel':
+                if beam_geometry.lower() == "parallel":
                     pass
-                elif beam_geometry.lower() == 'cone':
+                elif beam_geometry.lower() == "cone":
                     out_samp_t = out_samp_t * alpha
                     out_samp_s = out_samp_s * alpha
                 else:
                     raise ValueError("No known beam_geometry '%s'" % beam_geometry)
-            elif transformation.lower() == 'rotate':
+            elif transformation.lower() == "rotate":
                 angle = np.arctan2(1 - alpha, alpha)
                 cos_angle = np.cos(angle)
                 sin_angle = np.sin(angle)
@@ -233,18 +234,18 @@ class Camera(object):
                 out_samp_u = out_samp_s * sin_angle + out_samp_u * cos_angle
                 out_samp_t = out_samp_t * cos_angle - out_samp_v * sin_angle
                 out_samp_s = out_samp_s * cos_angle - out_samp_u * sin_angle
-                if beam_geometry.lower() == 'parallel':
+                if beam_geometry.lower() == "parallel":
                     pass
-                elif beam_geometry.lower() == 'cone':
+                elif beam_geometry.lower() == "cone":
                     out_samp_t = out_samp_t * alpha
                     out_samp_s = out_samp_s * alpha
                 else:
                     raise ValueError("Unknown beam_geometry '%s'" % beam_geometry)
-            elif transformation.lower() == 'filter':
-                if beam_geometry.lower() == 'parallel':
+            elif transformation.lower() == "filter":
+                if beam_geometry.lower() == "parallel":
                     out_samp_t = out_samp_t + out_samp_v * (1 - 1 / alpha)
                     out_samp_s = out_samp_s + out_samp_u * (1 - 1 / alpha)
-                elif beam_geometry.lower() == 'cone':
+                elif beam_geometry.lower() == "cone":
                     out_samp_t = out_samp_t / alpha + out_samp_v * (1 - 1 / alpha)
                     out_samp_s = out_samp_s / alpha + out_samp_u * (1 - 1 / alpha)
                 else:
@@ -255,14 +256,14 @@ class Camera(object):
             out_grid = np.array((out_samp_v, out_samp_u, out_samp_t, out_samp_s))
             return np.transpose(out_grid, axes=(1, 2, 3, 4, 0))
 
-        elif space.lower() == 'fourier_slice':
-            (out_samp_t, out_samp_s) = np.meshgrid(samp_t, samp_s, indexing='ij')
+        elif space.lower() == "fourier_slice":
+            (out_samp_t, out_samp_s) = np.meshgrid(samp_t, samp_s, indexing="ij")
 
             out_samp_v = out_samp_t * (1 - alpha)
             out_samp_u = out_samp_s * (1 - alpha)
-            if beam_geometry.lower() == 'parallel':
+            if beam_geometry.lower() == "parallel":
                 pass
-            elif beam_geometry.lower() == 'cone':
+            elif beam_geometry.lower() == "cone":
                 out_samp_t = out_samp_t * alpha
                 out_samp_s = out_samp_s * alpha
             else:
@@ -274,12 +275,12 @@ class Camera(object):
         else:
             raise ValueError("No known space '%s'" % space)
 
-    def get_sampling_renorm_factor(self, alpha, space='direct', beam_geometry='parallel', domain='object'):
+    def get_sampling_renorm_factor(self, alpha, space="direct", beam_geometry="parallel", domain="object"):
         (scale_t, scale_s, scale_v, scale_u) = self.get_scales(space=space, domain=domain)
-        if beam_geometry.lower() == 'parallel':
+        if beam_geometry.lower() == "parallel":
             angle_t = np.arctan2((1 - alpha) * scale_v, scale_t)
             angle_s = np.arctan2((1 - alpha) * scale_u, scale_s)
-        elif beam_geometry.lower() == 'cone':
+        elif beam_geometry.lower() == "cone":
             angle_t = np.arctan2((1 - alpha) * scale_v, alpha * scale_t)
             angle_s = np.arctan2((1 - alpha) * scale_u, alpha * scale_s)
         else:
@@ -287,16 +288,26 @@ class Camera(object):
 
         return 1 / np.abs(np.cos(angle_t) * np.cos(angle_s))
 
-    def get_filter(self, alpha, bandwidth=0.04, beam_geometry='parallel', domain='object', oversampling=1):
-        (scale_t, scale_s, scale_v, scale_u) = self.get_scales(space='direct', domain=domain)
+    def get_filter(self, alpha, bandwidth=0.04, beam_geometry="parallel", domain="object", oversampling=1):
+        (scale_t, scale_s, scale_v, scale_u) = self.get_scales(space="direct", domain=domain)
 
         shear_grid = self.get_sheared_coords(
-            alpha, space='fourier', beam_geometry=beam_geometry, domain=domain,
-            transformation='filter', oversampling=oversampling)
+            alpha,
+            space="fourier",
+            beam_geometry=beam_geometry,
+            domain=domain,
+            transformation="filter",
+            oversampling=oversampling,
+        )
 
         base_grid = self.get_sheared_coords(
-            np.array((1, )), space='fourier', beam_geometry=beam_geometry, domain=domain,
-            transformation='filter', oversampling=oversampling)
+            np.array((1,)),
+            space="fourier",
+            beam_geometry=beam_geometry,
+            domain=domain,
+            transformation="filter",
+            oversampling=oversampling,
+        )
 
         (vv_s, uu_s, tt_s, ss_s) = (shear_grid[..., 0], shear_grid[..., 1], shear_grid[..., 2], shear_grid[..., 3])
         (vv_b, uu_b, tt_b, ss_b) = (base_grid[..., 0], base_grid[..., 1], base_grid[..., 2], base_grid[..., 3])
@@ -306,7 +317,7 @@ class Camera(object):
         bandwidth = bandwidth ** 2 / np.log(np.sqrt(2))
         return np.exp(-d / bandwidth)
 
-    def get_theo_flatfield_raw(self, data_type=np.float32, over_sampling=5, mode='micro-image'):
+    def get_theo_flatfield_raw(self, data_type=np.float32, over_sampling=5, mode="micro-image"):
         main_lens_radius = self.f1 / (2 * self.aperture_f1)
         lenslets_radius = self.f2 / (2 * self.aperture_f2)
 
@@ -318,7 +329,7 @@ class Camera(object):
         samp_x = np.linspace(-data_span[1], data_span[1], data_size[1]) * scale_x
         samp_y = np.linspace(-data_span[0], data_span[0], data_size[0]) * scale_y
 
-        [samp_y, samp_x] = np.meshgrid(samp_y, samp_x, indexing='ij')
+        [samp_y, samp_x] = np.meshgrid(samp_y, samp_x, indexing="ij")
         phi = np.arctan2(np.sqrt(samp_y ** 2 + samp_x ** 2), self.f2)
 
         center_distances = self.z1 * np.sin(phi)
@@ -335,9 +346,11 @@ class Camera(object):
         d2 = d ** 2
         # Intesection area formula from:
         # http://mathworld.wolfram.com/Circle-CircleIntersection.html
-        overlap_area = lr2 * np.arccos((d2 + lr2 - mr2) / (2 * d * lr)) \
-            + mr2 * np.arccos((d2 + mr2 - lr2) / (2 * d * mr)) \
+        overlap_area = (
+            lr2 * np.arccos((d2 + lr2 - mr2) / (2 * d * lr))
+            + mr2 * np.arccos((d2 + mr2 - lr2) / (2 * d * mr))
             - np.sqrt((-d + lr + mr) * (d - lr + mr) * (d + lr - mr) * (d + lr + mr)) / 2
+        )
 
         bf = pixels_in.astype(data_type)
         bf[pixels_border] = overlap_area / (np.pi * lr2)
@@ -348,17 +361,17 @@ class Camera(object):
         bf = np.reshape(bf, np.concatenate((self.data_size_vu, (1, 1)))) / (over_sampling ** 2)
 
         bf = bf.astype(data_type)
-        if mode.lower() == 'micro-image':
+        if mode.lower() == "micro-image":
             bf = np.reshape(bf, (1, 1, self.data_size_vu[0], self.data_size_vu[1]))
             bf = np.tile(bf, np.concatenate((self.data_size_ts, (1, 1))))
-        elif mode.lower() == 'sub-aperture':
+        elif mode.lower() == "sub-aperture":
             bf = np.reshape(bf, (self.data_size_vu[0], self.data_size_vu[1], 1, 1))
             bf = np.tile(bf, np.concatenate(((1, 1), self.data_size_ts)))
         return bf
 
-    def regrid(self, regrid_size, regrid_mode='interleave'):
+    def regrid(self, regrid_size, regrid_mode="interleave"):
         regrid_size = np.array(regrid_size, dtype=np.intp)
-        if regrid_mode.lower() == 'interleave':
+        if regrid_mode.lower() == "interleave":
 
             self.data_size_vu = (self.data_size_vu * regrid_size[0:2]).astype(np.intp)
             self.data_size_ts = (self.data_size_ts * regrid_size[2:4]).astype(np.intp)
@@ -366,26 +379,26 @@ class Camera(object):
             self.pixel_size_vu = self.pixel_size_vu / regrid_size[0:2].astype(np.float32)
             self.pixel_size_ts = self.pixel_size_ts / regrid_size[2:4].astype(np.float32)
 
-        elif regrid_mode.lower() == 'bin':
+        elif regrid_mode.lower() == "bin":
             if np.any(np.mod(self.data.shape, regrid_size) > 0):
                 raise ValueError(
                     "When rebinning, the bins size should be a divisor of the image size."
-                    + " Size was: [%s], data size: [%s]" % (
-                        ", ".join(("%d" % x for x in regrid_size)),
-                        ", ".join(("%d" % x for x in self.data.shape))))
+                    + " Size was: [%s], data size: [%s]"
+                    % (", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data.shape)))
+                )
 
             self.data_size_vu = (self.data_size_vu / regrid_size[0:2]).astype(np.intp)
             self.data_size_ts = (self.data_size_ts / regrid_size[2:4]).astype(np.intp)
 
             self.pixel_size_vu = self.pixel_size_vu * regrid_size[0:2].astype(np.float32)
             self.pixel_size_ts = self.pixel_size_ts * regrid_size[2:4].astype(np.float32)
-        elif regrid_mode.lower() == 'warp':
+        elif regrid_mode.lower() == "warp":
             if np.any(np.mod(self.data_size_vu, regrid_size) > 0):
                 raise ValueError(
                     "When warping, the warp size should be a divisor of the image size."
-                    + " Size was: [%s], data size: [%s]" % (
-                        ", ".join(("%d" % x for x in regrid_size)),
-                        ", ".join(("%d" % x for x in self.data_size_vu))))
+                    + " Size was: [%s], data size: [%s]"
+                    % (", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data_size_vu)))
+                )
 
             self.data_size_vu = (self.data_size_vu / regrid_size).astype(np.intp)
             self.data_size_ts = (self.data_size_ts * regrid_size).astype(np.intp)
@@ -399,25 +412,25 @@ class Camera(object):
     def get_focused_patch_size(self):
         return self.b / self.a * self.f2 / self.aperture_f2 / self.pixel_size_yx
 
-    def plot_phase_space_diagram(self, coordinates='su', show_central_images=None):
-        (samp_v, samp_u, samp_t, samp_s) = self.get_grid_points(space='direct')
-        if coordinates.lower() in ('su', 'us'):
+    def plot_phase_space_diagram(self, coordinates="su", show_central_images=None):
+        (samp_v, samp_u, samp_t, samp_s) = self.get_grid_points(space="direct")
+        if coordinates.lower() in ("su", "us"):
             samp_abscissa = samp_s
-            axis_name_abscissa = 's'
+            axis_name_abscissa = "s"
             samp_ordinate = samp_u
-            axis_name_ordinate = 'u'
+            axis_name_ordinate = "u"
             det_psize_abscissa = self.pixel_size_yx[1]
-        elif coordinates.lower() in ('tv', 'vt'):
+        elif coordinates.lower() in ("tv", "vt"):
             samp_abscissa = samp_t
-            axis_name_abscissa = 't'
+            axis_name_abscissa = "t"
             samp_ordinate = samp_v
-            axis_name_ordinate = 'v'
+            axis_name_ordinate = "v"
             det_psize_abscissa = self.pixel_size_yx[0]
 
-        (grid_abs, grid_ord) = np.meshgrid(samp_abscissa, samp_ordinate, indexing='ij')
+        (grid_abs, grid_ord) = np.meshgrid(samp_abscissa, samp_ordinate, indexing="ij")
         print(self.a, self.b)
         if self.is_focused():
-            samp_delta_det = np.linspace(-grid_abs.shape[1]/2, grid_abs.shape[1]/2, grid_abs.shape[1])
+            samp_delta_det = np.linspace(-grid_abs.shape[1] / 2, grid_abs.shape[1] / 2, grid_abs.shape[1])
             grid_abs += samp_delta_det * self.a / self.b * det_psize_abscissa
 
         f_size = cm2inch([24, 18])
@@ -427,26 +440,26 @@ class Camera(object):
         lower_margin = np.array([0.75, 0.75])
         ax_size = (f_size - (upper_margin + lower_margin)) / f_size
         rect = np.concatenate((lower_margin / f_size, ax_size))
-        ax = f.add_axes(rect, label='image')
+        ax = f.add_axes(rect, label="image")
 
         ax.scatter(grid_abs, grid_ord)
         labels_fontsize = 22
-        ax.set_xlabel('Coordinate: %s (mm)' % axis_name_abscissa, fontsize=labels_fontsize)
-        ax.set_ylabel('Coordinate: %s (mm)' % axis_name_ordinate, fontsize=labels_fontsize)
+        ax.set_xlabel("Coordinate: %s (mm)" % axis_name_abscissa, fontsize=labels_fontsize)
+        ax.set_ylabel("Coordinate: %s (mm)" % axis_name_ordinate, fontsize=labels_fontsize)
 
-        print('VU size:', self.data_size_vu)
-        print('TS size:', self.data_size_ts)
+        print("VU size:", self.data_size_vu)
+        print("TS size:", self.data_size_ts)
         if show_central_images is not None:
-            if coordinates.lower() in ('su', 'us'):
+            if coordinates.lower() in ("su", "us"):
                 size_abscissa = self.data_size_ts[1]
                 size_ordinate = self.data_size_vu[1]
-#                step_abscissa = self.pixel_size_ts[1]
-#                step_ordinate = self.pixel_size_vu[1]
-            elif coordinates.lower() in ('tv', 'vt'):
+            #                step_abscissa = self.pixel_size_ts[1]
+            #                step_ordinate = self.pixel_size_vu[1]
+            elif coordinates.lower() in ("tv", "vt"):
                 size_abscissa = self.data_size_ts[0]
                 size_ordinate = self.data_size_vu[0]
-#                step_abscissa = self.pixel_size_ts[0]
-#                step_ordinate = self.pixel_size_vu[0]
+            #                step_abscissa = self.pixel_size_ts[0]
+            #                step_ordinate = self.pixel_size_vu[0]
             center_abscissa = (np.floor(size_abscissa / 2)).astype(np.intp)
             center_ordinate = (np.floor(size_ordinate / 2)).astype(np.intp)
 
@@ -454,10 +467,10 @@ class Camera(object):
             y_micro = grid_ord[center_abscissa, :]
             x_sub_aperture = grid_abs[:, center_ordinate]
             y_sub_aperture = grid_ord[:, center_ordinate]
-            if show_central_images.lower() == 'line':
+            if show_central_images.lower() == "line":
                 ax.plot(x_micro, y_micro, color=[1, 0, 0], linewidth=2)
                 ax.plot(x_sub_aperture, y_sub_aperture, color=[0, 1, 0], linewidth=2)
-            elif show_central_images.lower() == 'box':
+            elif show_central_images.lower() == "box":
                 pass
 
         plt.show(block=False)
@@ -467,11 +480,18 @@ class Camera(object):
 class Lightfield(object):
     """Container class for the light-fields"""
 
-    available_modes = ('micro-image', 'sub-aperture', 'epipolar_s', 'epipolar_t')
+    available_modes = ("micro-image", "sub-aperture", "epipolar_s", "epipolar_t")
 
     def __init__(
-            self, camera_type: Camera, data=None, flat=None, mask=None,
-            mode='micro-image', dtype=np.float32, shifts_vu=(None, None)):
+        self,
+        camera_type: Camera,
+        data=None,
+        flat=None,
+        mask=None,
+        mode="micro-image",
+        dtype=np.float32,
+        shifts_vu=(None, None),
+    ):
         """Initializes the Lightfield class
 
         :param camera_type: The Camera class that stores the metadata about the light-field (Camera)
@@ -492,18 +512,28 @@ class Lightfield(object):
         self.shifts_vu = shifts_vu
 
         if self.data is None:
-            if self.mode.lower() == 'micro-image':
+            if self.mode.lower() == "micro-image":
                 data_size = np.concatenate((self.camera.data_size_ts, self.camera.data_size_vu))
-            elif self.mode.lower() == 'sub-aperture':
+            elif self.mode.lower() == "sub-aperture":
                 data_size = np.concatenate((self.camera.data_size_vu, self.camera.data_size_ts))
-            elif self.mode.lower() == 'epipolar_s':
+            elif self.mode.lower() == "epipolar_s":
                 data_size = np.array(
-                    (self.camera.data_size_ts[1], self.camera.data_size_vu[0],
-                     self.camera.data_size_vu[1], self.camera.data_size_ts[0]))
-            elif self.mode.lower() == 'epipolar_t':
+                    (
+                        self.camera.data_size_ts[1],
+                        self.camera.data_size_vu[0],
+                        self.camera.data_size_vu[1],
+                        self.camera.data_size_ts[0],
+                    )
+                )
+            elif self.mode.lower() == "epipolar_t":
                 data_size = np.array(
-                    (self.camera.data_size_vu[1], self.camera.data_size_ts[0],
-                     self.camera.data_size_ts[1], self.camera.data_size_vu[0]))
+                    (
+                        self.camera.data_size_vu[1],
+                        self.camera.data_size_ts[0],
+                        self.camera.data_size_ts[1],
+                        self.camera.data_size_vu[0],
+                    )
+                )
             else:
                 raise ValueError("No light-field mode called: '%s'" % self.mode)
             self.data = np.zeros(data_size, dtype)
@@ -518,29 +548,29 @@ class Lightfield(object):
 
         :param new_mode: One of the following: {'micro-image', 'sub-aperture', 'epipolar_s', 'epipolar_t'} (string)
         """
-        if new_mode.lower() == 'micro-image':
+        if new_mode.lower() == "micro-image":
             self.set_mode_microimage()
-        elif new_mode.lower() == 'sub-aperture':
+        elif new_mode.lower() == "sub-aperture":
             self.set_mode_subaperture()
-        elif new_mode.lower() == 'epipolar_s':
+        elif new_mode.lower() == "epipolar_s":
             self.set_mode_epipolar_s()
-        elif new_mode.lower() == 'epipolar_t':
+        elif new_mode.lower() == "epipolar_t":
             self.set_mode_epipolar_t
         else:
             raise ValueError("No light-field mode called: '%s'" % new_mode)
 
     def set_mode_epipolar_s(self):
         """Set the 'epipolar_s' mode"""
-        if self.mode.lower() == 'micro-image':
+        if self.mode.lower() == "micro-image":
             perm_op = (0, 3, 2, 1)
-        elif self.mode.lower() == 'sub-aperture':
+        elif self.mode.lower() == "sub-aperture":
             perm_op = (2, 1, 0, 3)
-        elif self.mode.lower() == 'epipolar_s':
+        elif self.mode.lower() == "epipolar_s":
             perm_op = (0, 1, 2, 3)
-        elif self.mode.lower() == 'epipolar_t':
+        elif self.mode.lower() == "epipolar_t":
             perm_op = (2, 3, 0, 1)
 
-        self.mode = 'epipolar_s'
+        self.mode = "epipolar_s"
 
         self.data = np.transpose(self.data, perm_op)
         if self.flat is not None:
@@ -550,16 +580,16 @@ class Lightfield(object):
 
     def set_mode_epipolar_t(self):
         """Set the 'epipolar_t' mode"""
-        if self.mode.lower() == 'micro-image':
+        if self.mode.lower() == "micro-image":
             perm_op = (2, 1, 0, 3)
-        elif self.mode.lower() == 'sub-aperture':
+        elif self.mode.lower() == "sub-aperture":
             perm_op = (0, 3, 2, 1)
-        elif self.mode.lower() == 'epipolar_s':
+        elif self.mode.lower() == "epipolar_s":
             perm_op = (2, 3, 0, 1)
-        elif self.mode.lower() == 'epipolar_t':
+        elif self.mode.lower() == "epipolar_t":
             perm_op = (0, 1, 2, 3)
 
-        self.mode = 'epipolar_t'
+        self.mode = "epipolar_t"
 
         self.data = np.transpose(self.data, perm_op)
         if self.flat is not None:
@@ -569,16 +599,16 @@ class Lightfield(object):
 
     def set_mode_microimage(self):
         """Set the 'micro-image' mode"""
-        if self.mode.lower() == 'micro-image':
+        if self.mode.lower() == "micro-image":
             perm_op = (0, 1, 2, 3)
-        elif self.mode.lower() == 'sub-aperture':
+        elif self.mode.lower() == "sub-aperture":
             perm_op = (2, 3, 0, 1)
-        elif self.mode.lower() == 'epipolar_s':
+        elif self.mode.lower() == "epipolar_s":
             perm_op = (0, 3, 2, 1)
-        elif self.mode.lower() == 'epipolar_t':
+        elif self.mode.lower() == "epipolar_t":
             perm_op = (2, 1, 0, 3)
 
-        self.mode = 'micro-image'
+        self.mode = "micro-image"
 
         self.data = np.transpose(self.data, perm_op)
         if self.flat is not None:
@@ -588,16 +618,16 @@ class Lightfield(object):
 
     def set_mode_subaperture(self):
         """Set the 'sub-aperture' image mode"""
-        if self.mode.lower() == 'micro-image':
+        if self.mode.lower() == "micro-image":
             perm_op = (2, 3, 0, 1)
-        elif self.mode.lower() == 'sub-aperture':
+        elif self.mode.lower() == "sub-aperture":
             perm_op = (0, 1, 2, 3)
-        elif self.mode.lower() == 'epipolar_s':
+        elif self.mode.lower() == "epipolar_s":
             perm_op = (2, 1, 0, 3)
-        elif self.mode.lower() == 'epipolar_t':
+        elif self.mode.lower() == "epipolar_t":
             perm_op = (0, 3, 2, 1)
 
-        self.mode = 'sub-aperture'
+        self.mode = "sub-aperture"
 
         self.data = np.transpose(self.data, perm_op)
         if self.flat is not None:
@@ -605,33 +635,33 @@ class Lightfield(object):
         if self.mask is not None:
             self.mask = np.transpose(self.mask, perm_op)
 
-    def get_raw_detector_picture(self, image='data'):
+    def get_raw_detector_picture(self, image="data"):
         """Returns the detector data, or the flat image in the raw detector format
 
         :param image: Selects whether we want the detector data, or the flat image (string)
         :returns: The requested image
         :rtype: numpy.array_like
         """
-        if self.mode.lower() == 'micro-image':
+        if self.mode.lower() == "micro-image":
             perm_op = (0, 2, 1, 3)
-        elif self.mode.lower() == 'sub-aperture':
+        elif self.mode.lower() == "sub-aperture":
             perm_op = (2, 0, 3, 1)
-        elif self.mode.lower() == 'epipolar_s':
+        elif self.mode.lower() == "epipolar_s":
             perm_op = (3, 0, 2, 1)
-        elif self.mode.lower() == 'epipolar_t':
+        elif self.mode.lower() == "epipolar_t":
             perm_op = (0, 1, 2, 3)
 
-        if image.lower() == 'data':
+        if image.lower() == "data":
             data_raw = np.transpose(self.data, perm_op)
-        elif image.lower() == 'flat':
+        elif image.lower() == "flat":
             data_raw = np.transpose(self.flat, perm_op)
-        elif image.lower() == 'mask':
+        elif image.lower() == "mask":
             data_raw = np.transpose(self.mask, perm_op)
         else:
-            raise ValueError('Unknown image type: %s' % image)
+            raise ValueError("Unknown image type: %s" % image)
         return np.reshape(data_raw, self.camera.get_raw_detector_size())
 
-    def set_raw_detector_picture(self, data_raw, image='data'):
+    def set_raw_detector_picture(self, data_raw, image="data"):
         """Sets the detector data, or the flat image from an image in raw
         detector format
 
@@ -639,29 +669,32 @@ class Lightfield(object):
         :param image: Selects whether we want the detector data, or the flat image (string)
         """
         in_size = (
-            self.camera.data_size_ts[0], self.camera.data_size_vu[0],
-            self.camera.data_size_ts[1], self.camera.data_size_vu[1])
+            self.camera.data_size_ts[0],
+            self.camera.data_size_vu[0],
+            self.camera.data_size_ts[1],
+            self.camera.data_size_vu[1],
+        )
         data_raw = np.reshape(data_raw, in_size)
 
-        if self.mode.lower() == 'micro-image':
+        if self.mode.lower() == "micro-image":
             perm_op = (0, 2, 1, 3)
-        elif self.mode.lower() == 'sub-aperture':
+        elif self.mode.lower() == "sub-aperture":
             perm_op = (1, 3, 0, 2)
-        elif self.mode.lower() == 'epipolar_s':
+        elif self.mode.lower() == "epipolar_s":
             perm_op = (0, 3, 1, 2)
-        elif self.mode.lower() == 'epipolar_t':
+        elif self.mode.lower() == "epipolar_t":
             perm_op = (1, 2, 0, 3)
 
-        if image.lower() == 'data':
+        if image.lower() == "data":
             self.data = np.transpose(data_raw, perm_op)
-        elif image.lower() == 'flat':
+        elif image.lower() == "flat":
             self.flat = np.transpose(data_raw, perm_op)
-        elif image.lower() == 'mask':
+        elif image.lower() == "mask":
             self.mask = np.transpose(data_raw, perm_op)
         else:
-            raise ValueError('Unknown image type: %s' % image)
+            raise ValueError("Unknown image type: %s" % image)
 
-    def get_sub_aperture_image(self, v, u, image='data'):
+    def get_sub_aperture_image(self, v, u, image="data"):
         """Returns a chosen sub-aperture image from either detector data, or
         the flat field
 
@@ -672,29 +705,29 @@ class Lightfield(object):
         :rtype: numpy.array_like
         """
         if v < 0 or v > self.camera.data_size_vu[0]:
-            raise ValueError('V coordinate %d is outside the range: [%d %d]' % (v, 0, self.camera.data_size_vu[0]))
+            raise ValueError("V coordinate %d is outside the range: [%d %d]" % (v, 0, self.camera.data_size_vu[0]))
         if u < 0 or u > self.camera.data_size_vu[1]:
-            raise ValueError('U coordinate %d is outside the range: [%d %d]' % (u, 0, self.camera.data_size_vu[1]))
+            raise ValueError("U coordinate %d is outside the range: [%d %d]" % (u, 0, self.camera.data_size_vu[1]))
 
-        if self.mode.lower() == 'micro-image':
+        if self.mode.lower() == "micro-image":
             slice_op = (slice(None), slice(None), v, u)
-        elif self.mode.lower() == 'sub-aperture':
+        elif self.mode.lower() == "sub-aperture":
             slice_op = (v, u, slice(None), slice(None))
-        elif self.mode.lower() == 'epipolar_s':
+        elif self.mode.lower() == "epipolar_s":
             slice_op = (slice(None), u, v, slice(None))
-        elif self.mode.lower() == 'epipolar_t':
+        elif self.mode.lower() == "epipolar_t":
             slice_op = (v, slice(None), slice(None), u)
 
-        if image.lower() == 'data':
+        if image.lower() == "data":
             return self.data[slice_op]
-        elif image.lower() == 'flat':
+        elif image.lower() == "flat":
             return self.flat[slice_op]
-        elif image.lower() == 'mask':
+        elif image.lower() == "mask":
             return self.mask[slice_op]
         else:
-            raise ValueError('Unknown image type: %s' % image)
+            raise ValueError("Unknown image type: %s" % image)
 
-    def get_sub_aperture_images(self, image='data'):
+    def get_sub_aperture_images(self, image="data"):
         """Returns all the sub-aperture images from either detector data, or
         the flat field
 
@@ -702,29 +735,32 @@ class Lightfield(object):
         :returns: The requested image
         :rtype: numpy.array_like
         """
-        if self.mode.lower() == 'micro-image':
+        if self.mode.lower() == "micro-image":
             perm_op = (2, 0, 3, 1)
-        elif self.mode.lower() == 'sub-aperture':
+        elif self.mode.lower() == "sub-aperture":
             perm_op = (0, 2, 1, 3)
-        elif self.mode.lower() == 'epipolar_s':
+        elif self.mode.lower() == "epipolar_s":
             perm_op = (0, 1, 2, 3)
-        elif self.mode.lower() == 'epipolar_t':
+        elif self.mode.lower() == "epipolar_t":
             perm_op = (1, 0, 3, 2)
 
-        if image.lower() == 'data':
+        if image.lower() == "data":
             data_raw = np.transpose(self.data, perm_op)
-        elif image.lower() == 'flat':
+        elif image.lower() == "flat":
             data_raw = np.transpose(self.flat, perm_op)
-        elif image.lower() == 'mask':
+        elif image.lower() == "mask":
             data_raw = np.transpose(self.mask, perm_op)
         else:
-            raise ValueError('Unknown image type: %s' % image)
-        photo_size_2D = np.array([
+            raise ValueError("Unknown image type: %s" % image)
+        photo_size_2D = np.array(
+            [
                 np.array(self.camera.data_size_vu[0]) * np.array(self.camera.data_size_ts[0]),
-                np.array(self.camera.data_size_vu[1]) * np.array(self.camera.data_size_ts[1])])
+                np.array(self.camera.data_size_vu[1]) * np.array(self.camera.data_size_ts[1]),
+            ]
+        )
         return np.reshape(data_raw, photo_size_2D)
 
-    def get_photograph(self, image='data'):
+    def get_photograph(self, image="data"):
         """Computes the refocused photograph at z0
 
         :param image: Selects whether we want the detector data, or the flat image (string)
@@ -732,23 +768,23 @@ class Lightfield(object):
         :rtype: numpy.array_like
         """
 
-        if not self.mode == 'sub-aperture':
+        if not self.mode == "sub-aperture":
             lf_sa = self.clone()
             lf_sa.set_mode_subaperture()
         else:
             lf_sa = self
 
-        if image.lower() == 'data':
+        if image.lower() == "data":
             photo = np.sum(lf_sa.data, axis=(0, 1))
-        elif image.lower() == 'flat':
+        elif image.lower() == "flat":
             photo = np.sum(lf_sa.flat, axis=(0, 1))
-        elif image.lower() == 'mask':
+        elif image.lower() == "mask":
             photo = np.sum(lf_sa.mask, axis=(0, 1))
         else:
-            raise ValueError('Unknown image type: %s' % image)
+            raise ValueError("Unknown image type: %s" % image)
         return photo / np.prod(self.camera.data_size_vu)
 
-    def pad(self, paddings, method='constant', pad_value=(0,)):
+    def pad(self, paddings, method="constant", pad_value=(0,)):
         """Pad a light-field
 
         :param paddings: Padding to add (<4x1> numpy.array_like)
@@ -762,7 +798,7 @@ class Lightfield(object):
         if len(paddings.shape) > 0 and paddings.shape[0] > 1 and (len(paddings.shape) == 1 or paddings.shape[1] == 1):
             paddings = np.tile(paddings, (2, 1))
             paddings = paddings.transpose((1, 0))
-        if not method == 'constant':
+        if not method == "constant":
             self.data = np.pad(self.data, pad_width=paddings, mode=method)
             if self.flat is not None:
                 self.flat = np.pad(self.flat, pad_width=paddings, mode=method)
@@ -780,13 +816,13 @@ class Lightfield(object):
 
         self.set_mode(old_mode)
 
-    def regrid(self, regrid_size, regrid_mode='interleave'):
+    def regrid(self, regrid_size, regrid_mode="interleave"):
         regrid_size = np.array(regrid_size, dtype=np.intp)
-        if regrid_mode.lower() == 'interleave':
+        if regrid_mode.lower() == "interleave":
             old_mode = self.mode
             self.set_mode_subaperture()
 
-            base_grid = self.camera.get_grid_points(space='direct')
+            base_grid = self.camera.get_grid_points(space="direct")
 
             self.camera.data_size_vu = ((np.array(self.camera.data_size_vu) - 1) * regrid_size[0:2]).astype(np.intp) + 1
             self.camera.data_size_ts = ((np.array(self.camera.data_size_ts) - 1) * regrid_size[2:4]).astype(np.intp) + 1
@@ -794,36 +830,36 @@ class Lightfield(object):
             self.camera.pixel_size_vu = np.array(self.camera.pixel_size_vu) / regrid_size[0:2].astype(np.float32)
             self.camera.pixel_size_ts = np.array(self.camera.pixel_size_ts) / regrid_size[2:4].astype(np.float32)
 
-            new_grid = self.camera.get_grid_points(space='direct')
-            new_grid = np.meshgrid(*new_grid, indexing='ij')
+            new_grid = self.camera.get_grid_points(space="direct")
+            new_grid = np.meshgrid(*new_grid, indexing="ij")
             new_grid = np.array(new_grid)
             new_grid = np.transpose(new_grid, axes=(1, 2, 3, 4, 0))
 
-            interp_data = sp.interpolate.RegularGridInterpolator(
-                base_grid, self.data, bounds_error=False, fill_value=0)
+            interp_data = sp.interpolate.RegularGridInterpolator(base_grid, self.data, bounds_error=False, fill_value=0)
             self.data = interp_data(new_grid)
             if self.flat is not None:
-                interp_flat = sp.interpolate.RegularGridInterpolator(
-                    base_grid, self.flat, bounds_error=False, fill_value=0)
+                interp_flat = sp.interpolate.RegularGridInterpolator(base_grid, self.flat, bounds_error=False, fill_value=0)
                 self.flat = interp_flat(new_grid)
             if self.mask is not None:
-                interp_mask = sp.interpolate.RegularGridInterpolator(
-                    base_grid, self.mask, bounds_error=False, fill_value=0)
+                interp_mask = sp.interpolate.RegularGridInterpolator(base_grid, self.mask, bounds_error=False, fill_value=0)
                 self.mask = interp_mask(new_grid)
 
             self.set_mode(old_mode)
-        elif regrid_mode.lower() == 'copy':
+        elif regrid_mode.lower() == "copy":
             old_mode = self.mode
             self.set_mode_subaperture()
 
             temp_shape = [
-                    self.camera.data_size_vu[0], 1,
-                    self.camera.data_size_vu[1], 1,
-                    self.camera.data_size_ts[0], 1,
-                    self.camera.data_size_ts[1], 1]
-            tile_size = [
-                    1, regrid_size[0], 1, regrid_size[1],
-                    1, regrid_size[2], 1, regrid_size[3]]
+                self.camera.data_size_vu[0],
+                1,
+                self.camera.data_size_vu[1],
+                1,
+                self.camera.data_size_ts[0],
+                1,
+                self.camera.data_size_ts[1],
+                1,
+            ]
+            tile_size = [1, regrid_size[0], 1, regrid_size[1], 1, regrid_size[2], 1, regrid_size[3]]
             copied_data = np.reshape(self.data, temp_shape)
             copied_data = np.tile(copied_data, tile_size)
             if self.flat is not None:
@@ -846,13 +882,13 @@ class Lightfield(object):
                 self.mask = np.reshape(copied_mask, np.concatenate((self.camera.data_size_vu, self.camera.data_size_ts)))
 
             self.set_mode(old_mode)
-        elif regrid_mode.lower() == 'bin':
+        elif regrid_mode.lower() == "bin":
             if np.any(np.mod(self.data.shape, regrid_size) > 0):
                 raise ValueError(
                     "When rebinning, the bins size should be a divisor of the image size."
-                    + " Size was: [%s], data size: [%s]" % (
-                        ", ".join(("%d" % x for x in regrid_size)),
-                        ", ".join(("%d" % x for x in self.data.shape))))
+                    + " Size was: [%s], data size: [%s]"
+                    % (", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.data.shape)))
+                )
 
             old_mode = self.mode
             self.set_mode_subaperture()
@@ -864,10 +900,18 @@ class Lightfield(object):
             self.camera.pixel_size_ts = self.camera.pixel_size_ts * regrid_size[2:4].astype(np.float32)
 
             new_data_size = np.array(
-                (self.camera.data_size_vu[0], regrid_size[0],
-                 self.camera.data_size_vu[1], regrid_size[1],
-                 self.camera.data_size_ts[0], regrid_size[2],
-                 self.camera.data_size_ts[1], regrid_size[3]), dtype=np.intp)
+                (
+                    self.camera.data_size_vu[0],
+                    regrid_size[0],
+                    self.camera.data_size_vu[1],
+                    regrid_size[1],
+                    self.camera.data_size_ts[0],
+                    regrid_size[2],
+                    self.camera.data_size_ts[1],
+                    regrid_size[3],
+                ),
+                dtype=np.intp,
+            )
 
             self.data = np.reshape(self.data, new_data_size)
             self.data = np.sum(self.data, axis=(1, 3, 5, 7)) / np.prod(regrid_size)
@@ -879,13 +923,13 @@ class Lightfield(object):
                 self.mask = np.sum(self.mask, axis=(1, 3, 5, 7)) / np.prod(regrid_size)
 
             self.set_mode(old_mode)
-        elif regrid_mode.lower() == 'warp':
+        elif regrid_mode.lower() == "warp":
             if np.any(np.mod(self.camera.data_size_vu, regrid_size) > 0):
                 raise ValueError(
                     "When warping, the warp size should be a divisor of the image size."
-                    + " Size was: [%s], data size: [%s]" % (
-                        ", ".join(("%d" % x for x in regrid_size)),
-                        ", ".join(("%d" % x for x in self.camera.data_size_vu))))
+                    + " Size was: [%s], data size: [%s]"
+                    % (", ".join(("%d" % x for x in regrid_size)), ", ".join(("%d" % x for x in self.camera.data_size_vu)))
+                )
 
             old_mode = self.mode
             self.set_mode_subaperture()
@@ -895,19 +939,29 @@ class Lightfield(object):
 
             self.camera.data_size_vu = (self.camera.data_size_vu / regrid_size).astype(np.intp)
 
-            tmp_data_size = np.array((
-                self.camera.data_size_vu[0], regrid_size[0],
-                self.camera.data_size_vu[1], regrid_size[1],
-                self.camera.data_size_ts[0],
-                self.camera.data_size_ts[1]), dtype=np.intp)
+            tmp_data_size = np.array(
+                (
+                    self.camera.data_size_vu[0],
+                    regrid_size[0],
+                    self.camera.data_size_vu[1],
+                    regrid_size[1],
+                    self.camera.data_size_ts[0],
+                    self.camera.data_size_ts[1],
+                ),
+                dtype=np.intp,
+            )
 
             self.camera.data_size_ts = (self.camera.data_size_ts * regrid_size).astype(np.intp)
 
-            new_data_size = np.array((
-                self.camera.data_size_vu[0],
-                self.camera.data_size_vu[1],
-                self.camera.data_size_ts[0],
-                self.camera.data_size_ts[1]), dtype=np.intp)
+            new_data_size = np.array(
+                (
+                    self.camera.data_size_vu[0],
+                    self.camera.data_size_vu[1],
+                    self.camera.data_size_ts[0],
+                    self.camera.data_size_ts[1],
+                ),
+                dtype=np.intp,
+            )
 
             self.data = np.reshape(self.data, tmp_data_size)
             self.data = np.flip(self.data, axis=(1, 3))
@@ -949,11 +1003,11 @@ class Lightfield(object):
                 crop_roi_ts = crop_size_ts
                 crop_size_ts = crop_roi_ts[2:] - crop_roi_ts[:2]
 
-            self.data = self.data[..., crop_roi_ts[0]:crop_roi_ts[2], crop_roi_ts[1]:crop_roi_ts[3]]
+            self.data = self.data[..., crop_roi_ts[0] : crop_roi_ts[2], crop_roi_ts[1] : crop_roi_ts[3]]
             if self.flat is not None:
-                self.flat = self.flat[..., crop_roi_ts[0]:crop_roi_ts[2], crop_roi_ts[1]:crop_roi_ts[3]]
+                self.flat = self.flat[..., crop_roi_ts[0] : crop_roi_ts[2], crop_roi_ts[1] : crop_roi_ts[3]]
             if self.mask is not None:
-                self.mask = self.mask[..., crop_roi_ts[0]:crop_roi_ts[2], crop_roi_ts[1]:crop_roi_ts[3]]
+                self.mask = self.mask[..., crop_roi_ts[0] : crop_roi_ts[2], crop_roi_ts[1] : crop_roi_ts[3]]
 
         if crop_size_vu is not None:
             crop_size_vu = np.array(crop_size_vu)
@@ -968,11 +1022,11 @@ class Lightfield(object):
                 crop_roi_vu = crop_size_vu
                 crop_size_vu = crop_roi_vu[2:] - crop_roi_vu[:2]
 
-            self.data = self.data[crop_roi_vu[0]:crop_roi_vu[2], crop_roi_vu[1]:crop_roi_vu[3], ...]
+            self.data = self.data[crop_roi_vu[0] : crop_roi_vu[2], crop_roi_vu[1] : crop_roi_vu[3], ...]
             if self.flat is not None:
-                self.flat = self.flat[crop_roi_vu[0]:crop_roi_vu[2], crop_roi_vu[1]:crop_roi_vu[3], ...]
+                self.flat = self.flat[crop_roi_vu[0] : crop_roi_vu[2], crop_roi_vu[1] : crop_roi_vu[3], ...]
             if self.mask is not None:
-                self.mask = self.mask[crop_roi_vu[0]:crop_roi_vu[2], crop_roi_vu[1]:crop_roi_vu[3], ...]
+                self.mask = self.mask[crop_roi_vu[0] : crop_roi_vu[2], crop_roi_vu[1] : crop_roi_vu[3], ...]
 
         self.camera.crop(crop_size_ts=crop_size_ts, crop_size_vu=crop_size_vu)
 
@@ -981,9 +1035,9 @@ class Lightfield(object):
     def get_central_subaperture(self, origin_vu=None):
         center_vu = (np.array(self.camera.data_size_vu, dtype=np.float) - 1) / 2
         if origin_vu is None:
-            origin_vu = np.array((0., 0.))
+            origin_vu = np.array((0.0, 0.0))
         if np.any(np.abs(origin_vu) > center_vu):
-            raise ValueError('Origin VU (%f, %f) outside of bounds' % (origin_vu[0], origin_vu[1]))
+            raise ValueError("Origin VU (%f, %f) outside of bounds" % (origin_vu[0], origin_vu[1]))
 
         origin_vu = center_vu + np.array(origin_vu)
         lower_ind = np.floor(origin_vu).astype(np.int)
@@ -993,13 +1047,13 @@ class Lightfield(object):
         out_img = np.zeros(self.camera.data_size_ts)
         eps = np.finfo(np.float32).eps
         if lower_c[0] > eps and lower_c[1] > eps:
-            out_img += lower_c[0] * lower_c[1] * self.get_sub_aperture_image(lower_ind[0], lower_ind[1], image='data')
+            out_img += lower_c[0] * lower_c[1] * self.get_sub_aperture_image(lower_ind[0], lower_ind[1], image="data")
         if upper_c[0] > eps and lower_c[1] > eps:
-            out_img += upper_c[0] * lower_c[1] * self.get_sub_aperture_image(upper_ind[0], lower_ind[1], image='data')
+            out_img += upper_c[0] * lower_c[1] * self.get_sub_aperture_image(upper_ind[0], lower_ind[1], image="data")
         if lower_c[0] > eps and upper_c[1] > eps:
-            out_img += lower_c[0] * upper_c[1] * self.get_sub_aperture_image(lower_ind[0], upper_ind[1], image='data')
+            out_img += lower_c[0] * upper_c[1] * self.get_sub_aperture_image(lower_ind[0], upper_ind[1], image="data")
         if upper_c[0] > eps and upper_c[1] > eps:
-            out_img += upper_c[0] * upper_c[1] * self.get_sub_aperture_image(upper_ind[0], upper_ind[1], image='data')
+            out_img += upper_c[0] * upper_c[1] * self.get_sub_aperture_image(upper_ind[0], upper_ind[1], image="data")
         return out_img
 
     def get_sub_lightfields(self, sub_aperture_size=5):
@@ -1013,7 +1067,7 @@ class Lightfield(object):
         self.set_mode_subaperture()
 
         lfs = []
-        empty_lf = Lightfield(camera_type=self.camera.clone(), mode='sub-aperture', dtype=self.data.dtype)
+        empty_lf = Lightfield(camera_type=self.camera.clone(), mode="sub-aperture", dtype=self.data.dtype)
         empty_lf.camera.data_size_vu = np.array([sub_aperture_size, sub_aperture_size])
 
         for v_lower, v_upper in zip(v_lower_range, v_upper_range):
@@ -1042,8 +1096,8 @@ class Lightfield(object):
             center_u = int((self.camera.data_size_vu[1] - 1) / 2)
         u_lower, u_upper = center_u - sub_aperture_size, center_u + sub_aperture_size + 1
 
-        data_size_vu = np.array((sub_aperture_size, ) * 2) * 2 + 1
-        lf = Lightfield(camera_type=self.camera.clone(), mode='sub-aperture', dtype=self.data.dtype)
+        data_size_vu = np.array((sub_aperture_size,) * 2) * 2 + 1
+        lf = Lightfield(camera_type=self.camera.clone(), mode="sub-aperture", dtype=self.data.dtype)
         lf.camera.data_size_vu = data_size_vu
 
         data_size = np.concatenate((data_size_vu, self.camera.data_size_ts))

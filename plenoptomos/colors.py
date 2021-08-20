@@ -20,18 +20,18 @@ def merge_rgb_images(imgs_r, imgs_g, imgs_b, vmin=0.0, vmax=1.0):
     return np.transpose(imgs_t, (1, 2, 3, 0))
 
 
-def from_rgb_to_grayscale(img, mode='luma'):
-    if mode.lower() == 'luma':
+def from_rgb_to_grayscale(img, mode="luma"):
+    if mode.lower() == "luma":
         coeffs = np.array((0.3, 0.59, 0.11))
-    elif mode.lower() == 'flat':
-        coeffs = 1.0/3.0
+    elif mode.lower() == "flat":
+        coeffs = 1.0 / 3.0
     else:
         raise ValueError("unrecognized RGB -> GrayScale conversion mode: %s" % mode)
 
     return np.sum(img * coeffs, axis=-1)
 
 
-def deal_with_channels(img, mode='grayscale', rgb2gs_mode='luma'):
+def deal_with_channels(img, mode="grayscale", rgb2gs_mode="luma"):
     num_channels = img.shape[-1]
 
     if num_channels == 1:
@@ -39,24 +39,24 @@ def deal_with_channels(img, mode='grayscale', rgb2gs_mode='luma'):
     elif num_channels == 2:
         return (img[..., 0], img[..., 1] > 0)
     elif num_channels == 3:
-        if mode.lower() == 'grayscale':
+        if mode.lower() == "grayscale":
             return (from_rgb_to_grayscale(img, mode=rgb2gs_mode), np.array([]))
         else:
             return ((img[..., 0], img[..., 1], img[..., 2]), np.array([]))
     elif num_channels == 4:
-        if mode.lower() == 'grayscale':
+        if mode.lower() == "grayscale":
             return (from_rgb_to_grayscale(img[..., 0:3], mode=rgb2gs_mode), img[..., 3] > 0)
         else:
             return ((img[..., 0], img[..., 1], img[..., 2]), img[..., 3] > 0)
     else:
-        raise ValueError('Incoming image should either be mono-chromatic or an RGB image, with optional alpha-channel')
+        raise ValueError("Incoming image should either be mono-chromatic or an RGB image, with optional alpha-channel")
 
 
 def get_rgb_wavelengths():
     return (np.array((0.62, 0.74)), np.array((0.495, 0.570)), np.array((0.45, 0.495)))
 
 
-def merge_rgb_lightfields(lf_r, lf_g, lf_b, mode='luma'):
+def merge_rgb_lightfields(lf_r, lf_g, lf_b, mode="luma"):
     lf = lf_r.clone()
     lf.camera.wavelength_range = [0.45, 0.74]
 
@@ -81,53 +81,53 @@ def detect_color(camera, tol=1e-2):
     (red, green, blue) = get_rgb_wavelengths()
     if len(camera.wavelength_range) == 1:
         if red[0] <= camera.wavelength_range <= red[1]:
-            return 'red'
+            return "red"
         elif green[0] <= camera.wavelength_range <= green[1]:
-            return 'green'
+            return "green"
         elif blue[0] <= camera.wavelength_range <= blue[1]:
-            return 'blue'
+            return "blue"
         else:
-            return 'unknown'
+            return "unknown"
     elif len(camera.wavelength_range) == 2:
         overlap_r = get_overlap(red)
         overlap_g = get_overlap(green)
         overlap_b = get_overlap(blue)
 
         if np.all(np.array((overlap_r, overlap_g, overlap_b)) > 0):
-            return 'white'
+            return "white"
         elif overlap_r > tol and overlap_g < tol and overlap_b < tol:
-            return 'red'
+            return "red"
         elif overlap_r < tol and overlap_g > tol and overlap_b < tol:
-            return 'green'
+            return "green"
         elif overlap_r < tol and overlap_g < tol and overlap_b > tol:
-            return 'blue'
+            return "blue"
         else:
-            return 'unknown'
+            return "unknown"
     else:
-        return 'unknown'
+        return "unknown"
 
 
-def convert_energy_to_wavelength(energy, unit_energy='eV', unit_lambda='um'):
+def convert_energy_to_wavelength(energy, unit_energy="eV", unit_lambda="um"):
     # Here we think in um
-    if unit_lambda.lower() == 'mm':
-        l_scale = 1e+3
-    elif unit_lambda.lower() == 'um':
+    if unit_lambda.lower() == "mm":
+        l_scale = 1e3
+    elif unit_lambda.lower() == "um":
         l_scale = 1
-    elif unit_lambda.lower() == 'nm':
+    elif unit_lambda.lower() == "nm":
         l_scale = 1e-3
-    elif unit_lambda.lower() == 'pm':
+    elif unit_lambda.lower() == "pm":
         l_scale = 1e-6
     else:
         raise ValueError("Unknown wavelength unit: %s" % unit_lambda)
     # Here we think in eV
-    if unit_energy.lower() == 'ev':
+    if unit_energy.lower() == "ev":
         e_scale = 1
-    elif unit_energy.lower() == 'kev':
-        e_scale = 1e+3
-    elif unit_energy.lower() == 'mev':
-        e_scale = 1e+6
-    elif unit_energy.lower() == 'gev':
-        e_scale = 1e+9
+    elif unit_energy.lower() == "kev":
+        e_scale = 1e3
+    elif unit_energy.lower() == "mev":
+        e_scale = 1e6
+    elif unit_energy.lower() == "gev":
+        e_scale = 1e9
     else:
         raise ValueError("Unknown wavelength unit: %s" % unit_energy)
 

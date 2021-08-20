@@ -20,16 +20,16 @@ import time as tm
 
 try:
     import pywt
+
     has_pywt = True
-    use_swtn = pywt.version.version >= '1.0.2'
+    use_swtn = pywt.version.version >= "1.0.2"
 except ImportError:
     has_pywt = False
     use_swtn = False
-    print('WARNING - pywt was not found')
+    print("WARNING - pywt was not found")
 
 
 class Solver(object):
-
     def __init__(self, verbose=False, dump_file=None, tol=1e-5):
         self.verbose = verbose
         self.dump_file = dump_file
@@ -67,15 +67,11 @@ class Solver(object):
 
 
 class BPJ(Solver):
-
-    def __init__(
-            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5):
+    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         self.weight_det = weight_det
 
-    def __call__(
-            self, A, b, num_iter=None, At=None, upper_limit=None,
-            lower_limit=None):
+    def __call__(self, A, b, num_iter=None, At=None, upper_limit=None, lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -92,7 +88,7 @@ class BPJ(Solver):
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing BPJ (init: %g seconds): " % (c_init - c_in), end='', flush=True)
+            print("- Performing BPJ (init: %g seconds): " % (c_init - c_in), end="", flush=True)
 
         x = At(b) * renorm_bwd
 
@@ -108,15 +104,11 @@ class BPJ(Solver):
 
 
 class Sirt(Solver):
-
-    def __init__(
-            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5):
+    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         self.weight_det = weight_det
 
-    def __call__(
-            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
-            lower_limit=None, tol=1e-5):
+    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None, tol=1e-5):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -142,22 +134,22 @@ class Sirt(Solver):
         x = x0
 
         res_norm_0 = npla.norm(b.flatten())
-        rel_res_norms = np.empty((num_iter, ))
+        rel_res_norms = np.empty((num_iter,))
 
         if self.dump_file is not None:
-            out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
+            out_x = np.empty(np.concatenate(((num_iter,), x.shape)), dtype=x.dtype)
 
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing SIRT iterations (init: %g seconds): " % (c_init - c_in), end='', flush=True)
+            print("- Performing SIRT iterations (init: %g seconds): " % (c_init - c_in), end="", flush=True)
         for ii in range(num_iter):
             if self.dump_file is not None:
                 out_x[ii, ...] = x
 
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, num_iter, (tm.time() - c_init) / np.fmax(ii, 1))
-                print(prnt_str, end='', flush=True)
+                print(prnt_str, end="", flush=True)
 
             res = b - A(x)
 
@@ -173,31 +165,26 @@ class Sirt(Solver):
                 x = np.fmin(x, upper_limit)
 
             if self.verbose:
-                print(('\b') * len(prnt_str), end='', flush=True)
-                print((' ') * len(prnt_str), end='', flush=True)
-                print(('\b') * len(prnt_str), end='', flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
+                print((" ") * len(prnt_str), end="", flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
 
         if self.verbose:
             print("Done in %g seconds." % (tm.time() - c_in))
 
         if self.dump_file is not None:
-            utils_io.save_field_toh5(self.dump_file, 'iterations', out_x)
+            utils_io.save_field_toh5(self.dump_file, "iterations", out_x)
 
         return (x, rel_res_norms)
 
 
 class CP_uc(Solver):
-
-    def __init__(
-            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
-            data_term='l2'):
+    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5, data_term="l2"):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         self.weight_det = weight_det
         self.data_term = data_term
 
-    def __call__(
-            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
-            lower_limit=None):
+    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -228,22 +215,22 @@ class CP_uc(Solver):
         p = np.zeros(b.shape, dtype=data_type)
 
         res_norm_0 = npla.norm(b.flatten())
-        rel_res_norms = np.empty((num_iter, ))
+        rel_res_norms = np.empty((num_iter,))
 
         if self.dump_file is not None:
-            out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
+            out_x = np.empty(np.concatenate(((num_iter,), x.shape)), dtype=x.dtype)
 
-        if self.data_term.lower() == 'kl':
+        if self.data_term.lower() == "kl":
             b_kl = 4 * sigma * np.fmax(b, 0)
 
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s iterations (init: %g seconds): " % (self.data_term, c_init - c_in), end='', flush=True)
+            print("- Performing CP-%s iterations (init: %g seconds): " % (self.data_term, c_init - c_in), end="", flush=True)
         for ii in range(num_iter):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, num_iter, (tm.time() - c_init) / np.fmax(ii, 1))
-                print(prnt_str, end='', flush=True)
+                print(prnt_str, end="", flush=True)
 
             fp = A(x_ehn)
 
@@ -253,14 +240,14 @@ class CP_uc(Solver):
             if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
-            if self.data_term.lower() == 'kl':
+            if self.data_term.lower() == "kl":
                 p += fp * sigma
                 p = (1 + p - np.sqrt((p - 1) ** 2 + b_kl)) / 2
             else:
                 p += res * sigma
-                if self.data_term.lower() == 'l1':
+                if self.data_term.lower() == "l1":
                     p /= np.fmax(1, np.abs(p))
-                elif self.data_term.lower() == 'l2':
+                elif self.data_term.lower() == "l2":
                     p *= sigma1
                 else:
                     raise ValueError("Unknown data term: %s" % self.data_term)
@@ -279,21 +266,20 @@ class CP_uc(Solver):
                 out_x[ii, ...] = x
 
             if self.verbose:
-                print(('\b') * len(prnt_str), end='', flush=True)
-                print((' ') * len(prnt_str), end='', flush=True)
-                print(('\b') * len(prnt_str), end='', flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
+                print((" ") * len(prnt_str), end="", flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
 
         if self.verbose:
             print("Done in %g seconds." % (tm.time() - c_in))
 
         if self.dump_file is not None:
-            utils_io.save_field_toh5(self.dump_file, 'iterations', out_x)
+            utils_io.save_field_toh5(self.dump_file, "iterations", out_x)
 
         return (x, rel_res_norms)
 
 
 class Operations(object):
-
     def __init__(self, axes=None):
         self.axes = axes
 
@@ -303,17 +289,17 @@ class Operations(object):
         for ax in self.axes:
             pad_pattern = [(0, 0)] * num_dims
             pad_pattern[ax] = (0, 1)
-            temp_d = np.pad(x, pad_pattern, mode='constant')
+            temp_d = np.pad(x, pad_pattern, mode="constant")
             temp_d = np.diff(temp_d, n=1, axis=ax)
             d.append(temp_d)
         return d
 
     def divergence(self, x):
-        num_dims = len(x.shape)-1
+        num_dims = len(x.shape) - 1
         for ii, ax in enumerate(self.axes):
             pad_pattern = [(0, 0)] * num_dims
             pad_pattern[ax] = (1, 0)
-            temp_d = np.pad(x[ii, ...], pad_pattern, mode='constant')
+            temp_d = np.pad(x[ii, ...], pad_pattern, mode="constant")
             temp_d = np.diff(temp_d, n=1, axis=ax)
             if ii == 0:
                 final_d = temp_d
@@ -327,17 +313,14 @@ class Operations(object):
         for ax in self.axes:
             pad_pattern = [(0, 0)] * num_dims
             pad_pattern[ax] = (1, 1)
-            temp_d = np.pad(x, pad_pattern, mode='edge')
+            temp_d = np.pad(x, pad_pattern, mode="edge")
             temp_d = np.diff(temp_d, n=2, axis=ax)
             d.append(temp_d)
         return np.sum(d, axis=0)
 
 
 class CP_tv(Solver, Operations):
-
-    def __init__(
-            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
-            data_term='l2', lambda_tv=1e-2, axes=None):
+    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5, data_term="l2", lambda_tv=1e-2, axes=None):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         Operations.__init__(self, axes)
 
@@ -347,9 +330,7 @@ class CP_tv(Solver, Operations):
         self.lambda_tv = lambda_tv
         self.axes = axes
 
-    def __call__(
-            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
-            lower_limit=None):
+    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -383,26 +364,27 @@ class CP_tv(Solver, Operations):
 
         p = np.zeros(b.shape, dtype=data_type)
 
-        q_g = np.zeros(np.concatenate(((len(self.axes), ), x.shape)), dtype=data_type)
+        q_g = np.zeros(np.concatenate(((len(self.axes),), x.shape)), dtype=data_type)
 
         res_norm_0 = npla.norm(b.flatten())
-        rel_res_norms = np.empty((num_iter, ))
+        rel_res_norms = np.empty((num_iter,))
 
         if self.dump_file is not None:
-            out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
+            out_x = np.empty(np.concatenate(((num_iter,), x.shape)), dtype=x.dtype)
 
-        if self.data_term.lower() == 'kl':
+        if self.data_term.lower() == "kl":
             b_kl = 4 * sigma * np.fmax(b, 0)
 
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s-TV iterations (init: %g seconds): " % (self.data_term, (c_init - c_in)),
-                  end='', flush=True)
+            print(
+                "- Performing CP-%s-TV iterations (init: %g seconds): " % (self.data_term, (c_init - c_in)), end="", flush=True
+            )
         for ii in range(num_iter):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, num_iter, (tm.time() - c_init) / np.fmax(ii, 1))
-                print(prnt_str, end='', flush=True)
+                print(prnt_str, end="", flush=True)
 
             fp = A(x_ehn)
 
@@ -412,14 +394,14 @@ class CP_tv(Solver, Operations):
             if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
-            if self.data_term.lower() == 'kl':
+            if self.data_term.lower() == "kl":
                 p += fp * sigma
                 p = (1 + p - np.sqrt((p - 1) ** 2 + b_kl)) / 2
             else:
                 p += res * sigma
-                if self.data_term.lower() == 'l1':
+                if self.data_term.lower() == "l1":
                     p /= np.fmax(1, np.abs(p))
-                elif self.data_term.lower() == 'l2':
+                elif self.data_term.lower() == "l2":
                     p *= sigma1
                 else:
                     raise ValueError("Unknown data term: %s" % self.data_term)
@@ -444,24 +426,21 @@ class CP_tv(Solver, Operations):
                 out_x[ii, ...] = x
 
             if self.verbose:
-                print(('\b') * len(prnt_str), end='', flush=True)
-                print((' ') * len(prnt_str), end='', flush=True)
-                print(('\b') * len(prnt_str), end='', flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
+                print((" ") * len(prnt_str), end="", flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
 
         if self.verbose:
             print("Done in %g seconds." % (tm.time() - c_in))
 
         if self.dump_file is not None:
-            utils_io.save_field_toh5(self.dump_file, 'iterations', out_x)
+            utils_io.save_field_toh5(self.dump_file, "iterations", out_x)
 
         return (x, rel_res_norms)
 
 
 class CP_smooth(Solver, Operations):
-
-    def __init__(
-            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
-            data_term='l2', lambda_d2=1e-2, axes=None):
+    def __init__(self, verbose=False, weight_det=None, dump_file=None, tol=1e-5, data_term="l2", lambda_d2=1e-2, axes=None):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         Operations.__init__(self, axes)
 
@@ -471,9 +450,7 @@ class CP_smooth(Solver, Operations):
         self.lambda_d2 = lambda_d2
         self.axes = axes
 
-    def __call__(
-            self, A, b, num_iter, x0=None, At=None, upper_limit=None,
-            lower_limit=None):
+    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
         """
         """
         (A, At) = self.initialize_data_operators(A, At)
@@ -510,23 +487,24 @@ class CP_smooth(Solver, Operations):
         q_g = np.zeros(x.shape, dtype=data_type)
 
         res_norm_0 = npla.norm(b.flatten())
-        rel_res_norms = np.empty((num_iter, ))
+        rel_res_norms = np.empty((num_iter,))
 
         if self.dump_file is not None:
-            out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
+            out_x = np.empty(np.concatenate(((num_iter,), x.shape)), dtype=x.dtype)
 
-        if self.data_term.lower() == 'kl':
+        if self.data_term.lower() == "kl":
             b_kl = 4 * sigma * np.fmax(b, 0)
 
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s-TV iterations (init: %g seconds): " % (self.data_term, (c_init - c_in)),
-                  end='', flush=True)
+            print(
+                "- Performing CP-%s-TV iterations (init: %g seconds): " % (self.data_term, (c_init - c_in)), end="", flush=True
+            )
         for ii in range(num_iter):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, num_iter, (tm.time() - c_init) / np.fmax(ii, 1))
-                print(prnt_str, end='', flush=True)
+                print(prnt_str, end="", flush=True)
 
             fp = A(x_ehn)
 
@@ -536,14 +514,14 @@ class CP_smooth(Solver, Operations):
             if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
-            if self.data_term.lower() == 'kl':
+            if self.data_term.lower() == "kl":
                 p += fp * sigma
                 p = (1 + p - np.sqrt((p - 1) ** 2 + b_kl)) / 2
             else:
                 p += res * sigma
-                if self.data_term.lower() == 'l1':
+                if self.data_term.lower() == "l1":
                     p /= np.fmax(1, np.abs(p))
-                elif self.data_term.lower() == 'l2':
+                elif self.data_term.lower() == "l2":
                     p *= sigma1
                 else:
                     raise ValueError("Unknown data term: %s" % self.data_term)
@@ -565,25 +543,33 @@ class CP_smooth(Solver, Operations):
                 out_x[ii, ...] = x
 
             if self.verbose:
-                print(('\b') * len(prnt_str), end='', flush=True)
-                print((' ') * len(prnt_str), end='', flush=True)
-                print(('\b') * len(prnt_str), end='', flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
+                print((" ") * len(prnt_str), end="", flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
 
         if self.verbose:
             print("Done in %g seconds." % (tm.time() - c_in))
 
         if self.dump_file is not None:
-            utils_io.save_field_toh5(self.dump_file, 'iterations', out_x)
+            utils_io.save_field_toh5(self.dump_file, "iterations", out_x)
 
         return (x, rel_res_norms)
 
 
 class CP_wl(Solver):
-
     def __init__(
-            self, verbose=False, weight_det=None, dump_file=None, tol=1e-5,
-            data_term='l2', lambda_wl=1e-2, axes=None, wl_type='db4',
-            use_decimated=False, decomp_lvl=3):
+        self,
+        verbose=False,
+        weight_det=None,
+        dump_file=None,
+        tol=1e-5,
+        data_term="l2",
+        lambda_wl=1e-2,
+        axes=None,
+        wl_type="db4",
+        use_decimated=False,
+        decomp_lvl=3,
+    ):
         Solver.__init__(self, verbose=verbose, dump_file=dump_file, tol=tol)
         self.weight_det = weight_det
 
@@ -605,16 +591,15 @@ class CP_wl(Solver):
                 Ht = lambda x: pywt.iswtn(x, wavelet=self.wl_type, axes=self.axes)
             else:
                 H = lambda x: pywt.swt2(np.squeeze(x), wavelet=self.wl_type, axes=self.axes, level=self.decomp_lvl)
-#                Ht = lambda x : pywt.iswt2(x, wavelet=self.wl_type)
+                #                Ht = lambda x : pywt.iswt2(x, wavelet=self.wl_type)
                 Ht = lambda x: pywt.iswt2(x, wavelet=self.wl_type)[np.newaxis, ...]
         return (H, Ht)
 
-    def __call__(
-            self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
+    def __call__(self, A, b, num_iter, x0=None, At=None, upper_limit=None, lower_limit=None):
         """ChambollePock implementization of wavelet regularized minimization.
         """
         if not has_pywt:
-            raise ImportError('The module pywt was not found, please install it before you try using wavelet minimization')
+            raise ImportError("The module pywt was not found, please install it before you try using wavelet minimization")
 
         (A, At) = self.initialize_data_operators(A, At)
         (H, Ht) = self.initialize_wl_operators()
@@ -649,28 +634,32 @@ class CP_wl(Solver):
         q_wl = H(np.zeros_like(x))
 
         res_norm_0 = npla.norm(b.flatten())
-        rel_res_norms = np.empty((num_iter, ))
+        rel_res_norms = np.empty((num_iter,))
 
         if self.use_decimated or use_swtn:
             sigma2 = 1 / (2 ** np.arange(self.decomp_lvl, 0, -1))
         else:
-            sigma2 = 1 / (2 ** np.arange(1, self.decomp_lvl+1))
+            sigma2 = 1 / (2 ** np.arange(1, self.decomp_lvl + 1))
 
         if self.dump_file is not None:
-            out_x = np.empty(np.concatenate(((num_iter, ), x.shape)), dtype=x.dtype)
+            out_x = np.empty(np.concatenate(((num_iter,), x.shape)), dtype=x.dtype)
 
-        if self.data_term.lower() == 'kl':
+        if self.data_term.lower() == "kl":
             b_kl = 4 * sigma * np.fmax(b, 0)
 
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s-%s iterations (init: %g seconds): " % (
-                    self.data_term, self.wl_type.lower(), (c_init - c_in)), end='', flush=True)
+            print(
+                "- Performing CP-%s-%s iterations (init: %g seconds): "
+                % (self.data_term, self.wl_type.lower(), (c_init - c_in)),
+                end="",
+                flush=True,
+            )
         for ii in range(num_iter):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, num_iter, (tm.time() - c_init) / np.fmax(ii, 1))
-                print(prnt_str, end='', flush=True)
+                print(prnt_str, end="", flush=True)
 
             fp = A(x_ehn)
 
@@ -680,14 +669,14 @@ class CP_wl(Solver):
             if self.tol is not None and rel_res_norms[ii] < self.tol:
                 break
 
-            if self.data_term.lower() == 'kl':
+            if self.data_term.lower() == "kl":
                 p += fp * sigma
                 p = (1 + p - np.sqrt((p - 1) ** 2 + b_kl)) / 2
             else:
                 p += res * sigma
-                if self.data_term.lower() == 'l1':
+                if self.data_term.lower() == "l1":
                     p /= np.fmax(1, np.abs(p))
-                elif self.data_term.lower() == 'l2':
+                elif self.data_term.lower() == "l2":
                     p *= sigma1
                 else:
                     raise ValueError("Unknown data term: %s" % self.data_term)
@@ -698,9 +687,9 @@ class CP_wl(Solver):
                 q_wl[0] += d[0] * sigma2[0]
                 q_wl[0] /= np.fmax(1, np.abs(q_wl[0]))
                 for ii_l in range(self.decomp_lvl):
-                    for k in q_wl[ii_l+1].keys():
-                        q_wl[ii_l+1][k] += d[ii_l+1][k] * sigma2[ii_l]
-                        q_wl[ii_l+1][k] /= np.fmax(1, np.abs(q_wl[ii_l+1][k]))
+                    for k in q_wl[ii_l + 1].keys():
+                        q_wl[ii_l + 1][k] += d[ii_l + 1][k] * sigma2[ii_l]
+                        q_wl[ii_l + 1][k] /= np.fmax(1, np.abs(q_wl[ii_l + 1][k]))
             else:
                 for ii_l in range(self.decomp_lvl):
                     if use_swtn:
@@ -728,32 +717,31 @@ class CP_wl(Solver):
                 out_x[ii, ...] = x
 
             if self.verbose:
-                print(('\b') * len(prnt_str), end='', flush=True)
-                print((' ') * len(prnt_str), end='', flush=True)
-                print(('\b') * len(prnt_str), end='', flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
+                print((" ") * len(prnt_str), end="", flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
 
         if self.verbose:
             print("Done in %g seconds." % (tm.time() - c_in))
 
         if self.dump_file is not None:
-            utils_io.save_field_toh5(self.dump_file, 'iterations', out_x)
+            utils_io.save_field_toh5(self.dump_file, "iterations", out_x)
 
         return (x, rel_res_norms)
 
 
 class Segment(Solver, Operations):
-
     def __init__(self, verbose=False, lambda_tv=1e-2, lambda_d2=1e-2, axes=None):
         Solver.__init__(self, verbose=verbose)
         Operations.__init__(self, axes)
         self.lambda_tv = lambda_tv
         self.lambda_d2 = lambda_d2
 
-    def levelset(self, im, mus, iterations=50, w_norm_p=2, data_term='l1'):
+    def levelset(self, im, mus, iterations=50, w_norm_p=2, data_term="l1"):
         c_in = tm.time()
 
         mus = np.array(mus)
-        mus_shape = np.concatenate((mus.shape, np.ones((len(im.shape), ), dtype=np.intp)))
+        mus_shape = np.concatenate((mus.shape, np.ones((len(im.shape),), dtype=np.intp)))
         mus_exp = np.reshape(mus, mus_shape)
         W_prime = np.expand_dims(im, axis=0) - mus_exp
         W_prime = np.abs(W_prime) ** w_norm_p
@@ -785,19 +773,20 @@ class Segment(Solver, Operations):
         c_init = tm.time()
 
         if self.verbose:
-            print("- Performing CP-%s iterations (init: %g seconds): " % (data_term.lower(), (c_init - c_in)),
-                  end='', flush=True)
+            print(
+                "- Performing CP-%s iterations (init: %g seconds): " % (data_term.lower(), (c_init - c_in)), end="", flush=True
+            )
         for ii in range(iterations):
             if self.verbose:
                 prnt_str = "%03d/%03d (avg: %g seconds)" % (ii, iterations, (tm.time() - c_init) / np.fmax(ii, 1))
-                print(prnt_str, end='', flush=True)
+                print(prnt_str, end="", flush=True)
 
             q_mus += mus_exp - xe
-            if data_term.lower() == 'l1':
+            if data_term.lower() == "l1":
                 q_mus /= np.fmax(1, np.abs(q_mus))
-            elif data_term.lower() == 'l12':
+            elif data_term.lower() == "l12":
                 q_mus /= np.fmax(1, np.sqrt(np.sum(q_mus ** 2, axis=0)))
-            elif data_term.lower() == 'l2':
+            elif data_term.lower() == "l2":
                 q_mus *= sigma1_mus
 
             upd = np.sum(W_mus * q_mus, axis=0)
@@ -820,9 +809,9 @@ class Segment(Solver, Operations):
             x = xn
 
             if self.verbose:
-                print(('\b') * len(prnt_str), end='', flush=True)
-                print((' ') * len(prnt_str), end='', flush=True)
-                print(('\b') * len(prnt_str), end='', flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
+                print((" ") * len(prnt_str), end="", flush=True)
+                print(("\b") * len(prnt_str), end="", flush=True)
 
         if self.verbose:
             print("Done in %g seconds." % (tm.time() - c_in))
@@ -837,5 +826,5 @@ class Segment(Solver, Operations):
 
         x = np.zeros_like(vol)
         for ii, t in enumerate(thr):
-            x[vol > t] = pos[ii+1]
+            x[vol > t] = pos[ii + 1]
         return x

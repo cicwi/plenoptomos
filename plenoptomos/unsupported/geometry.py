@@ -14,7 +14,7 @@ class GeometryTransformation(object):
     """Geometry transformation class. It allows to manipulate position and direction vectors.
     """
 
-    def __init__(self, t=np.eye(3, dtype=np.float32), s=np.zeros((3, ), dtype=np.float32)):
+    def __init__(self, t=np.eye(3, dtype=np.float32), s=np.zeros((3,), dtype=np.float32)):
         self.t = t  # The transformation
         self.s = s  # The shift (translation)
 
@@ -70,9 +70,9 @@ class GeometryTransformation(object):
             elif vec[3] == 1:
                 return self.apply_position(vec[:3, ...])
             else:
-                raise ValueError('4th component of 4-vectors can only be 1 or 0, while %d was found' % vec[3])
+                raise ValueError("4th component of 4-vectors can only be 1 or 0, while %d was found" % vec[3])
         else:
-            raise ValueError('This function only accepts 3 and 4-vectors, while %d-vector was found' % vec.shape[0])
+            raise ValueError("This function only accepts 3 and 4-vectors, while %d-vector was found" % vec.shape[0])
 
     def rmatvec(self, vec):
         """Implement the transpose of the transformation to vector operation.
@@ -86,9 +86,9 @@ class GeometryTransformation(object):
             if vec[3] == 0:
                 return self.apply_direction(vec[:3, ...])
             else:
-                raise ValueError('4th component of 4-vectors can only be 0 (direction), while %d was found' % vec[3])
+                raise ValueError("4th component of 4-vectors can only be 0 (direction), while %d was found" % vec[3])
         else:
-            raise ValueError('This function only accepts 3-vectors, while %d-vector was found' % vec.shape[0])
+            raise ValueError("This function only accepts 3-vectors, while %d-vector was found" % vec.shape[0])
 
     @staticmethod
     def get_rotation_components(rot_axis):
@@ -106,7 +106,7 @@ class GeometryTransformation(object):
         r_comp_const = np.outer(rot_axis, rot_axis)
         r_comp_cos = np.eye(3, dtype=np.float32) - r_comp_const
         r_comp_sin = np.zeros((3, 3), dtype=np.float32)
-        r_comp_sin[[0, 0, 1], [1, 2, 2]] = [-rot_axis[2],  rot_axis[1], -rot_axis[0]]
+        r_comp_sin[[0, 0, 1], [1, 2, 2]] = [-rot_axis[2], rot_axis[1], -rot_axis[0]]
         r_comp_sin -= r_comp_sin.transpose()
 
         return (r_comp_const, r_comp_cos, r_comp_sin)
@@ -215,7 +215,7 @@ class GeometryTransformation(object):
         :return: The chosen transformation
         :rtype: `GeometryTransofrm`
         """
-        if t_type.lower() == 'rot':
+        if t_type.lower() == "rot":
             return GeometryTransformation.get_rototranslation(*args, **keywords)
-        elif t_type.lower() == 'tr':
+        elif t_type.lower() == "tr":
             return GeometryTransformation.get_translation(*args, **keywords)

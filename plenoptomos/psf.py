@@ -20,6 +20,7 @@ import scipy.signal as spsig
 from scipy import fftpack
 
 import matplotlib.pyplot as plt
+
 # Do not remove the following import: it is used somehow by the plotting
 # functionality in the PSF creation
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
@@ -47,10 +48,19 @@ class PSF(object):
 
     @staticmethod
     def create_theo_psf(
-            camera, coordinates, wavelength_steps=10, wavelength_intensity=1,
-            airy_rings=2, refocus_distance=None, up_sampling=1,
-            beam_coherence='incoherent', shape='circle', over_sampling=25,
-            data_type=np.float32, plot=False):
+        camera,
+        coordinates,
+        wavelength_steps=10,
+        wavelength_intensity=1,
+        airy_rings=2,
+        refocus_distance=None,
+        up_sampling=1,
+        beam_coherence="incoherent",
+        shape="circle",
+        over_sampling=25,
+        data_type=np.float32,
+        plot=False,
+    ):
         """Compute the theoretical PSF for the given coordinates in the given
         camera setup.
 
@@ -64,13 +74,13 @@ class PSF(object):
         :rtype: PSF
         """
         # We think in mm
-        if camera.wavelength_unit.lower() == 'mm':
+        if camera.wavelength_unit.lower() == "mm":
             ls_unit = 1
-        elif camera.wavelength_unit.lower() == 'um':
+        elif camera.wavelength_unit.lower() == "um":
             ls_unit = 1e-3
-        elif camera.wavelength_unit.lower() == 'nm':
+        elif camera.wavelength_unit.lower() == "nm":
             ls_unit = 1e-6
-        elif camera.wavelength_unit.lower() == 'pm':
+        elif camera.wavelength_unit.lower() == "pm":
             ls_unit = 1e-9
         else:
             raise ValueError("Unknown wavelength unit: %s" % camera.wavelength_unit)
@@ -81,38 +91,51 @@ class PSF(object):
             ls = camera.wavelength_range * ls_unit
 
         z0 = camera.get_focused_distance()
-        if coordinates.lower() in ('st', 'ts') and refocus_distance is not None:
+        if coordinates.lower() in ("st", "ts") and refocus_distance is not None:
             blur_size = np.abs(refocus_distance - z0) / z0 * camera.pixel_size_vu
             M = z0 / camera.z1
             defocus_size = np.mean(blur_size / (camera.pixel_size_ts * M)) / 2
-#        elif coordinates.lower() in ('uv', 'vu') and camera.is_focused():
-#            blur_size = np.abs(camera.b) / camera.f2
-#            defocus_size = np.mean(blur_size) / 2
+        #        elif coordinates.lower() in ('uv', 'vu') and camera.is_focused():
+        #            blur_size = np.abs(camera.b) / camera.f2
+        #            defocus_size = np.mean(blur_size) / 2
         else:
             defocus_size = 0
 
-        Conf = namedtuple('Conf', (
-            'airy_rings', 'over_sampling', 'beam_coherence', 'wavelength_intensity',
-            'pixels_defocus', 'guarantee_pixel_multiple', 'data_type'))
+        Conf = namedtuple(
+            "Conf",
+            (
+                "airy_rings",
+                "over_sampling",
+                "beam_coherence",
+                "wavelength_intensity",
+                "pixels_defocus",
+                "guarantee_pixel_multiple",
+                "data_type",
+            ),
+        )
         conf = Conf(airy_rings, over_sampling, beam_coherence, wavelength_intensity, defocus_size, 1, data_type)
 
-        print("- Creating Theoretical PSFs for (%s, %s) coordinates (defocus size: %g).." % (
-            coordinates[0], coordinates[1], defocus_size), end='', flush=True)
+        print(
+            "- Creating Theoretical PSFs for (%s, %s) coordinates (defocus size: %g).."
+            % (coordinates[0], coordinates[1], defocus_size),
+            end="",
+            flush=True,
+        )
         c_in = tm.time()
 
-        if coordinates.lower() in ('uv', 'vu'):
+        if coordinates.lower() in ("uv", "vu"):
             # Micro lenses PSF
             d2 = camera.f2 / camera.aperture_f2
             if camera.is_focused():
                 psf_data = PSF.compute_fraunhofer_psf(conf, d2, camera.b, camera.pixel_size_yx, ls)
             else:
                 psf_data = PSF.compute_fraunhofer_psf(conf, d2, camera.f2, camera.pixel_size_yx, ls)
-            data_format = 'raw'
-        elif coordinates.lower() in ('st', 'ts'):
+            data_format = "raw"
+        elif coordinates.lower() in ("st", "ts"):
             # Main lens PSF
             d1 = camera.f1 / camera.aperture_f1
             if up_sampling > 1:
-                data_format = 'subpixel'
+                data_format = "subpixel"
             else:
                 data_format = None
             if camera.is_focused():
@@ -128,10 +151,10 @@ class PSF(object):
         if plot:
             pixels_distance = (psf_data.shape[0] - 1) / 2
             grid_p = np.linspace(-pixels_distance, pixels_distance, 2 * pixels_distance + 1)
-            [grid_p1, grid_p2] = np.meshgrid(grid_p, grid_p, indexing='ij')
+            [grid_p1, grid_p2] = np.meshgrid(grid_p, grid_p, indexing="ij")
 
             f = plt.figure()
-            ax = f.add_subplot(1, 1, 1, projection='3d')
+            ax = f.add_subplot(1, 1, 1, projection="3d")
             ax.plot_surface(grid_p1, grid_p2, psf_data)
             ax.view_init(12, -7.5)
             plt.show()
@@ -152,14 +175,14 @@ class PSF(object):
         samp_1 = samp_1 * pixel_size[0]
         samp_2 = samp_2 * pixel_size[1]
 
-        [grid_1, grid_2] = np.meshgrid(samp_1, samp_2, indexing='ij')
+        [grid_1, grid_2] = np.meshgrid(samp_1, samp_2, indexing="ij")
 
         data_center = pixels_distance * conf.over_sampling + np.floor(conf.over_sampling / 2)
         data_center = data_center.astype(np.int32)
 
         # Airy function
         r = np.sqrt(grid_1 ** 2 + grid_2 ** 2)
-        r = np.reshape(r, np.concatenate(((1, ), r.shape)))
+        r = np.reshape(r, np.concatenate(((1,), r.shape)))
         ls = np.reshape(ls, (-1, 1, 1))
         h = np.pi * d * r / (ls * z)
         J10 = spspecial.jv(1, h)
@@ -168,7 +191,7 @@ class PSF(object):
         # Setting central pixel to 1 (otherwise it would be NaN or 0)
         h[:, data_center, data_center] = 1
 
-        if conf.beam_coherence.lower() == 'coherent':
+        if conf.beam_coherence.lower() == "coherent":
             int_exp = 2
         else:
             int_exp = 4
@@ -183,7 +206,7 @@ class PSF(object):
 
         if conf.pixels_defocus > 0:
             hd = PSF.compute_defocus_psf(conf, keep_oversampling=True)
-            h = spsig.convolve2d(h, hd, 'same')
+            h = spsig.convolve2d(h, hd, "same")
 
         # Producing the final impulse response h, at the given resolution
         h = np.reshape(h, (base_block_size, conf.over_sampling, base_block_size, conf.over_sampling))
@@ -206,9 +229,9 @@ class PSF(object):
         samp_1 = np.linspace(-sampling_distance, sampling_distance, sampled_pixels)
         samp_2 = np.linspace(-sampling_distance, sampling_distance, sampled_pixels)
 
-        [grid_1, grid_2] = np.meshgrid(samp_1, samp_2, indexing='ij')
+        [grid_1, grid_2] = np.meshgrid(samp_1, samp_2, indexing="ij")
 
-        if (isinstance(norm, str) and norm.lower() == 'inf') or norm == np.inf:
+        if (isinstance(norm, str) and norm.lower() == "inf") or norm == np.inf:
             h = (np.fmax(np.abs(grid_1), np.abs(grid_2)) <= conf.pixels_defocus).astype(conf.data_type)
         else:
             h = ((grid_1 ** norm + grid_2 ** norm) <= (conf.pixels_defocus ** norm)).astype(conf.data_type)
@@ -229,10 +252,8 @@ class PSFApply(object):
     """Class PSFApply handles all PSF/OTF applications
     """
 
-    def __init__(
-            self, psf_d=None, img_size=None, use_otf=True, data_format=None,
-            use_fftconv=True):
-        print("- Initializing PSF application class..", end='', flush=True)
+    def __init__(self, psf_d=None, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
+        print("- Initializing PSF application class..", end="", flush=True)
         c_in = tm.time()
 
         self._reset()
@@ -250,10 +271,10 @@ class PSFApply(object):
     def print(self):
         print("PSF object's properties:")
         for k, v in self.__dict__.items():
-            if v is not None and k.lower() in ('psf_direct', 'psf_adjoint', 'otf_direct', 'otf_adjoint'):
-                print(' %18s : %s, %s' % (k, str(v.shape), str(v.dtype)))
+            if v is not None and k.lower() in ("psf_direct", "psf_adjoint", "otf_direct", "otf_adjoint"):
+                print(" %18s : %s, %s" % (k, str(v.shape), str(v.dtype)))
             else:
-                print(' %18s : %s' % (k, str(v)))
+                print(" %18s : %s" % (k, str(v)))
 
     def _reset(self):
         self.data_type = np.float32
@@ -269,8 +290,8 @@ class PSFApply(object):
 
         self.use_otf = True
         self.use_fftconv = False
-        self.psf_edge = np.zeros((0, ), dtype=self.data_type)
-        self.extra_pad = np.zeros((0, ), dtype=self.data_type)
+        self.psf_edge = np.zeros((0,), dtype=self.data_type)
+        self.extra_pad = np.zeros((0,), dtype=self.data_type)
         self.data_format = None
 
     def set_psf_direct(self, psf_d, img_size=None):
@@ -287,10 +308,10 @@ class PSFApply(object):
         if self.is_projection_invariant:
             psf_d = psf_d / psf_norms
         else:
-            repl_ones = (1, ) * len(self.otf_axes)
-            psf_d = psf_d / np.reshape(psf_norms, np.concatenate(((-1, ), repl_ones)))
+            repl_ones = (1,) * len(self.otf_axes)
+            psf_d = psf_d / np.reshape(psf_norms, np.concatenate(((-1,), repl_ones)))
 
-        psf_edge = (np.array(psf_d.shape[-len(self.otf_axes):]) - 1) / 2
+        psf_edge = (np.array(psf_d.shape[-len(self.otf_axes) :]) - 1) / 2
         self.psf_edge = psf_edge.astype(np.intp)
 
         self.psf_direct = psf_d.astype(self.data_type)
@@ -343,8 +364,16 @@ class PSFApply(object):
             return self._apply_psf(imgs, False)
 
     def deconvolve(
-            self, imgs, iterations=100, data_term='l2', lambda_wl=None,
-            lambda_tv=None, lower_limit=None, upper_limit=None, verbose=False):
+        self,
+        imgs,
+        iterations=100,
+        data_term="l2",
+        lambda_wl=None,
+        lambda_tv=None,
+        lower_limit=None,
+        upper_limit=None,
+        verbose=False,
+    ):
         """Uses iterative algorithms to deconvolve the PSF from the given images
 
         :param imgs: The incoming images
@@ -376,26 +405,31 @@ class PSFApply(object):
             decomp_lvl = 2
             padding_align = 2 ** decomp_lvl
             final_size_ts = self.image_size + 2 * border
-            additional_padding_ts = ((padding_align - (final_size_ts % padding_align)) % padding_align)
+            additional_padding_ts = (padding_align - (final_size_ts % padding_align)) % padding_align
             paddings_ts_lower += np.ceil(additional_padding_ts / 2).astype(np.int)
             paddings_ts_upper += np.floor(additional_padding_ts / 2).astype(np.int)
 
         paddings = [(xl, xu) for xl, xu in zip(paddings_ts_lower, paddings_ts_upper)]
-        imgs = np.pad(imgs, pad_width=paddings, mode='edge')
+        imgs = np.pad(imgs, pad_width=paddings, mode="edge")
 
         if lambda_tv is not None:
-            sol = solvers.CP_tv(
-                    data_term=data_term, lambda_tv=lambda_tv, verbose=verbose)
+            sol = solvers.CP_tv(data_term=data_term, lambda_tv=lambda_tv, verbose=verbose)
         elif lambda_wl is not None:
             sol = solvers.CP_wl(
-                    data_term=data_term, lambda_wl=lambda_wl, wl_type='sym4',
-                    decomp_lvl=decomp_lvl, verbose=verbose)
+                data_term=data_term, lambda_wl=lambda_wl, wl_type="sym4", decomp_lvl=decomp_lvl, verbose=verbose
+            )
         else:
             sol = solvers.Sirt(verbose=verbose)
 
-        (imgs_dec, _) = sol(self.apply_psf_direct, imgs, iterations, x0=imgs,
-                            At=self.apply_psf_adjoint, lower_limit=lower_limit,
-                            upper_limit=upper_limit)
+        (imgs_dec, _) = sol(
+            self.apply_psf_direct,
+            imgs,
+            iterations,
+            x0=imgs,
+            At=self.apply_psf_adjoint,
+            lower_limit=lower_limit,
+            upper_limit=upper_limit,
+        )
 
         crops = []
         for b in border:
@@ -438,8 +472,10 @@ class PSFApply(object):
             self.otf_adjoint = None
             self.image_size = img_size
         elif not np.all(self.image_size == img_size):
-            print("WARNING: OTFs computed for the wrong image size ([%s] instead of [%s]). Recomputing them..." % (
-                ", ".join((str(x) for x in self.image_size)), ", ".join((str(x) for x in img_size))))
+            print(
+                "WARNING: OTFs computed for the wrong image size ([%s] instead of [%s]). Recomputing them..."
+                % (", ".join((str(x) for x in self.image_size)), ", ".join((str(x) for x in img_size)))
+            )
             self.otf_direct = None
             self.otf_adjoint = None
             self.image_size = img_size
@@ -462,7 +498,7 @@ class PSFApply(object):
 
         # slicing images to remove padding used during convolution
         psf_edge_shape = ((self._get_psf_datashape() - 1) / 2).astype(np.int)
-        fslice = [slice(None), ] * len(self.image_size)
+        fslice = [slice(None),] * len(self.image_size)
         for ii in self.otf_axes:
             fslice[ii] = slice(psf_edge_shape[ii], self.image_size[ii] + psf_edge_shape[ii])
         return imgs[tuple(fslice)]
@@ -476,21 +512,19 @@ class PSFApply(object):
         psf_dims = len(psf.shape)
         num_dims_imgs = len(imgs.shape) - psf_dims
 
-        pre_ones = (1, ) * num_dims_imgs
+        pre_ones = (1,) * num_dims_imgs
         psf = np.reshape(psf, np.concatenate((pre_ones, psf.shape)).astype(np.intp))
         if self.use_fftconv:
-            return spsig.fftconvolve(imgs, psf, mode='same')
+            return spsig.fftconvolve(imgs, psf, mode="same")
         else:
-            return spimg.convolve(imgs, psf, mode='reflect')
+            return spimg.convolve(imgs, psf, mode="reflect")
 
 
 class PSFApply2D(PSFApply):
     """Class PSFApply2D handles all PSF applications and
     """
 
-    def __init__(
-            self, psf_d, img_size=None, use_otf=True, data_format=None,
-            use_fftconv=True):
+    def __init__(self, psf_d, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
         self.otf_axes = (-2, -1)
         if isinstance(psf_d, PSF):
             psf_inst = psf_d.clone()
@@ -499,26 +533,22 @@ class PSFApply2D(PSFApply):
                 data_format = psf_inst.data_format
         else:
             psf = np.squeeze(psf_d)
-        PSFApply.__init__(
-                self, psf, img_size=img_size, use_otf=use_otf,
-                data_format=data_format, use_fftconv=use_fftconv)
+        PSFApply.__init__(self, psf, img_size=img_size, use_otf=use_otf, data_format=data_format, use_fftconv=use_fftconv)
 
     def _check_incoming_psf(self, psf_d):
         if len(psf_d) == 0 or not len(psf_d.shape) in (2, 3):
-            raise ValueError('PSFs should be in the form of 2D images  with dimensions [0] == [1], with odd edges')
+            raise ValueError("PSFs should be in the form of 2D images  with dimensions [0] == [1], with odd edges")
         elif not psf_d.shape[-2] == psf_d.shape[-1]:
-            raise ValueError('PSFs should be in the form of 2D images  with _dimensions [0] == [1]_, with odd edges')
+            raise ValueError("PSFs should be in the form of 2D images  with _dimensions [0] == [1]_, with odd edges")
         elif np.mod(psf_d.shape[-2], 2) == 0 or np.mod(psf_d.shape[-1], 2) == 0:
-            raise ValueError('PSFs should be in the form of 2D images  with dimensions [0] == [1], with _odd edges_')
+            raise ValueError("PSFs should be in the form of 2D images  with dimensions [0] == [1], with _odd edges_")
 
 
 class PSFApply4D(PSFApply):
     """Class PSFApply4D handles all PSF applications and
     """
 
-    def __init__(
-            self, psf_d, img_size=None, use_otf=True, data_format=None,
-            use_fftconv=True):
+    def __init__(self, psf_d, img_size=None, use_otf=True, data_format=None, use_fftconv=True):
         self.otf_axes = (-4, -3, -2, -1)
         if isinstance(psf_d, PSF):
             psf = psf_d.data
@@ -528,20 +558,21 @@ class PSFApply4D(PSFApply):
             if not len(psf_d.shape) == 4:
                 psf_d = np.squeeze(psf_d)
             psf = psf_d
-        PSFApply.__init__(
-                self, psf, img_size=img_size, use_otf=use_otf,
-                data_format=data_format, use_fftconv=use_fftconv)
+        PSFApply.__init__(self, psf, img_size=img_size, use_otf=use_otf, data_format=data_format, use_fftconv=use_fftconv)
 
     def _check_incoming_psf(self, psf_d):
         if len(psf_d) == 0 or not len(psf_d.shape) == 4:
             raise ValueError(
-                'PSFs should be in the form of 4D images, with dimensions [0] == [1] and [2] == [3], with odd edges.' +
-                ' Given: [%s]' % np.array(psf_d.shape))
+                "PSFs should be in the form of 4D images, with dimensions [0] == [1] and [2] == [3], with odd edges."
+                + " Given: [%s]" % np.array(psf_d.shape)
+            )
         elif not psf_d.shape[0] == psf_d.shape[1] or not psf_d.shape[2] == psf_d.shape[3]:
             raise ValueError(
-                'PSFs should be in the form of 4D images, with _dimensions [0] == [1] and [2] == [3]_, with odd edges.' +
-                ' Given: [%s]' % np.array(psf_d.shape))
+                "PSFs should be in the form of 4D images, with _dimensions [0] == [1] and [2] == [3]_, with odd edges."
+                + " Given: [%s]" % np.array(psf_d.shape)
+            )
         elif np.mod(psf_d.shape[0], 2) == 0 or np.mod(psf_d.shape[2], 2) == 0:
             raise ValueError(
-                'PSFs should be in the form of 4D images, with dimensions [0] == [1] and [2] == [3], with _odd edges_.' +
-                ' Given: [%s]' % np.array(psf_d.shape))
+                "PSFs should be in the form of 4D images, with dimensions [0] == [1] and [2] == [3], with _odd edges_."
+                + " Given: [%s]" % np.array(psf_d.shape)
+            )
