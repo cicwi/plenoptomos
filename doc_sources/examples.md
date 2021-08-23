@@ -25,7 +25,7 @@ By choosing the `mode='rgb'` we obtain three light-fields (one per RGB channel).
 
 We then create a (v, u) PSF for each color channel, using the following two lines:
 ```
-psf_ml_r = pleno.psf.PSF.create_theo_psf(lf_r.camera, coordinates='vu', airy_rings=2)
+psf_ml_r = pleno.psf.PSF(lf_r.camera, coordinates='vu', airy_rings=2)
 psf_ml_r = pleno.psf.PSFApply2D(psf_d=psf_ml_r)
 ```
 which first create the theoretical PSF for an incoherent light source (for the wavelengths indicated in `lf_r.camera`), including only the first two orders of the Airy function.

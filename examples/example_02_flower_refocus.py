@@ -45,13 +45,13 @@ print("Importing the light-field from the Lytro eslf format..")
 (lf_r, lf_g, lf_b) = pleno.import_lf.from_lytro(dpath, jpath, source="eslf", mode="rgb")
 
 print("Creating the theoretical PSFs for the different color channels..")
-psf_ml_r = pleno.psf.PSF.create_theo_psf(lf_r.camera, coordinates="vu", airy_rings=2)
+psf_ml_r = pleno.psf.PSF(lf_r.camera, coordinates="vu", airy_rings=2)
 psf_ml_r = pleno.psf.PSFApply2D(psf_d=psf_ml_r)
 
-psf_ml_g = pleno.psf.PSF.create_theo_psf(lf_g.camera, coordinates="vu", airy_rings=2)
+psf_ml_g = pleno.psf.PSF(lf_g.camera, coordinates="vu", airy_rings=2)
 psf_ml_g = pleno.psf.PSFApply2D(psf_d=psf_ml_g)
 
-psf_ml_b = pleno.psf.PSF.create_theo_psf(lf_b.camera, coordinates="vu", airy_rings=2)
+psf_ml_b = pleno.psf.PSF(lf_b.camera, coordinates="vu", airy_rings=2)
 psf_ml_b = pleno.psf.PSFApply2D(psf_d=psf_ml_b)
 
 print("Computing refocusing distances..")

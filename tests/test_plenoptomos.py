@@ -138,7 +138,7 @@ class TestPsf(TestPlenoptomos):
         """Set up test fixtures, if any."""
         super().setUp()
 
-        self.psf_ml_raw = pleno.psf.PSF.create_theo_psf(lf.camera, coordinates='vu', airy_rings=2)
+        self.psf_ml_raw = pleno.psf.PSF(lf.camera, coordinates='vu', airy_rings=2)
 
         self.psf_ml_no = pleno.psf.PSFApply2D(psf_d=self.psf_ml_raw, use_otf=False)
         self.psf_ml_yo = pleno.psf.PSFApply2D(psf_d=self.psf_ml_raw, use_otf=True)

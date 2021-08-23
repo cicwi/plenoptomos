@@ -53,7 +53,7 @@ lfv = pleno.data_format.load(vox_file)
 
 z0 = lfv.camera.get_focused_distance()
 
-psf_ml_raw = pleno.psf.PSF.create_theo_psf(lfv.camera, coordinates="vu", airy_rings=1)
+psf_ml_raw = pleno.psf.PSF(lfv.camera, coordinates="vu", airy_rings=1)
 psf_ml = pleno.psf.PSFApply2D(psf_d=psf_ml_raw)
 
 print("Computing refocusing distances..")

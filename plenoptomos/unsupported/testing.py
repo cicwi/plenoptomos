@@ -233,7 +233,7 @@ class Blurring(object):
     def create_psf_lenses(
         self, coordinates="vu", airy_rings=3, refocus_distance=None, up_sampling=1, plot_psfs=False, use_otf=False
     ):
-        make_psf = lambda x: psf.PSF.create_theo_psf(
+        make_psf = lambda x: psf.PSF(
             x, coordinates=coordinates, airy_rings=airy_rings, refocus_distance=refocus_distance, up_sampling=up_sampling
         )
         self.psfs[coordinates] = [make_psf(c) for c in self.cameras]
