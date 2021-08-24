@@ -14,9 +14,13 @@ import numpy as np
 import time as tm
 
 import astra
+import astra.experimental
 
 from . import lightfield
 from . import solvers
+from . import psf
+
+from typing import Optional, Union, Sequence
 
 
 class Projector(object):
@@ -37,11 +41,9 @@ class Projector(object):
         psf_d=None,
         up_sampling=1,
         super_sampling=1,
-        mode="independent",
         shifts_vu=(None, None),
         gpu_index=-1,
     ):
-        self.mode = mode  # can be: {'independent' | 'simultaneous' | 'range'}
         self.up_sampling = up_sampling
         self.super_sampling = super_sampling
         self.gpu_index = gpu_index
@@ -59,9 +61,9 @@ class Projector(object):
 
         self.mask = mask
         if self.mask is not None:
-            self.mask = np.reshape(mask, np.concatenate(((-1,), self.img_size)))
+            self.mask = np.reshape(mask, self.img_size)
         if vignetting_int is not None:
-            self.vignetting_int = np.reshape(vignetting_int, np.concatenate(((-1,), self.img_size)))
+            self.vignetting_int = np.reshape(vignetting_int, self.img_size)
             if self.mask is not None:
                 self.vignetting_int *= self.mask
         else:
@@ -76,6 +78,14 @@ class Projector(object):
         self.psf = psf_d
 
         zs = np.array(zs, ndmin=1)
+
+        # Keep the geometry simple if there is no need to complicate it.
+        self.use_many_projs = False
+        if len(zs) > 1:
+            step_zs = (zs[-1] - zs[0]) / (len(zs) - 1)
+            reg_zs = np.linspace(zs[0], zs[-1], len(zs))
+            norm_diff_zs = np.abs(zs - reg_zs) / step_zs
+            self.use_many_projs = self.use_many_projs or np.any(norm_diff_zs > 0.01)
 
         self._init_geometry(zs)
         self._init_psf_mask_correction()
@@ -149,30 +159,23 @@ class Projector(object):
         lims_t = (np.array([-1.0, 1.0]) * up_sampled_array_size[0] / 2) * voxel_size_obj_space_ts[0] / renorm_resolution_factor
 
         num_dists = len(zs_n)
-        if self.mode in ("independent", "simultaneous"):
+        if self.use_many_projs:
             self.vol_size = np.concatenate((up_sampled_array_size, (1,)))
-        elif self.mode == "range":
-            self.vol_size = np.concatenate((up_sampled_array_size, (num_dists,)))
-        else:
-            raise ValueError(
-                "Mode: '%s' not allowed! Possible choices are: 'independent' | 'simultaneous' | 'range'" % self.mode
-            )
 
-        if self.mode in ("independent", "simultaneous"):
             self.vol_geom = []
             for d in zs_n:
                 lims_z = d + np.array([-1.0, 1.0]) / 2
                 self.vol_geom.append(astra.create_vol_geom(*self.vol_size, *lims_s, *lims_t, *lims_z))
-        elif self.mode == "range":
+        else:
+            self.vol_size = np.concatenate((up_sampled_array_size, (num_dists,)))
+
             if num_dists > 1:
                 lims_z = (zs_n[0], zs_n[-1])
                 delta = (lims_z[1] - lims_z[0]) / (num_dists - 1)
                 lims_z = lims_z + np.array([-1.0, 1.0]) * delta / 2
             else:
                 lims_z = zs_n + np.array([-1.0, 1.0]) / 2
-            self.vol_geom = [
-                self.vol_geom.append(astra.create_vol_geom(*self.vol_size, *lims_s, *lims_t, *lims_z))
-            ]
+            self.vol_geom = [astra.create_vol_geom(*self.vol_size, *lims_s, *lims_t, *lims_z)]
 
         if self.beam_geometry.lower() == "cone":
             det_geometry = np.hstack([ph_imgs_vu, acq_sa_imgs_ts, imgs_pixel_size_s, imgs_pixel_size_t])
@@ -197,17 +200,17 @@ class Projector(object):
                     psf_on_raw = p.data_format is not None and p.data_format.lower() == "raw"
                     if psf_on_raw:
                         # handle 2D flattening
-                        y = np.transpose(self.mask, (0, 3, 1, 4, 2))
+                        y = np.transpose(self.mask, lightfield.from_sa_to_raw)
                         img_size_det = y.shape
-                        y = np.reshape(y, np.concatenate(((-1,), self.photo_size_2D)))
+                        y = np.reshape(y, self.photo_size_2D)
                     else:
-                        y = self.mask
+                        y = self.mask.copy()
 
                     y = p.apply_psf_direct(y)
 
                     if psf_on_raw:
                         y = np.reshape(y, img_size_det)
-                        y = np.transpose(y, (0, 2, 4, 1, 3))
+                        y = np.transpose(y, lightfield.from_raw_to_sa)
 
                     self.mask_psf_renorm[ii] = 1 / (y + (np.abs(y) < 1e-5))
 
@@ -247,9 +250,9 @@ class Projector(object):
                 psf_on_raw = p.data_format is not None and p.data_format.lower() == "raw"
                 if psf_on_raw:
                     # handle 2D flattening
-                    y = np.transpose(y, (0, 3, 1, 4, 2))
+                    y = np.transpose(y, lightfield.from_sa_to_raw)
                     img_size_det = y.shape
-                    y = np.reshape(y, np.concatenate(((-1,), self.photo_size_2D)))
+                    y = np.reshape(y, self.photo_size_2D)
 
                 if is_direct:
                     y = p.apply_psf_direct(y)
@@ -258,7 +261,7 @@ class Projector(object):
 
                 if psf_on_raw:
                     y = np.reshape(y, img_size_det)
-                    y = np.transpose(y, (0, 2, 4, 1, 3))
+                    y = np.transpose(y, lightfield.from_raw_to_sa)
 
                 if self.mask_psf_renorm[ii] is not None:
                     y *= self.mask_psf_renorm[ii]
@@ -275,22 +278,23 @@ class Projector(object):
         if not self.is_initialized:
             raise RuntimeError("Projector not initialized!!")
 
-        proj_stack_shape = (
-            len(self.Ws),
-            self.img_size_us[-2],
-            self.camera.get_number_of_subaperture_images(),
-            self.img_size_us[-1],
-        )
+        proj_stack_shape = (self.img_size_us[-2], self.camera.get_number_of_subaperture_images(), self.img_size_us[-1])
 
-        if self.mode.lower() == "range":
-            y = self.Ws[0].FP(np.squeeze(x))
-        elif self.mode.lower() in ("simultaneous", "independent"):
+        if self.use_many_projs:
+            y = [np.empty(proj_stack_shape, dtype=x.dtype) for ii in range(len(self.projectors))]
+            xs = [np.ascontiguousarray(x[ii], dtype=x.dtype)[np.newaxis, ...] for ii in range(len(self.projectors))]
+            for ii, p in enumerate(self.projectors):
+                astra.experimental.direct_FP3D(p, xs[ii], y[ii])
+            y = np.ascontiguousarray([*y])
+
+            # Compress single projections into one
+            y = np.sum(y, axis=0)
+        else:
             y = np.empty(proj_stack_shape, x.dtype)
-            for ii, W in enumerate(self.Ws):
-                temp = x[ii, :, :]
-                temp = W.FP(temp[np.newaxis, ...])
-                y[ii, :, :, :] = temp
-        y = np.transpose(y, (0, 2, 1, 3))
+            astra.experimental.direct_FP3D(self.projectors[0], x, y)
+
+        y = np.transpose(y, (1, 0, 2))
+        y = np.reshape(y, self.img_size_us)
 
         self._apply_psf_to_subpixel(y, is_direct=True)
 
@@ -298,7 +302,6 @@ class Projector(object):
             y = np.reshape(
                 y,
                 (
-                    -1,
                     self.camera.get_number_of_subaperture_images(),
                     self.img_size[-2],
                     self.up_sampling,
@@ -306,15 +309,12 @@ class Projector(object):
                     self.up_sampling,
                 ),
             )
-            y = np.sum(y, axis=(-3, -1)) / (self.up_sampling ** 2)
+            y = np.mean(y, axis=(-3, -1))
 
-        y = np.reshape(y, np.concatenate(((-1,), self.img_size)))
+        y = np.reshape(y, self.img_size)
 
         if self.vignetting_int is not None:
             y *= self.vignetting_int
-
-        if self.mode.lower() == "simultaneous":
-            y = np.sum(y, axis=0, keepdims=True)
 
         self._apply_psf_to_lightfield(y, is_direct=True)
 
@@ -331,36 +331,35 @@ class Projector(object):
         if not self.is_initialized:
             raise RuntimeError("Projector not initialized!!")
 
-        y = np.reshape(y.copy(), np.concatenate(((-1,), self.img_size)))  # We need to copy the incoming image!
+        y = y.copy()  # We need to copy the incoming image!
 
         self._apply_psf_to_lightfield(y, is_direct=False)
 
         if self.vignetting_int is not None:
             y *= self.vignetting_int
 
-        proj_stack_shape = np.concatenate(((-1, self.camera.get_number_of_subaperture_images()), self.camera.data_size_ts))
+        proj_stack_shape = (self.camera.get_number_of_subaperture_images(), *self.camera.data_size_ts)
         y = np.reshape(y, proj_stack_shape)
-        y = np.transpose(y, (0, 2, 1, 3))
+        y = np.transpose(y, (1, 0, 2))
+        y = np.ascontiguousarray(y)
 
         if self.up_sampling > 1:
-            y = np.reshape(y, (-1, self.img_size[-2], 1, self.camera.get_number_of_subaperture_images(), self.img_size[-1], 1))
-            y = np.tile(y, [1, 1, self.up_sampling, 1, 1, self.up_sampling])
-            y = np.reshape(y, (-1, self.img_size_us[-2], self.camera.get_number_of_subaperture_images(), self.img_size_us[-1]))
+            y = np.reshape(y, (self.img_size[-2], 1, self.camera.get_number_of_subaperture_images(), self.img_size[-1], 1))
+            y = np.tile(y, [1, self.up_sampling, 1, 1, self.up_sampling])
 
+        y = np.reshape(y, (self.img_size_us[-2], self.camera.get_number_of_subaperture_images(), self.img_size_us[-1]))
         self._apply_psf_to_subpixel(y, is_direct=False)
 
-        vol_geom_size = (len(self.Ws), self.vol_size[0], self.vol_size[1])
+        vol_geom_size = (self.vol_size[2], self.vol_size[0], self.vol_size[1])
 
-        if self.mode.lower() == "range":
-            x = self.Ws[0].BP(np.squeeze(y))
-        elif self.mode.lower() == "simultaneous":
-            x = np.empty(vol_geom_size, y.dtype)
-            for ii, W in enumerate(self.Ws):
-                x[ii, :, :] = W.BP(np.squeeze(y))
+        if self.use_many_projs:
+            x = [np.empty(vol_geom_size, y.dtype) for ii in range(len(self.projectors))]
+            for ii, p in enumerate(self.projectors):
+                astra.experimental.direct_BP3D(p, x[ii], np.squeeze(y))
+            x = np.ascontiguousarray(np.concatenate([*x]))
         else:
             x = np.empty(vol_geom_size, y.dtype)
-            for ii, W in enumerate(self.Ws):
-                x[ii, :, :] = W.BP(y[ii, :, :, :])
+            astra.experimental.direct_BP3D(self.projectors[0], x, np.squeeze(y))
 
         return x
 
@@ -370,12 +369,14 @@ def compute_forwardprojection(
     zs,
     vols,
     masks,
-    reflective_geom=True,
-    up_sampling=1,
-    super_sampling=1,
-    border=5,
-    border_padding="edge",
-    gpu_index=-1,
+    reflective_geom: bool = True,
+    border: int = 5,
+    border_padding: str = "edge",
+    up_sampling: int = 1,
+    super_sampling: int = 1,
+    beam_geometry: str = "cone",
+    domain: str = "object",
+    gpu_index: int = -1,
 ):
 
     print("Creating projected lightfield..", end="", flush=True)
@@ -389,7 +390,13 @@ def compute_forwardprojection(
             temp_vol = np.expand_dims(vols[ii, :, :], 0)
             temp_mask = np.expand_dims(masks[ii, :, :], 0)
             with Projector(
-                camera, dist, mode="simultaneous", up_sampling=up_sampling, super_sampling=super_sampling, gpu_index=gpu_index
+                camera,
+                dist,
+                beam_geometry=beam_geometry,
+                domain=domain,
+                up_sampling=up_sampling,
+                super_sampling=super_sampling,
+                gpu_index=gpu_index,
             ) as p:
                 pvol = p.FP(temp_vol)
                 pmask = p.FP(temp_mask)
@@ -397,7 +404,13 @@ def compute_forwardprojection(
                 lf.data += np.squeeze(pvol)
     else:
         with Projector(
-            camera, zs, mode="simultaneous", up_sampling=up_sampling, super_sampling=super_sampling, gpu_index=gpu_index
+            camera,
+            zs,
+            beam_geometry=beam_geometry,
+            domain=domain,
+            up_sampling=up_sampling,
+            super_sampling=super_sampling,
+            gpu_index=gpu_index,
         ) as p:
             lf.data = p.FP(vols)
 
@@ -411,13 +424,13 @@ def compute_forwardprojection(
 def compute_refocus_backprojection(
     lf: lightfield.Lightfield,
     zs,
-    border=4,
-    border_padding="edge",
-    up_sampling=1,
-    super_sampling=1,
-    beam_geometry="cone",
-    domain="object",
-    gpu_index=-1,
+    border: int = 4,
+    border_padding: str = "edge",
+    up_sampling: int = 1,
+    super_sampling: int = 1,
+    beam_geometry: str = "cone",
+    domain: str = "object",
+    gpu_index: int = -1,
 ):
     """Compute refocusing of the input lightfield image at the input distances by
     applying the backprojection method.
@@ -454,7 +467,6 @@ def compute_refocus_backprojection(
         lf_sa.camera,
         zs,
         mask=lf_sa.mask,
-        mode="range",
         beam_geometry=beam_geometry,
         domain=domain,
         up_sampling=up_sampling,
@@ -499,42 +511,68 @@ def _get_paddings(data_size_ts, border, up_sampling, algorithm):
 
 def compute_refocus_iterative(
     lf: lightfield.Lightfield,
-    zs,
-    iterations=10,
-    algorithm="sirt",
-    up_sampling=1,
-    super_sampling=1,
-    border_padding="edge",
-    beam_geometry="cone",
-    domain="object",
-    psf=None,
-    border=4,
-    gpu_index=-1,
-    verbose=False,
-    chunks_zs=1,
+    zs: Union[float, Sequence, np.array],
+    beam_geometry: str = "cone",
+    domain: str = "object",
+    zs_independent: bool = True,
+    border: int = 4,
+    border_padding: str = "edge",
+    algorithm: Union[str, solvers.Solver] = "sirt",
+    iterations: int = 10,
+    up_sampling: int = 1,
+    super_sampling: int = 1,
+    psf: Optional[psf.PSFApply] = None,
+    gpu_index: int = -1,
+    verbose: bool = False,
 ):
-    """Compute refocusing of the input lightfield image at the input distances by
-    applying iterative methods.
+    """Compute refocusing of the input lightfield image at the input distances by applying iterative methods.
 
-    :param lf: The light-field object (lightfield.Lightfield)
-    :param zs: Refocusing distances (numpy.array_like)
-    :param algorithm: Algorithm to use (string, default: 'sirt')
-    :param iterations: Number of iterations (int, default: 10)
-    :param psf: Detector PSF (psf.PSFApply, default: None)
-    :param up_sampling: Integer greater than 1 for up-sampling of the final images (int, default: 1)
-    :param super_sampling: Super-sampling of the back-projection operator
-        (it will not increase refocused image size/resolution) (int, default: 1)
-    :param border: Number of pixels to extend the border and reduce darkening of edges (int, default: 4)
-    :param border_padding: Border padding method (string, default: 'edge')
-    :param beam_geometry: Beam geometry. Possible options: 'parallel' | 'cone' (string, default: 'parallel')
-    :param domain: Refocusing domain. Possible options: 'object' | 'image' (string, default: 'object')
+    Parameters
+    ----------
+    lf : lightfield.Lightfield
+        The light-field object.
+    zs : any of float, list, tuple, numpy.array_like
+        Refocusing distances.
+    beam_geometry : str, optional
+        Beam geometry. The default is "cone", out of: 'parallel' | 'cone'.
+    domain : str, optional
+        Refocusing domain. The default is "object", out of: 'object' | 'image'.
+    zs_independent : bool, optional
+        Whether the refocusing should be independent for each distance. The default is True.
+    border : int, optional
+        Number of pixels to extend the border and reduce darkening of edges. The default is 4.
+    border_padding : str, optional
+        Border padding method. The default is "edge".
+    algorithm : str or solvers.Solver, optional
+        The algorithm to use. The default is "sirt".
+    iterations : int, optional
+        Number of iterations (for iterative algorithms). The default is 10.
+    up_sampling : int, optional
+        Integer greater than 1 for up-sampling of the final images. The default is 1.
+    super_sampling : int, optional
+        Finer sampling of the projection (does not alter the final image size). The default is 1.
+    psf : Optional[psf.PSFApply], optional
+        Detector PSF. The default is None.
+    gpu_index : int, optional
+        It allows to pin a specific GPU. The default is -1.
+    verbose : bool, optional
+        Whether to have verbose output from algorithms. The default is False.
 
-    :returns: Stack of 2D refocused images.
-    :rtype: numpy.array_like
+    Raises
+    ------
+    ValueError
+        DESCRIPTION.
+
+    Returns
+    -------
+    numpy.array_like
+        Stack of 2D refocused images.
     """
-
+    zs = np.array(zs, ndmin=1)
     num_dists = len(zs)
-    print("Refocusing through %s of %d distances:" % (algorithm.upper(), num_dists))
+
+    refocus_mode = "independent" if zs_independent else "simultaneous"
+    print("Refocusing (%s) through %s of %d distances:" % (refocus_mode, algorithm.upper(), num_dists))
     c_in = tm.time()
 
     lf_sa = lf.clone()
@@ -549,36 +587,21 @@ def compute_refocus_iterative(
     padding_vuts = ((0, 0), (0, 0), (paddings_ts_lower[0], paddings_ts_upper[0]), (paddings_ts_lower[1], paddings_ts_upper[1]))
     lf_sa.pad(padding_vuts, method=border_padding)
 
-    imgs_shape = (num_dists, lf_sa.camera.data_size_ts[0] * up_sampling, lf_sa.camera.data_size_ts[1] * up_sampling)
-    imgs = np.empty(imgs_shape, dtype=lf_sa.data.dtype)
-
     c_init = tm.time()
 
-    print(" * Init: %g seconds" % (c_init - c_in))
-    for ii_z in range(0, num_dists, chunks_zs):
-        print(
-            " * Refocusing chunk of %03d-%03d (avg: %g seconds)"
-            % (ii_z, ii_z + chunks_zs - 1, (tm.time() - c_init) / np.fmax(ii_z, 1))
-        )
-
-        sel_zs = zs[ii_z : ii_z + chunks_zs]
+    def do_refocus(z):
         with Projector(
             lf_sa.camera,
-            sel_zs,
+            z,
             mask=lf_sa.mask,
             psf_d=psf,
             shifts_vu=lf_sa.shifts_vu,
-            mode="independent",
             up_sampling=up_sampling,
             super_sampling=super_sampling,
             gpu_index=gpu_index,
             beam_geometry=beam_geometry,
             domain=domain,
         ) as p:
-            A = lambda x: p.FP(x)
-            At = lambda y: p.BP(y)
-            b = np.tile(np.reshape(lf_sa.data, np.concatenate(((1,), p.img_size))), (len(sel_zs), 1, 1, 1, 1))
-
             if isinstance(algorithm, solvers.Solver):
                 algo = algorithm
             elif algorithm.lower() == "cp_ls":
@@ -594,12 +617,30 @@ def compute_refocus_iterative(
             else:
                 raise ValueError("Unknown algorithm: %s" % algorithm.lower())
 
-            imgs[ii_z : ii_z + len(sel_zs), ...], rel_res_norms = algo(A, b, iterations, At=At, lower_limit=0)
+            return algo(p.FP, lf_sa.data, iterations, At=p.BP, lower_limit=0)
+
+    if zs_independent:
+        imgs_shape = (num_dists, *(np.array(lf_sa.camera.data_size_ts) * up_sampling))
+        imgs = np.empty(imgs_shape, dtype=lf_sa.data.dtype)
+
+        print(" * Init: %g seconds" % (c_init - c_in))
+        for ii_z in range(num_dists):
+            c_it = tm.time()
+            avg_time = (tm.time() - c_init) / np.fmax(ii_z, 1) if ii_z > 0 else np.nan
+            print(
+                f" * Refocusing {ii_z:03d}/{num_dists:03d} ({avg_time=:g} seconds)", end="", flush=True,
+            )
+
+            imgs[ii_z, ...], _ = do_refocus(zs[ii_z])
+
+            print(": Done in %g seconds." % (tm.time() - c_it))
+    else:
+        imgs, _ = do_refocus(zs)
 
     # Crop the refocused images:
     paddings_ts_lower = paddings_ts_lower * up_sampling
     paddings_ts_upper = paddings_ts_upper * up_sampling
-    imgs = imgs[:, paddings_ts_lower[0] : -paddings_ts_upper[0], paddings_ts_lower[1] : -paddings_ts_upper[1]]
+    imgs = imgs[..., paddings_ts_lower[0] : -paddings_ts_upper[0], paddings_ts_lower[1] : -paddings_ts_upper[1]]
 
     c_out = tm.time()
     print(" * Done in %g seconds." % (c_out - c_in))
@@ -608,97 +649,9 @@ def compute_refocus_iterative(
     return imgs
 
 
-def compute_refocus_iterative_multiple(
-    lf: lightfield.Lightfield,
-    zs,
-    iterations=10,
-    algorithm="sirt",
-    up_sampling=1,
-    super_sampling=1,
-    border=4,
-    border_padding="edge",
-    beam_geometry="cone",
-    domain="object",
-    psf=None,
-    gpu_index=-1,
-    verbose=False,
-):
-    """Compute refocusing of the input lightfield image simultaneously at the input
-    distances by applying iterative methods.
+def compute_refocus_iterative_multiple(*args, **kwds):
+    """Compute refocusing of the input lightfield image jointly at the input distances by applying iterative methods.
 
-    :param lf: The light-field object (lightfield.Lightfield)
-    :param zs: Refocusing distances (numpy.array_like)
-    :param algorithm: Algorithm to use (string, default: 'sirt')
-    :param iterations: Number of iterations (int, default: 10)
-    :param psf: Detector PSF (psf.PSFApply, default: None)
-    :param up_sampling: Integer greater than 1 for up-sampling of the final images (int, default: 1)
-    :param super_sampling: Super-sampling of the back-projection operator
-        (it will not increase refocused image size/resolution) (int, default: 1)
-    :param border: Number of pixels to extend the border and reduce darkening of edges (int, default: 4)
-    :param border_padding: Border padding method (string, default: 'edge')
-    :param beam_geometry: Beam geometry. Possible options: 'parallel' | 'cone' (string, default: 'parallel')
-    :param domain: Refocusing domain. Possible options: 'object' | 'image' (string, default: 'object')
-
-    :returns: Stack of 2D refocused images.
-    :rtype: numpy.array_like
+    For the parameters description refer to the function :func:`~compute_refocus_iterative`.
     """
-
-    print("Simultaneous refocusing through %s:" % algorithm.upper())
-    c_in = tm.time()
-
-    lf_sa = lf.clone()
-    lf_sa.set_mode_subaperture()
-
-    if lf_sa.mask is not None:
-        lf_sa.data *= lf_sa.mask
-        if lf_sa.flat is not None:
-            lf_sa.flat *= lf_sa.mask
-
-    (paddings_ts_lower, paddings_ts_upper) = _get_paddings(lf_sa.camera.data_size_ts, border, up_sampling, algorithm)
-    padding_vuts = ((0, 0), (0, 0), (paddings_ts_lower[0], paddings_ts_upper[0]), (paddings_ts_lower[1], paddings_ts_upper[1]))
-    lf_sa.pad(padding_vuts, method=border_padding)
-
-    with Projector(
-        lf_sa.camera,
-        zs,
-        mask=lf_sa.mask,
-        psf_d=psf,
-        shifts_vu=lf_sa.shifts_vu,
-        mode="simultaneous",
-        up_sampling=up_sampling,
-        super_sampling=super_sampling,
-        gpu_index=gpu_index,
-        beam_shape=beam_geometry,
-        domain=domain,
-    ) as p:
-        A = lambda x: p.FP(x)
-        At = lambda y: p.BP(y)
-        b = np.reshape(lf_sa.data, np.concatenate(((1,), p.img_size)))
-
-        if isinstance(algorithm, solvers.Solver):
-            algo = algorithm
-        elif algorithm.lower() == "cp_ls":
-            algo = solvers.CP_uc(verbose=verbose)
-        elif algorithm.lower() == "cp_tv":
-            algo = solvers.CP_tv(verbose=verbose, axes=(-1, -2), lambda_tv=1e-1)
-        elif algorithm.lower() == "cp_wl":
-            algo = solvers.CP_wl(verbose=verbose, axes=(-1, -2), lambda_wl=1e-1, wl_type="db1", decomp_lvl=3)
-        elif algorithm.lower() == "bpj":
-            algo = solvers.BPJ(verbose=verbose)
-        elif algorithm.lower() == "sirt":
-            algo = solvers.Sirt(verbose=verbose)
-        else:
-            raise ValueError("Unknown algorithm: %s" % algorithm.lower())
-
-        imgs, rel_res_norms = algo(A, b, iterations, At=At, lower_limit=0)
-
-    # Crop the refocused images:
-    paddings_ts_lower = paddings_ts_lower * up_sampling
-    paddings_ts_upper = paddings_ts_upper * up_sampling
-    imgs = imgs[:, paddings_ts_lower[0] : -paddings_ts_upper[0], paddings_ts_lower[1] : -paddings_ts_upper[1]]
-
-    c_out = tm.time()
-    print("Done in %g seconds." % (c_out - c_in))
-
-    # Return the stack of refocused images:
-    return imgs
+    return compute_refocus_iterative(*args, zs_independent=False, **kwds)
