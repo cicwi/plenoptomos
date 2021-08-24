@@ -281,9 +281,8 @@ def compute_depth_cues(
 
         with Projector(
             lf_sa.camera,
-            np.array((z0,)),
+            z0,
             mask=lf_sa.mask,
-            mode="independent",
             up_sampling=up_sampling,
             beam_geometry=beam_geometry,
             domain=domain,
@@ -340,9 +339,8 @@ def compute_depth_cues(
 
             with Projector(
                 lf_sa.camera,
-                np.array((z0,)),
+                z0,
                 mask=lf_sa.mask,
-                mode="independent",
                 up_sampling=up_sampling,
                 beam_geometry=beam_geometry,
                 domain=domain,
@@ -361,9 +359,8 @@ def compute_depth_cues(
 
             with Projector(
                 lf_sa.camera,
-                np.array((z0,)),
+                z0,
                 mask=lf_sa.mask,
-                mode="independent",
                 up_sampling=up_sampling,
                 beam_geometry=beam_geometry,
                 domain=domain,
