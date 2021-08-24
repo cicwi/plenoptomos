@@ -75,6 +75,8 @@ class Projector(object):
             psf_d = [psf_d]
         self.psf = psf_d
 
+        zs = np.array(zs, ndmin=1)
+
         self._init_geometry(zs)
         self._init_psf_mask_correction()
 
