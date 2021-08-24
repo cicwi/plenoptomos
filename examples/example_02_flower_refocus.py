@@ -43,6 +43,9 @@ if not os.path.exists(dpath):
 
 print("Importing the light-field from the Lytro eslf format..")
 (lf_r, lf_g, lf_b) = pleno.import_lf.from_lytro(dpath, jpath, source="eslf", mode="rgb")
+lf_r.data /= 255.0
+lf_g.data /= 255.0
+lf_b.data /= 255.0
 
 print("Creating the theoretical PSFs for the different color channels..")
 psf_ml_r = pleno.psf.PSF(lf_r.camera, coordinates="vu", airy_rings=2)
@@ -80,25 +83,33 @@ def refocus_rgb(refocus_func, renorm=False):
     return pleno.colors.merge_rgb_images(imgs_r, imgs_g, imgs_b)
 
 
+def refocus_int(x, _):
+    return pleno.refocus.compute_refocus_integration(x, z0s_sel, beam_geometry="parallel")
+
+
+def refocus_bpj(x, _):
+    return pleno.tomo.compute_refocus_iterative(x, z0s_sel, beam_geometry="parallel", algorithm="bpj")
+
+
+def refocus_sirt(x, _):
+    return pleno.tomo.compute_refocus_iterative(x, z0s_sel, beam_geometry="parallel", algorithm="sirt", iterations=3)
+
+
+def refocus_cplstv_p(x, p):
+    algo = pleno.solvers.CP_tv(data_term="l2", lambda_tv=1e-1, axes=(-2, -1))
+    return pleno.tomo.compute_refocus_iterative(x, z0s_sel, beam_geometry="parallel", algorithm=algo, iterations=50, psf=p)
+
+
 print("Refocusing with Integration...")
-refocus_int = lambda x, _: pleno.refocus.compute_refocus_integration(x, z0s_sel, beam_geometry="parallel")
-imgs_int = refocus_rgb(refocus_int)
+imgs_int = refocus_rgb(refocus_int, renorm=True)
 
 print("Refocusing with Back-projection...")
-refocus_bpj = lambda x, _: pleno.tomo.compute_refocus_iterative(x, z0s_sel, beam_geometry="parallel", algorithm="bpj")
 imgs_bpj = refocus_rgb(refocus_bpj)
 
 print("Refocusing with SIRT without PSF...")
-refocus_sirt = lambda x, _: pleno.tomo.compute_refocus_iterative(
-    x, z0s_sel, beam_geometry="parallel", iterations=3, algorithm="sirt"
-)
 imgs_sirt = refocus_rgb(refocus_sirt)
 
 print("Refocusing with CP-LS-TV with PSF...")
-algo = pleno.solvers.CP_tv(data_term="l2", lambda_tv=1e-1, axes=(-2, -1))
-refocus_cplstv_p = lambda x, p: pleno.tomo.compute_refocus_iterative(
-    x, z0s_sel, beam_geometry="parallel", iterations=50, algorithm=algo, psf=p
-)
 imgs_cplstv_p = refocus_rgb(refocus_cplstv_p)
 
 (f, axs) = plt.subplots(len(dists), 4, sharex=True, sharey=True, squeeze=False)
