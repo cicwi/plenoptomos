@@ -51,7 +51,6 @@ class Projector(object):
         self.domain = domain
 
         self.projectors = []
-        self.Ws = []
         self.is_initialized = False
 
         self.camera = camera
@@ -230,7 +229,6 @@ class Projector(object):
         for vg in self.vol_geom:
             proj_id = astra.create_projector("cuda3d", self.proj_geom, vg, opts)
             self.projectors.append(proj_id)
-            self.Ws.append(astra.OpTomo(proj_id))
         self.is_initialized = True
 
     def _apply_psf_to_subpixel(self, y, is_direct=True):
