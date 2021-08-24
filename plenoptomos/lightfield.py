@@ -481,6 +481,31 @@ class Lightfield(object):
     """Container class for the light-fields"""
 
     available_modes = ("micro-image", "sub-aperture", "epipolar_s", "epipolar_t")
+    aliases_modes = ("mi", "sa", "es", "et")
+    convention_modes = ("tsvu", "vuts", "tuvs", "vstu")
+    convention_raw = "tvsu"
+
+    @staticmethod
+    def get_mode_permutation(old_mode, new_mode):
+        if old_mode.lower() in Lightfield.available_modes:
+            old_conf = Lightfield.convention_modes[Lightfield.available_modes.index(old_mode)]
+        elif old_mode.lower() in Lightfield.aliases_modes:
+            old_conf = Lightfield.convention_modes[Lightfield.aliases_modes.index(old_mode)]
+        elif old_mode.lower() == "raw":
+            old_conf = Lightfield.convention_raw
+        else:
+            raise ValueError(f"Mode {old_mode=} not supported.\n{Lightfield.available_modes=}\n{Lightfield.aliases_modes=}")
+
+        if new_mode.lower() in Lightfield.available_modes:
+            new_conf = Lightfield.convention_modes[Lightfield.available_modes.index(new_mode)]
+        elif new_mode.lower() in Lightfield.aliases_modes:
+            new_conf = Lightfield.convention_modes[Lightfield.aliases_modes.index(new_mode)]
+        elif new_mode.lower() == "raw":
+            new_conf = Lightfield.convention_raw
+        else:
+            raise ValueError(f"Mode {new_mode=} not supported.\n{Lightfield.available_modes=}\n{Lightfield.aliases_modes=}")
+
+        return [old_conf.find(c) for c in new_conf]
 
     def __init__(
         self,
@@ -492,7 +517,7 @@ class Lightfield(object):
         dtype=np.float32,
         shifts_vu=(None, None),
     ):
-        """Initializes the Lightfield class
+        """Initialize the Lightfield class.
 
         :param camera_type: The Camera class that stores the metadata about the light-field (Camera)
         :param data: The actual light-field data in 4D format (numpy.array_like, default: None)
@@ -519,19 +544,19 @@ class Lightfield(object):
             elif self.mode.lower() == "epipolar_s":
                 data_size = np.array(
                     (
-                        self.camera.data_size_ts[1],
-                        self.camera.data_size_vu[0],
-                        self.camera.data_size_vu[1],
                         self.camera.data_size_ts[0],
+                        self.camera.data_size_vu[1],
+                        self.camera.data_size_vu[0],
+                        self.camera.data_size_ts[1],
                     )
                 )
             elif self.mode.lower() == "epipolar_t":
                 data_size = np.array(
                     (
-                        self.camera.data_size_vu[1],
-                        self.camera.data_size_ts[0],
-                        self.camera.data_size_ts[1],
                         self.camera.data_size_vu[0],
+                        self.camera.data_size_ts[1],
+                        self.camera.data_size_ts[0],
+                        self.camera.data_size_vu[1],
                     )
                 )
             else:
@@ -548,92 +573,30 @@ class Lightfield(object):
 
         :param new_mode: One of the following: {'micro-image', 'sub-aperture', 'epipolar_s', 'epipolar_t'} (string)
         """
-        if new_mode.lower() == "micro-image":
-            self.set_mode_microimage()
-        elif new_mode.lower() == "sub-aperture":
-            self.set_mode_subaperture()
-        elif new_mode.lower() == "epipolar_s":
-            self.set_mode_epipolar_s()
-        elif new_mode.lower() == "epipolar_t":
-            self.set_mode_epipolar_t
-        else:
-            raise ValueError("No light-field mode called: '%s'" % new_mode)
+        perm_op = self.get_mode_permutation(self.mode, new_mode)
+        self.mode = new_mode
+
+        self.data = np.transpose(self.data, perm_op)
+        if self.flat is not None:
+            self.flat = np.transpose(self.flat, perm_op)
+        if self.mask is not None:
+            self.mask = np.transpose(self.mask, perm_op)
 
     def set_mode_epipolar_s(self):
         """Set the 'epipolar_s' mode"""
-        if self.mode.lower() == "micro-image":
-            perm_op = (0, 3, 2, 1)
-        elif self.mode.lower() == "sub-aperture":
-            perm_op = (2, 1, 0, 3)
-        elif self.mode.lower() == "epipolar_s":
-            perm_op = (0, 1, 2, 3)
-        elif self.mode.lower() == "epipolar_t":
-            perm_op = (2, 3, 0, 1)
-
-        self.mode = "epipolar_s"
-
-        self.data = np.transpose(self.data, perm_op)
-        if self.flat is not None:
-            self.flat = np.transpose(self.flat, perm_op)
-        if self.mask is not None:
-            self.mask = np.transpose(self.mask, perm_op)
+        self.new_mode("epipolar_s")
 
     def set_mode_epipolar_t(self):
         """Set the 'epipolar_t' mode"""
-        if self.mode.lower() == "micro-image":
-            perm_op = (2, 1, 0, 3)
-        elif self.mode.lower() == "sub-aperture":
-            perm_op = (0, 3, 2, 1)
-        elif self.mode.lower() == "epipolar_s":
-            perm_op = (2, 3, 0, 1)
-        elif self.mode.lower() == "epipolar_t":
-            perm_op = (0, 1, 2, 3)
-
-        self.mode = "epipolar_t"
-
-        self.data = np.transpose(self.data, perm_op)
-        if self.flat is not None:
-            self.flat = np.transpose(self.flat, perm_op)
-        if self.mask is not None:
-            self.mask = np.transpose(self.mask, perm_op)
+        self.set_mode("epipolar_t")
 
     def set_mode_microimage(self):
         """Set the 'micro-image' mode"""
-        if self.mode.lower() == "micro-image":
-            perm_op = (0, 1, 2, 3)
-        elif self.mode.lower() == "sub-aperture":
-            perm_op = (2, 3, 0, 1)
-        elif self.mode.lower() == "epipolar_s":
-            perm_op = (0, 3, 2, 1)
-        elif self.mode.lower() == "epipolar_t":
-            perm_op = (2, 1, 0, 3)
-
-        self.mode = "micro-image"
-
-        self.data = np.transpose(self.data, perm_op)
-        if self.flat is not None:
-            self.flat = np.transpose(self.flat, perm_op)
-        if self.mask is not None:
-            self.mask = np.transpose(self.mask, perm_op)
+        self.set_mode("micro-image")
 
     def set_mode_subaperture(self):
         """Set the 'sub-aperture' image mode"""
-        if self.mode.lower() == "micro-image":
-            perm_op = (2, 3, 0, 1)
-        elif self.mode.lower() == "sub-aperture":
-            perm_op = (0, 1, 2, 3)
-        elif self.mode.lower() == "epipolar_s":
-            perm_op = (2, 1, 0, 3)
-        elif self.mode.lower() == "epipolar_t":
-            perm_op = (0, 3, 2, 1)
-
-        self.mode = "sub-aperture"
-
-        self.data = np.transpose(self.data, perm_op)
-        if self.flat is not None:
-            self.flat = np.transpose(self.flat, perm_op)
-        if self.mask is not None:
-            self.mask = np.transpose(self.mask, perm_op)
+        self.set_mode("sub-aperture")
 
     def get_raw_detector_picture(self, image="data"):
         """Returns the detector data, or the flat image in the raw detector format
@@ -642,14 +605,7 @@ class Lightfield(object):
         :returns: The requested image
         :rtype: numpy.array_like
         """
-        if self.mode.lower() == "micro-image":
-            perm_op = (0, 2, 1, 3)
-        elif self.mode.lower() == "sub-aperture":
-            perm_op = (2, 0, 3, 1)
-        elif self.mode.lower() == "epipolar_s":
-            perm_op = (3, 0, 2, 1)
-        elif self.mode.lower() == "epipolar_t":
-            perm_op = (0, 1, 2, 3)
+        perm_op = self.get_mode_permutation(self.mode, "raw")
 
         if image.lower() == "data":
             data_raw = np.transpose(self.data, perm_op)
@@ -676,14 +632,7 @@ class Lightfield(object):
         )
         data_raw = np.reshape(data_raw, in_size)
 
-        if self.mode.lower() == "micro-image":
-            perm_op = (0, 2, 1, 3)
-        elif self.mode.lower() == "sub-aperture":
-            perm_op = (1, 3, 0, 2)
-        elif self.mode.lower() == "epipolar_s":
-            perm_op = (0, 3, 1, 2)
-        elif self.mode.lower() == "epipolar_t":
-            perm_op = (1, 2, 0, 3)
+        perm_op = self.get_mode_permutation("raw", self.mode)
 
         if image.lower() == "data":
             self.data = np.transpose(data_raw, perm_op)
@@ -752,13 +701,9 @@ class Lightfield(object):
             data_raw = np.transpose(self.mask, perm_op)
         else:
             raise ValueError("Unknown image type: %s" % image)
-        photo_size_2D = np.array(
-            [
-                np.array(self.camera.data_size_vu[0]) * np.array(self.camera.data_size_ts[0]),
-                np.array(self.camera.data_size_vu[1]) * np.array(self.camera.data_size_ts[1]),
-            ]
-        )
-        return np.reshape(data_raw, photo_size_2D)
+
+        photo_size_2D = np.array(self.camera.data_size_vu) * np.array(self.camera.data_size_ts)
+        return np.reshape(data_raw, photo_size_2D.astype(int))
 
     def get_photograph(self, image="data"):
         """Computes the refocused photograph at z0
@@ -1112,3 +1057,15 @@ class Lightfield(object):
 
         self.set_mode(current_mode)
         return lf
+
+
+# These are staticly defined for convenience to be used by other modules, if necessary
+from_mi_to_raw = Lightfield.get_mode_permutation("micro-image", "raw")
+from_sa_to_raw = Lightfield.get_mode_permutation("sub-aperture", "raw")
+from_es_to_raw = Lightfield.get_mode_permutation("epipolar_s", "raw")
+from_et_to_raw = Lightfield.get_mode_permutation("epipolar_t", "raw")
+
+from_raw_to_mi = np.argsort(from_mi_to_raw)
+from_raw_to_sa = np.argsort(from_sa_to_raw)
+from_raw_to_es = np.argsort(from_es_to_raw)
+from_raw_to_et = np.argsort(from_et_to_raw)
