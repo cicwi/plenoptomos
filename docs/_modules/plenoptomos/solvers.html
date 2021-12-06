@@ -1,65 +1,31 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>plenoptomos.solvers &mdash; plenoptomos  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> plenoptomos
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -67,17 +33,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">plenoptomos</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fileformat.html">File format</a></li>
@@ -86,66 +42,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">plenoptomos</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">Module code</a> &raquo;</li>
-        
       <li>plenoptomos.solvers</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for plenoptomos.solvers</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
@@ -169,16 +89,16 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pywt</span>
+
     <span class="n">has_pywt</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">use_swtn</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;=</span> <span class="s1">&#39;1.0.2&#39;</span>
+    <span class="n">use_swtn</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span> <span class="o">&gt;=</span> <span class="s2">&quot;1.0.2&quot;</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">has_pywt</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">use_swtn</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING - pywt was not found&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING - pywt was not found&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Solver"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.Solver">[docs]</a><span class="k">class</span> <span class="nc">Solver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="o">=</span> <span class="n">dump_file</span>
@@ -216,15 +136,11 @@
 
 
 <div class="viewcode-block" id="BPJ"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.BPJ">[docs]</a><span class="k">class</span> <span class="nc">BPJ</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
         <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="n">dump_file</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weight_det</span> <span class="o">=</span> <span class="n">weight_det</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_data_operators</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span>
@@ -241,7 +157,7 @@
         <span class="n">c_init</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing BPJ (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing BPJ (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">At</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">renorm_bwd</span>
 
@@ -257,15 +173,11 @@
 
 
 <div class="viewcode-block" id="Sirt"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.Sirt">[docs]</a><span class="k">class</span> <span class="nc">Sirt</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
         <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="n">dump_file</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weight_det</span> <span class="o">=</span> <span class="n">weight_det</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_data_operators</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span>
@@ -291,22 +203,22 @@
         <span class="n">x</span> <span class="o">=</span> <span class="n">x0</span>
 
         <span class="n">res_norm_0</span> <span class="o">=</span> <span class="n">npla</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
         <span class="n">c_init</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing SIRT iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing SIRT iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">out_x</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                 <span class="n">prnt_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%03d</span><span class="s2">/</span><span class="si">%03d</span><span class="s2"> (avg: </span><span class="si">%g</span><span class="s2"> seconds)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_init</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">res</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
@@ -322,31 +234,26 @@
                 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">upper_limit</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done in </span><span class="si">%g</span><span class="s2"> seconds.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s1">&#39;iterations&#39;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
+            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rel_res_norms</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CP_uc"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.CP_uc">[docs]</a><span class="k">class</span> <span class="nc">CP_uc</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
-            <span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">):</span>
         <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="n">dump_file</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weight_det</span> <span class="o">=</span> <span class="n">weight_det</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span> <span class="o">=</span> <span class="n">data_term</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_data_operators</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span>
@@ -377,22 +284,22 @@
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
 
         <span class="n">res_norm_0</span> <span class="o">=</span> <span class="n">npla</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;kl&#39;</span><span class="p">:</span>
-            <span class="n">b_kl</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">b</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
+            <span class="n">b_kl</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="n">c_init</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2"> iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">,</span> <span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2"> iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">,</span> <span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                 <span class="n">prnt_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%03d</span><span class="s2">/</span><span class="si">%03d</span><span class="s2"> (avg: </span><span class="si">%g</span><span class="s2"> seconds)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_init</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">fp</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="n">x_ehn</span><span class="p">)</span>
 
@@ -402,14 +309,14 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rel_res_norms</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">:</span>
                 <span class="k">break</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;kl&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">+=</span> <span class="n">fp</span> <span class="o">*</span> <span class="n">sigma</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">p</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">b_kl</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">+=</span> <span class="n">res</span> <span class="o">*</span> <span class="n">sigma</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l1&quot;</span><span class="p">:</span>
                     <span class="n">p</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l2&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span>
                     <span class="n">p</span> <span class="o">*=</span> <span class="n">sigma1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown data term: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">)</span>
@@ -428,21 +335,20 @@
                 <span class="n">out_x</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done in </span><span class="si">%g</span><span class="s2"> seconds.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s1">&#39;iterations&#39;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
+            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rel_res_norms</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Operations"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.Operations">[docs]</a><span class="k">class</span> <span class="nc">Operations</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span>
 
@@ -452,17 +358,17 @@
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
             <span class="n">pad_pattern</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num_dims</span>
             <span class="n">pad_pattern</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_pattern</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+            <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_pattern</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
             <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">temp_d</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
             <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_d</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">d</span></div>
 
 <div class="viewcode-block" id="Operations.divergence"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.Operations.divergence">[docs]</a>    <span class="k">def</span> <span class="nf">divergence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="n">num_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">num_dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">):</span>
             <span class="n">pad_pattern</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num_dims</span>
             <span class="n">pad_pattern</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">pad_pattern</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+            <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">pad_pattern</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
             <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">temp_d</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ii</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">final_d</span> <span class="o">=</span> <span class="n">temp_d</span>
@@ -476,17 +382,14 @@
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
             <span class="n">pad_pattern</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">*</span> <span class="n">num_dims</span>
             <span class="n">pad_pattern</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_pattern</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;edge&#39;</span><span class="p">)</span>
+            <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_pattern</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">)</span>
             <span class="n">temp_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">temp_d</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
             <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_d</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="CP_tv"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.CP_tv">[docs]</a><span class="k">class</span> <span class="nc">CP_tv</span><span class="p">(</span><span class="n">Solver</span><span class="p">,</span> <span class="n">Operations</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
-            <span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="n">dump_file</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
         <span class="n">Operations</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
 
@@ -496,9 +399,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lambda_tv</span> <span class="o">=</span> <span class="n">lambda_tv</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_data_operators</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span>
@@ -532,26 +433,27 @@
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
 
-        <span class="n">q_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">),</span> <span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
+        <span class="n">q_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">),),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
 
         <span class="n">res_norm_0</span> <span class="o">=</span> <span class="n">npla</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;kl&#39;</span><span class="p">:</span>
-            <span class="n">b_kl</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">b</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
+            <span class="n">b_kl</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="n">c_init</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2">-TV iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">,</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">)),</span>
-                  <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2">-TV iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">,</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">)),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                 <span class="n">prnt_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%03d</span><span class="s2">/</span><span class="si">%03d</span><span class="s2"> (avg: </span><span class="si">%g</span><span class="s2"> seconds)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_init</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">fp</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="n">x_ehn</span><span class="p">)</span>
 
@@ -561,14 +463,14 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rel_res_norms</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">:</span>
                 <span class="k">break</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;kl&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">+=</span> <span class="n">fp</span> <span class="o">*</span> <span class="n">sigma</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">p</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">b_kl</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">+=</span> <span class="n">res</span> <span class="o">*</span> <span class="n">sigma</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l1&quot;</span><span class="p">:</span>
                     <span class="n">p</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l2&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span>
                     <span class="n">p</span> <span class="o">*=</span> <span class="n">sigma1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown data term: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">)</span>
@@ -593,24 +495,21 @@
                 <span class="n">out_x</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done in </span><span class="si">%g</span><span class="s2"> seconds.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s1">&#39;iterations&#39;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
+            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rel_res_norms</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CP_smooth"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.CP_smooth">[docs]</a><span class="k">class</span> <span class="nc">CP_smooth</span><span class="p">(</span><span class="n">Solver</span><span class="p">,</span> <span class="n">Operations</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
-            <span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">lambda_d2</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span> <span class="n">lambda_d2</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="n">dump_file</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
         <span class="n">Operations</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
 
@@ -620,9 +519,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lambda_d2</span> <span class="o">=</span> <span class="n">lambda_d2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_data_operators</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span>
@@ -659,23 +556,24 @@
         <span class="n">q_g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
 
         <span class="n">res_norm_0</span> <span class="o">=</span> <span class="n">npla</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;kl&#39;</span><span class="p">:</span>
-            <span class="n">b_kl</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">b</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
+            <span class="n">b_kl</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="n">c_init</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2">-TV iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">,</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">)),</span>
-                  <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2">-TV iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">,</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">)),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                 <span class="n">prnt_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%03d</span><span class="s2">/</span><span class="si">%03d</span><span class="s2"> (avg: </span><span class="si">%g</span><span class="s2"> seconds)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_init</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">fp</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="n">x_ehn</span><span class="p">)</span>
 
@@ -685,14 +583,14 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rel_res_norms</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">:</span>
                 <span class="k">break</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;kl&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">+=</span> <span class="n">fp</span> <span class="o">*</span> <span class="n">sigma</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">p</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">b_kl</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">+=</span> <span class="n">res</span> <span class="o">*</span> <span class="n">sigma</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l1&quot;</span><span class="p">:</span>
                     <span class="n">p</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l2&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span>
                     <span class="n">p</span> <span class="o">*=</span> <span class="n">sigma1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown data term: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">)</span>
@@ -714,25 +612,33 @@
                 <span class="n">out_x</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done in </span><span class="si">%g</span><span class="s2"> seconds.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s1">&#39;iterations&#39;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
+            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rel_res_norms</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CP_wl"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.CP_wl">[docs]</a><span class="k">class</span> <span class="nc">CP_wl</span><span class="p">(</span><span class="n">Solver</span><span class="p">):</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
-            <span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span> <span class="n">lambda_wl</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wl_type</span><span class="o">=</span><span class="s1">&#39;db4&#39;</span><span class="p">,</span>
-            <span class="n">use_decimated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">decomp_lvl</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">weight_det</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dump_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span>
+        <span class="n">data_term</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span>
+        <span class="n">lambda_wl</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+        <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">wl_type</span><span class="o">=</span><span class="s2">&quot;db4&quot;</span><span class="p">,</span>
+        <span class="n">use_decimated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">decomp_lvl</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">dump_file</span><span class="o">=</span><span class="n">dump_file</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weight_det</span> <span class="o">=</span> <span class="n">weight_det</span>
 
@@ -754,16 +660,15 @@
                 <span class="n">Ht</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pywt</span><span class="o">.</span><span class="n">iswtn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wl_type</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">H</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pywt</span><span class="o">.</span><span class="n">swt2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">wavelet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wl_type</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decomp_lvl</span><span class="p">)</span>
-<span class="c1">#                Ht = lambda x : pywt.iswt2(x, wavelet=self.wl_type)</span>
+                <span class="c1">#                Ht = lambda x : pywt.iswt2(x, wavelet=self.wl_type)</span>
                 <span class="n">Ht</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pywt</span><span class="o">.</span><span class="n">iswt2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">wavelet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wl_type</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">Ht</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">At</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;ChambollePock implementization of wavelet regularized minimization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">has_pywt</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;The module pywt was not found, please install it before you try using wavelet minimization&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;The module pywt was not found, please install it before you try using wavelet minimization&quot;</span><span class="p">)</span>
 
         <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_data_operators</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">At</span><span class="p">)</span>
         <span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">Ht</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_wl_operators</span><span class="p">()</span>
@@ -798,28 +703,32 @@
         <span class="n">q_wl</span> <span class="o">=</span> <span class="n">H</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
         <span class="n">res_norm_0</span> <span class="o">=</span> <span class="n">npla</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">))</span>
+        <span class="n">rel_res_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_iter</span><span class="p">,))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_decimated</span> <span class="ow">or</span> <span class="n">use_swtn</span><span class="p">:</span>
             <span class="n">sigma2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decomp_lvl</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sigma2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decomp_lvl</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">sigma2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decomp_lvl</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,</span> <span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">out_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(((</span><span class="n">num_iter</span><span class="p">,),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;kl&#39;</span><span class="p">:</span>
-            <span class="n">b_kl</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">b</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
+            <span class="n">b_kl</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="n">c_init</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2"> iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wl_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">)),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2"> iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wl_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">)),</span>
+                <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                 <span class="n">prnt_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%03d</span><span class="s2">/</span><span class="si">%03d</span><span class="s2"> (avg: </span><span class="si">%g</span><span class="s2"> seconds)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">num_iter</span><span class="p">,</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_init</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">fp</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="n">x_ehn</span><span class="p">)</span>
 
@@ -829,14 +738,14 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rel_res_norms</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">:</span>
                 <span class="k">break</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;kl&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;kl&quot;</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">+=</span> <span class="n">fp</span> <span class="o">*</span> <span class="n">sigma</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">p</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">b_kl</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">+=</span> <span class="n">res</span> <span class="o">*</span> <span class="n">sigma</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l1&quot;</span><span class="p">:</span>
                     <span class="n">p</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l2&#39;</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span>
                     <span class="n">p</span> <span class="o">*=</span> <span class="n">sigma1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown data term: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_term</span><span class="p">)</span>
@@ -847,9 +756,9 @@
                 <span class="n">q_wl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">q_wl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_wl</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
                 <span class="k">for</span> <span class="n">ii_l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decomp_lvl</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">q_wl</span><span class="p">[</span><span class="n">ii_l</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                        <span class="n">q_wl</span><span class="p">[</span><span class="n">ii_l</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="n">ii_l</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma2</span><span class="p">[</span><span class="n">ii_l</span><span class="p">]</span>
-                        <span class="n">q_wl</span><span class="p">[</span><span class="n">ii_l</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_wl</span><span class="p">[</span><span class="n">ii_l</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]))</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">q_wl</span><span class="p">[</span><span class="n">ii_l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">q_wl</span><span class="p">[</span><span class="n">ii_l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="n">ii_l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">sigma2</span><span class="p">[</span><span class="n">ii_l</span><span class="p">]</span>
+                        <span class="n">q_wl</span><span class="p">[</span><span class="n">ii_l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_wl</span><span class="p">[</span><span class="n">ii_l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">ii_l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decomp_lvl</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">use_swtn</span><span class="p">:</span>
@@ -877,32 +786,31 @@
                 <span class="n">out_x</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done in </span><span class="si">%g</span><span class="s2"> seconds.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s1">&#39;iterations&#39;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
+            <span class="n">utils_io</span><span class="o">.</span><span class="n">save_field_toh5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dump_file</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">,</span> <span class="n">out_x</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rel_res_norms</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Segment"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.Segment">[docs]</a><span class="k">class</span> <span class="nc">Segment</span><span class="p">(</span><span class="n">Solver</span><span class="p">,</span> <span class="n">Operations</span><span class="p">):</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lambda_tv</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">lambda_d2</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">Solver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">Operations</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lambda_tv</span> <span class="o">=</span> <span class="n">lambda_tv</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lambda_d2</span> <span class="o">=</span> <span class="n">lambda_d2</span>
 
-<div class="viewcode-block" id="Segment.levelset"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.Segment.levelset">[docs]</a>    <span class="k">def</span> <span class="nf">levelset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">mus</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">w_norm_p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="s1">&#39;l1&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Segment.levelset"><a class="viewcode-back" href="../../plenoptomos.html#plenoptomos.solvers.Segment.levelset">[docs]</a>    <span class="k">def</span> <span class="nf">levelset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">mus</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">w_norm_p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">data_term</span><span class="o">=</span><span class="s2">&quot;l1&quot;</span><span class="p">):</span>
         <span class="n">c_in</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="n">mus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mus</span><span class="p">)</span>
-        <span class="n">mus_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">mus</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)))</span>
+        <span class="n">mus_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">mus</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)))</span>
         <span class="n">mus_exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mus</span><span class="p">,</span> <span class="n">mus_shape</span><span class="p">)</span>
         <span class="n">W_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">mus_exp</span>
         <span class="n">W_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">W_prime</span><span class="p">)</span> <span class="o">**</span> <span class="n">w_norm_p</span>
@@ -934,19 +842,20 @@
         <span class="n">c_init</span> <span class="o">=</span> <span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2"> iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">)),</span>
-                  <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;- Performing CP-</span><span class="si">%s</span><span class="s2"> iterations (init: </span><span class="si">%g</span><span class="s2"> seconds): &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="p">(</span><span class="n">c_init</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">)),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                 <span class="n">prnt_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%03d</span><span class="s2">/</span><span class="si">%03d</span><span class="s2"> (avg: </span><span class="si">%g</span><span class="s2"> seconds)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">iterations</span><span class="p">,</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_init</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="n">q_mus</span> <span class="o">+=</span> <span class="n">mus_exp</span> <span class="o">-</span> <span class="n">xe</span>
-            <span class="k">if</span> <span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l1&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l1&quot;</span><span class="p">:</span>
                 <span class="n">q_mus</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_mus</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l12&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l12&quot;</span><span class="p">:</span>
                 <span class="n">q_mus</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">q_mus</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
-            <span class="k">elif</span> <span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;l2&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">data_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span>
                 <span class="n">q_mus</span> <span class="o">*=</span> <span class="n">sigma1_mus</span>
 
             <span class="n">upd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W_mus</span> <span class="o">*</span> <span class="n">q_mus</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -969,9 +878,9 @@
             <span class="n">x</span> <span class="o">=</span> <span class="n">xn</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;</span><span class="se">\b</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="se">\b</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">prnt_str</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done in </span><span class="si">%g</span><span class="s2"> seconds.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tm</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">c_in</span><span class="p">))</span>
@@ -986,47 +895,35 @@
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">vol</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">thr</span><span class="p">):</span>
-            <span class="n">x</span><span class="p">[</span><span class="n">vol</span> <span class="o">&gt;</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">vol</span> <span class="o">&gt;</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">x</span></div></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2019, Nicola VIGANO
-
-    </p>
+    <p>&#169; Copyright 2019, Nicola VIGANO.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

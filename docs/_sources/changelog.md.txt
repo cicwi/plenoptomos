@@ -10,7 +10,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 -->
 
-[Unreleased]: https://www.github.com/cicwi/plenoptomos/compare/v0.1.4...develop
+[Unreleased]: https://www.github.com/cicwi/plenoptomos/compare/v0.2.0...develop
+
+## 0.2.0 - 2021-12-06
+### Added
+- Refactored tomo projector:
+  * Removed support for multiple independent projection at the same time
+  * Removed difference between modes independent and simultaneous modes
+  * Moved from astra-toolbox' OpTomo to experimental direct_FPBP
+- Multi-threading support for Integration algorithm
+- tqdm support in depth estimation
+- Decoupling between focal stack computation and cues computation in depth estimation
+- Refactored (simplified) PSF code
+- Simplified light-field mode conversion
+### Fixed
+- Unwanted write in-place
+- Examples #1 and #2
+- Negative values in KL data term
+- PSF handling in reconstructions
 
 ## 0.1.4 - 2020-12-02
 ### Added
